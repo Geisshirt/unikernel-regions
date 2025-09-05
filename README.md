@@ -1,8 +1,5 @@
-# Unikernel-with-region-inference
-Bachelor thesis in Computer Science at the University of Copenhagen.
-
-## Thesis
-Using region-based memory management with region inference is a feasible approach for developing unikernels that do not rely on dynamic garbage collectors, which may introduce interruptions and unnecessary memory traversals. Subsequently, the approach does not compromise memory safety or developer productivity and thus maintains the possibility of using higher-order programming languages for programming unikernels in a cloud computing setting.
+# Unikernel-regions
+Project for building unikernels that uses regions.
 
 ## Simple example
 Here is a small example of a Unikernel service. The port `8080` is bound to a callback function which
@@ -81,12 +78,6 @@ $ make t=unix <application name>-app
 Run the application as an executable:
 ```sh
 $ ./<application name>.exe
-```
-
-### XEN
-In order to compile an application to Xen the target must be specified:
-```sh
-$ make t=xen <application name>-app
 ```
 
 ## Creating your own application
