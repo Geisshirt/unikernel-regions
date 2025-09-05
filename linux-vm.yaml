@@ -1,0 +1,49 @@
+# Start vm:      $ limactl start linux-vm.yaml
+# Rebuild:       $ limactl stop linux-vm && limactl delete linux-vm && limactl start linux-vm.yaml
+# Connect to vm: $ limactl shell linux-vm
+
+# echo -n "hello" | nc -u -nw1 10.0.0.2 8080
+
+arch: "x86_64"
+images:
+  - location: "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img"
+    arch: "x86_64"
+cpus: 2
+memory: "4GiB"
+disk: "10GiB"
+mounts:
+  - location: "~"
+    writable: true
+ssh:
+  localPort: 60022
+
+provision:
+  - mode: system
+    script: |
+      # System tools
+      apt-get update
+      DEBIAN_FRONTEND=noninteractive apt-get install -yq gcc make unzip net-tools uml-utilities tshark
+      
+      # Install TUN/TAP
+      modprobe tun
+      tunctl -u $USER -t tap0
+      ifconfig tap0 10.0.0.1 up 
+  
+  - mode: user
+    script: |
+      # Install smlpkg
+      wget https://github.com/diku-dk/smlpkg/releases/download/v0.1.4/smlpkg-bin-dist-linux.tgz
+      tar xzf smlpkg-bin-dist-linux.tgz
+      echo "export PATH=\$HOME/smlpkg-bin-dist-linux/bin:\$PATH" >> ~/.bashrc
+
+      # Sync smlpkg
+      smlpkg sync
+
+      # Install mlkit
+      wget https://github.com/melsman/mlkit/releases/download/v4.7.13/mlkit-bin-dist-linux.tgz
+      tar xzf mlkit-bin-dist-linux.tgz
+      echo "export PATH=\$HOME/mlkit-bin-dist-linux/bin:\$PATH" >> ~/.bashrc
+
+      # Configure mlkit library path
+      mkdir -p ~/.mlkit
+      echo "SML_LIB $HOME/mlkit-bin-dist-linux/lib/mlkit" > ~/.mlkit/mlb-path-map

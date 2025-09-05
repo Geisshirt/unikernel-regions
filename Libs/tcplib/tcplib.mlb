@@ -1,0 +1,6 @@
+local $(SML_LIB)/basis/basis.mlb
+    ../utilslib/utilslib.mlb
+in
+    TCPLIB.sig
+    tcplib.sml
+end
