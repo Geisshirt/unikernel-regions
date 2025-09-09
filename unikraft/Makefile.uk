@@ -1,0 +1,7 @@
+$(eval $(call addlib,appchello))
+
+APPCHELLO_SRCS-y += $(wildcard $(APPCHELLO_BASE)/UnikraftRuntimeMini/src/RuntimeMini/*.c)
+
+APPCHELLO_OBJS-y += $(APPCHELLO_BASE)/build/*.o
+
+CINCLUDES-y += -I$(APPCHELLO_BASE)/include
