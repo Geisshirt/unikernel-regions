@@ -3,6 +3,7 @@
 
 lib/
 MLB/
+repos/
 *.o
 *.a
 *.exe
