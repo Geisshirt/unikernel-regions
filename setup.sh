@@ -4,8 +4,7 @@ test -d repos/unikraft || git clone https://github.com/unikraft/unikraft repos/u
 test -d repos/openlib || git clone https://github.com/JuliaMath/openlibm repos/openlib
 test -d repos/libs/compiler-rt || git clone https://github.com/unikraft/lib-compiler-rt repos/libs/compiler-rt
 bash unikraft/setup.sh
-test -d unikraft/workdir/libs || unikraft/mkdir workdir/libs
-ln -sfn ../../../repos/libs/compiler-rt unikraft/workdir/libs/compiler-rt
+(cd unikraft; test -d workdir/libs || mkdir workdir/libs; ln -sfn ../../../repos/libs/compiler-rt workdir/libs/compiler-rt) 
 
 cat libm-replace/Make_src.files > repos/openlib/src/Make.files
 cat libm-replace/Make_i387.files > repos/openlib/i387/Make.files
