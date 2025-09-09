@@ -17,6 +17,11 @@ SL=$(shell pwd)/XenRuntimeMini
 FLAGS=-objs -no_delete_target_files
 endif
 
+ifeq ($(t), uk)
+SL=$(shell pwd)/unikraft/UnikraftRuntimeMini
+FLAGS=-objs -no_delete_target_files
+endif
+
 APP_OBJS=
 
 setup:
@@ -34,7 +39,12 @@ FORCE: ;
 tests: unix tests/*test 
 
 %.exe: $(t)
-	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/$*/main.mlb
+	:
+# 	ifeq($(t), uk)
+# 		SML_LIB=$(shell pwd)/UnixRuntimeMini mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/$*/main.mlb
+# 	else
+# 		SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/$*/main.mlb
+# 	endif
 
 %Prof: FORCE
 	SML_LIB=~/mlkit/src/Runtime mlkit -no_gc -prof -Pcee -o $*Prof.exe $*Prof/main.mlb > out.txt
@@ -54,9 +64,18 @@ ifeq ($(t), xen)
 	rm -r build
 	(cd $(MINIOS_PATH); make)
 endif
+ifeq ($(t), uk)
+	- rm -rf unikraft/build 
+	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl" $(shell pwd)/$*/main.mlb
+	mkdir unikraft/build && cp $(shell cat $*.exe | cut -d " " -f2-) unikraft/build
+	(cd unikraft; ar -x --output build libopenlibm.a; bash build.sh)
+endif
 
 configure:
 	sed -i 's|$$(LD) -r $$(LDFLAGS) $$(HEAD_OBJ) $$(OBJS) $$(LDARCHLIB) -o $$@|$$(LD) -r $$(LDFLAGS) $$(HEAD_OBJ) $$(OBJS) $$(LDARCHLIB) $(shell pwd)/app.a -o $$@|g' $(MINIOS_PATH)/Makefile
+
+uk:
+	:
 
 unix:
 	(cd UnixRuntimeMini; make)
