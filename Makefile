@@ -8,6 +8,10 @@ ifndef t
 t=unix
 endif
 
+ifndef net 
+net=y
+endif
+
 .PHONY: clean echo facfib
 
 FLAGS=
@@ -39,12 +43,12 @@ FORCE: ;
 tests: unix tests/*test 
 
 %.exe: $(t)
-	:
-# 	ifeq($(t), uk)
-# 		SML_LIB=$(shell pwd)/UnixRuntimeMini mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/$*/main.mlb
-# 	else
-# 		SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/$*/main.mlb
-# 	endif
+ifeq ($(net), y)
+	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/$*/main.mlb
+endif 
+ifeq ($(net), n)
+	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl" $(shell pwd)/$*/main.mlb
+endif 
 
 %Prof: FORCE
 	SML_LIB=~/mlkit/src/Runtime mlkit -no_gc -prof -Pcee -o $*Prof.exe $*Prof/main.mlb > out.txt
@@ -66,8 +70,8 @@ ifeq ($(t), xen)
 endif
 ifeq ($(t), uk)
 	- rm -rf unikraft/build 
-	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl" $(shell pwd)/$*/main.mlb
-	mkdir unikraft/build && cp $(shell cat $*.exe | cut -d " " -f2-) unikraft/build
+	mkdir unikraft/build
+	cp $(shell cat $*.exe | cut -d " " -f2-) unikraft/build
 	(cd unikraft; ar -x --output build libopenlibm.a; bash build.sh)
 endif
 
@@ -79,7 +83,7 @@ uk:
 
 unix:
 	(cd UnixRuntimeMini; make)
-	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c Libs/netiflib/netif-tuntap.c
+# 	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c Libs/netiflib/netif-tuntap.c
 
 xen:
 	(cd XenRuntimeMini; make)
@@ -91,6 +95,7 @@ clean:
 	-rm *.a 
 	-rm -rf Libs/*lib/MLB MLB
 	-rm -rf facfib/MLB
+	-rm -rf facfib-nonet/MLB
 	-rm -rf echo/MLB
 	-rm -rf monteCarlo/MLB
 	-rm -rf sort/MLB
