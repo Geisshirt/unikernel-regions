@@ -4,6 +4,8 @@ MINIOS_PATH=
 
 SL=$(shell pwd)/UnixRuntimeMini
 
+UNI=$(shell pwd)/c-http
+
 ifndef t 
 t=unix
 endif
@@ -18,7 +20,6 @@ FLAGS=-objs -no_delete_target_files
 endif
 
 ifeq ($(t), uk)
-SL=$(shell pwd)/unikraft/UnikraftRuntimeMini
 FLAGS=-objs -no_delete_target_files
 endif
 
@@ -65,10 +66,10 @@ ifeq ($(t), xen)
 	(cd $(MINIOS_PATH); make)
 endif
 ifeq ($(t), uk)
-	- rm -rf unikraft/build 
+	- rm -rf $(UNI)/build 
 	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl" $(shell pwd)/$*/main.mlb
-	mkdir unikraft/build && cp $(shell cat $*.exe | cut -d " " -f2-) unikraft/build
-	(cd unikraft; ar -x --output build libopenlibm.a; bash build.sh)
+	mkdir $(UNI)/build && cp $(shell cat $*.exe | cut -d " " -f2-) $(UNI)/build
+	(cd $(UNI); ar -x --output build libopenlibm.a; bash build.sh)
 endif
 
 configure:
@@ -86,7 +87,13 @@ xen:
 	gcc -fno-builtin -Wall -Wredundant-decls -Wno-format -Wno-redundant-decls -Wformat -fno-stack-protector -fgnu89-inline -Wstrict-prototypes -Wnested-externs -Wpointer-arith -Winline -g -D__INSIDE_MINIOS__ -m64 -mno-red-zone -fno-reorder-blocks -fno-asynchronous-unwind-tables -DCONFIG_START_NETWORK -DCONFIG_SPARSE_BSS -DCONFIG_BLKFRONT -DCONFIG_NETFRONT -DCONFIG_FBFRONT -DCONFIG_KBDFRONT -DCONFIG_CONSFRONT -DCONFIG_XENBUS -DCONFIG_PARAVIRT -DCONFIG_LIBXS -D__XEN_INTERFACE_VERSION__=0x00030205 -isystem XenRuntimeMini/src/RuntimeMini -isystem XenRuntimeMini/include -isystem XenRuntimeMini/include/x86 -isystem XenRuntimeMini/include/x86/x86_64 -o libnetiflib.a -c Libs/netiflib/netif-miniOS.c
 
 run-uk:
-	qemu-system-x86_64 -nographic -m 16 -cpu max -kernel unikraft/workdir/build/unikraft_qemu-x86_64
+	sudo qemu-system-x86_64 \
+    -nographic \
+    -m 2048 \
+    -cpu max \
+    -netdev bridge,id=en0,br=virbr0 -device virtio-net-pci,netdev=en0 \
+    -append "c-http netdev.ip=172.44.0.2/24:172.44.0.1::: -- " \
+    -kernel $(UNI)/workdir/build/c-http_qemu-x86_64
 
 clean:
 	-(cd UnixRuntimeMini; make clean)
