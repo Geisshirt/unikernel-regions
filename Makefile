@@ -67,7 +67,7 @@ ifeq ($(t), xen)
 endif
 ifeq ($(t), uk)
 	- rm -rf $(UNI)/build 
-	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl" $(shell pwd)/$*/main.mlb
+	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/$*/main.mlb
 	mkdir $(UNI)/build && cp $(shell cat $*.exe | cut -d " " -f2-) $(UNI)/build
 	(cd $(UNI); ar -x --output build libopenlibm.a; bash build.sh)
 endif
@@ -89,7 +89,7 @@ xen:
 run-uk:
 	sudo qemu-system-x86_64 \
     -nographic \
-    -m 2048 \
+    -m 4096 \
     -cpu max \
     -netdev bridge,id=en0,br=virbr0 -device virtio-net-pci,netdev=en0 \
     -append "c-http netdev.ip=172.44.0.2/24:172.44.0.1::: -- " \
