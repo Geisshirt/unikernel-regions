@@ -6,6 +6,8 @@ MLB/
 repos/
 unikraft/build 
 unikraft/workdir 
+c-http/build 
+c-http/workdir 
 *.o
 *.a
 *.exe
