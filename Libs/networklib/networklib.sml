@@ -1,10 +1,11 @@
 structure Network : NETWORK = struct
 
-    val mac = [123, 124, 125, 126, 127, 128] (* hard-coded *)
+    val mac = [0x7c, 0x75, 0xb2, 0x39, 0xd4, 0x84]
 
-    val ipAddress = [10, 0, 0, 2] (* also hard-coded *)
+    (* val ipAddress = [10, 0, 0, 2] *)
+    val ipAddress = [172, 44, 0, 2]
 
-    val mtu = 1500
+    val mtu = 1518
 
     val log = ref false
 
@@ -89,10 +90,9 @@ structure Network : NETWORK = struct
                     dstMac = dstMac,
                     srcMac = mac
                 }) payload
+            val fullList = ethHeader |> toByteList
         in  
-            ethHeader
-            |> toByteList
-            |> Netif.send
+            fullList |> Netif.send
         end 
 
     (* Uses same identification as sender *)
@@ -213,7 +213,7 @@ structure Network : NETWORK = struct
             case payloadOpt of 
             SOME payload => (
                 case (#protocol ipv4Header) of 
-                  IPv4.UDP => handleUDP (#dstMac ethHeader) (IPv4.Header ipv4Header) payload
+                  IPv4.UDP => handleUDP (#srcMac ethHeader) (IPv4.Header ipv4Header) payload
                 | IPv4.TCP => (logPrint "got TCP!\n"; handleTCP (#dstMac ethHeader) (IPv4.Header ipv4Header) payload)
                 | _ => logPrint "IPv4 Handler: Protocol is not supported.\n"
             )

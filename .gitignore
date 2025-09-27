@@ -3,6 +3,9 @@
 
 lib/
 MLB/
+repos/
+unikraft/build/*.o 
+unikraft/workdir 
 *.o
 *.a
 *.exe
