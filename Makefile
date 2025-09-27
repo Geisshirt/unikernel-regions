@@ -20,9 +20,14 @@ endif
 APP_OBJS=
 
 setup:
+ifeq ($(t), unix)
 	sudo modprobe tun
 	sudo tunctl -u $$USER -t tap0
 	sudo ifconfig tap0 10.0.0.1 up
+endif
+ifeq ($(t), uk)
+	bash setup.sh
+endif
 
 tests/%test: FORCE
 	(cd tests; SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*test.exe $*test/$*test.mlb)
