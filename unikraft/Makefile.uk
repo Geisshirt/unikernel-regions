@@ -1,7 +1,12 @@
-$(eval $(call addlib,appchello))
+$(eval $(call addlib,appchttp))
 
-APPCHELLO_SRCS-y += $(wildcard $(APPCHELLO_BASE)/UnikraftRuntimeMini/src/RuntimeMini/*.c)
+APPCHTTP_SRCS-y += $(wildcard $(APPCHTTP_BASE)/UnikraftRuntimeMini/src/RuntimeMini/*.c)
+APPCHTTP_SRCS-y += $(APPCHTTP_BASE)/netif-uni.c
 
-APPCHELLO_OBJS-y += $(APPCHELLO_BASE)/build/*.o
+APPCHTTP_OBJS-y += $(APPCHTTP_BASE)/build/*.o
 
-CINCLUDES-y += -I$(APPCHELLO_BASE)/include
+CINCLUDES-y += -I$(APPCHTTP_BASE)/include
+CINCLUDES-y += -I$(APPCHTTP_BASE)/UnikraftRuntimeMini/src/RuntimeMini
+CINCLUDES-y += -I$(APPCHTTP_BASE)/workdir/unikraft/include
+CINCLUDES-y += -I$(APPCHTTP_BASE)/../repos/unikraft/lib/uknetdev/include
+CINCLUDES-y += -I$(APPCHTTP_BASE)/../repos/unikraft/lib/ukallocpool/include

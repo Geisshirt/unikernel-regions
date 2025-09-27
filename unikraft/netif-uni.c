@@ -21,18 +21,7 @@ struct uk_alloc *a = NULL;
 void setup() {
     dev = uk_netdev_get(0);
 
-    struct uk_hwaddr *hw = uk_netdev_hwaddr_get(dev);
-
-    printf("HW-length: %d\n", UK_NETDEV_HWADDR_LEN);
-
-    for (int i = 0; i < UK_NETDEV_HWADDR_LEN; i++) {
-        printf("%x ", (hw->addr_bytes)[i]);
-    }
-
-    printf("\n");
-
     a = uk_alloc_get_default();
-	printf("Address of _tx_queue %p in main!\n", dev->_tx_queue[0]);
 
 	uk_netdev_info_get(dev, &dev_info);
 	
@@ -51,9 +40,7 @@ String REG_POLY_FUN_HDR(toMLString, Region rAddr, const char *cStr, int len) {
 }
 
 
-struct uk_netbuf *pkt = NULL;
-
-String Receive(int addr, Region str_r, Context ctx) {
+String Receive(__attribute__ ((unused)) int addr, Region str_r, __attribute__ ((unused)) Context ctx) {
 
     if (dev == NULL) {
         setup();
@@ -62,6 +49,8 @@ String Receive(int addr, Region str_r, Context ctx) {
     ssize_t bytesRead = 0;
     char buf[MTU]; // MTU + 18 (the 18 bytes are header and frame check sequence)
 
+    struct uk_netbuf *pkt = NULL;
+
     while (1) {
 		int status = uk_netdev_rx_one(dev, 0, &pkt);
 		if (uk_netdev_status_successful(status)) {
@@ -69,14 +58,13 @@ String Receive(int addr, Region str_r, Context ctx) {
             memcpy(buf, pkt->data, pkt->len);
             bytesRead = pkt->len;
 
-            // uk_netbuf_free(pkt);
+            uk_netbuf_free(pkt);
             break;
 		}
 	}
 
     // Null-terminate the buffer
     buf[bytesRead] = '\0';
-    printf("Received\n");
     return toMLString(str_r, buf, bytesRead); 
 }
 
@@ -98,22 +86,6 @@ void Send(uintptr_t byte_list) {
 
     nb->len = i;
     memcpy(nb->data, toWrite_buf, i);
-
-    printf("Printing packet answered (bytes %d):\n", pkt->len);
-    for (int j = 0; j < pkt->len; j++) {
-        printf("%u ", ((unsigned char *)pkt->data)[j]);
-        if (j == i/2) {
-            printf("\n");
-        }
-    }
-    printf("\n\nPrinting NB data (bytes %d):\n", i);
-    for (int j = 0; j < i; j++) {
-        printf("%u ", ((unsigned char *)nb->data)[j]);
-        if (j == i/2) {
-            printf("\n");
-        }
-    }
-    printf("\n");
     
     int ret;
 
@@ -124,9 +96,5 @@ void Send(uintptr_t byte_list) {
     if (unlikely(ret < 0)) {
 		printf("Failed to send");
 		uk_netbuf_free_single(nb);
-	} else {
-        printf("Sent bytes\n");
-    }
-
-    uk_netbuf_free(pkt);
+	}
 }

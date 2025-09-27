@@ -13,6 +13,10 @@
 #include "Exception.h"
 #include "Region.h"
 #include "Table.h"
+#include <uk/alloc.h>
+#include <uk/netdev.h>
+#include <uk/config.h>
+#include <uk/alloc.h>
 
 int
 die (const char *s)
