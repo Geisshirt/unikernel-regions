@@ -33,14 +33,14 @@ FORCE: ;
 tests: unix tests/*test 
 
 %.exe: $(t)
-	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c Libs/netiflib/netif-tuntap.c
-	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/$*/main.mlb
+	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
+	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
 
 %Prof: FORCE
 	SML_LIB=~/mlkit/src/Runtime mlkit -no_gc -prof -Pcee -o $*Prof.exe $*Prof/main.mlb > out.txt
 
 .PRECIOUS: %.exe
-%-app: %.exe
+%-ex-app: %.exe
 	:
 ifeq ($(t), uk)
 	rm -rf $(UNI)/build/*.o 
@@ -68,11 +68,8 @@ clean:
 	-(cd UnixRuntimeMini; make clean)
 	-rm run
 	-rm *.a 
-	-rm -rf Libs/*lib/MLB MLB
-	-rm -rf facfib/MLB
-	-rm -rf echo/MLB
-	-rm -rf monteCarlo/MLB
-	-rm -rf sort/MLB
+	-rm -rf src/*lib/MLB MLB
+	-rm -rf examples/*/MLB
 	-rm -rf unikraft/build/*.o
 	-rm -rf unikraft/wordir/build/*.o
 	-rm -r *.exe
