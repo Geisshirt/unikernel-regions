@@ -58,7 +58,7 @@ int tun_alloc(char *dev, int flags) {
 
    /* try to create the device */
    if( (err = ioctl(fd, TUNSETIFF, (void *) &ifr)) < 0 ) {
-     printf("ERROR!");
+     printf("ERROR opening tuntap device (did you forget to run setup?)\n");
      close(fd);
      exit(0);
      return err;
