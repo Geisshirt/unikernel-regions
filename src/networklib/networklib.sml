@@ -2,8 +2,8 @@ structure Network : NETWORK = struct
 
     val mac = [0x7c, 0x75, 0xb2, 0x39, 0xd4, 0x84]
 
-    (* val ipAddress = [10, 0, 0, 2] *)
-    val ipAddress = [172, 44, 0, 2]
+    val ipAddress = [10, 0, 0, 2]
+    (* val ipAddress = [172, 44, 0, 2] *)
 
     val mtu = 1518
 
