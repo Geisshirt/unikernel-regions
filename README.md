@@ -1,9 +1,12 @@
 # Unikernel-regions
-Project for building unikernels that uses regions.
+Project for building unikernels that uses regions as the memory management 
+method.
 
 ## Simple example
-Here is a small example of a Unikernel service. The port `8080` is bound to a callback function which
-here is the identity function i.e. an echo service. It then listens for any incomming messages.
+Here is a small example of a Unikernel service. The port `8080` is bound to a 
+callback function which here is the identity function i.e. an echo service. It 
+then listens for any incomming messages and sends back the payload for that 
+message.
 ```ml
 open Network
 
@@ -12,8 +15,8 @@ val _ = (
     listen ()
 )
 ```
-Logging can be turned on with the `logOn()` function and the service will print and log useful information
-as seen below.
+Logging can be turned on with the `logOn()` function and the service will 
+print and log useful information:
 ```sh
 ==== FROM: 74 212 82 133 150 162 ====
 
@@ -53,26 +56,15 @@ The project include four small examples (these run on both Unix and Xen - see be
 * MonteCarlo: estimates pi using the [sml-sobol library](https://github.com/diku-dk/sml-sobol) (run `smlpkg sync` before use).
 * Sort: sorts its given integers using mergesort
 
-## Sending data to the unikernel
-Once the unikernel is running one can send UDP packets to the unikernel via netcat: <br />
-```sh
-$ echo -n “Hello, World!” | nc -u -nw1 127.0.0.2 8080
-```
-
-## Compilation and running a unikernel
-In order for the network to be initialized run:
+## Building and running for Unix
+First run the setup command to setup a tuntap device:
 ```sh
 $ make setup
 ```
 
-### UNIX
-The `make` rule for compiling an application defaults to UNIX and is run with:
+The `make` rule for compiling an app to unix:
 ```sh
-$ make <application name>-app
-```
-or specified with
-```sh
-$ make t=unix <application name>-app
+$ make <application name>-ex-app
 ```
 
 Run the application as an executable:
@@ -80,12 +72,43 @@ Run the application as an executable:
 $ ./<application name>.exe
 ```
 
+Once the unikernel is running one can send UDP packets to the unikernel via netcat:
+```sh
+$ echo -n "Hello, World!" | nc -u -nw1 10.0.0.2 8080
+```
+
+## Building and running for Unikraft (through QEMU)
+First run the setup command to update and build external dependencies:
+```sh
+$ make tsetup
+```
+
+The `make` rule for compiling an app to Unikraft:
+```sh
+$ make t=uk <application name>-ex-app
+```
+
+Run the application with QEMU (this will set up a virtual bridge):
+```sh
+$ make run-uk
+```
+
+Once the unikernel is running one can send UDP packets to the unikernel via netcat:
+```sh
+$ echo -n "Hello, World!" | nc -u -nw1 172.44.0.2 8080
+```
+
 ## Creating your own application
-To create an application create a new directory and include two files:
+To create an application create a new directory and include two files in the `examples` folder:
 * `main.sml` which contains the code for the application
 * `main.mlb` which is the ML basis file containing the applications dependencies
 
 ## Monitor network interface (tap0)
+For montoring network traffic on unix:
 ```sh
 $ sudo tshark -i tap0
+```
+Or unikraft:
+```sh
+$ sudo tshark -i virbr0
 ```
