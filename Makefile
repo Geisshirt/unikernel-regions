@@ -29,7 +29,6 @@ setup:
 	sudo modprobe tun
 	sudo tunctl -u $$USER -t tap0
 	sudo ifconfig tap0 10.0.0.1 up
-	(cd UnixRuntimeMini; make)
 
 tests/%test: FORCE
 	(cd tests; SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*test.exe $*test/$*test.mlb)
@@ -40,31 +39,30 @@ FORCE: ;
 tests: unix tests/*test 
 
 %.exe: $(t)
-	:
-# 	ifeq($(t), uk)
-# 		SML_LIB=$(shell pwd)/UnixRuntimeMini mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/$*/main.mlb
-# 	else
-# 		SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/$*/main.mlb
-# 	endif
+ifeq ($(t), unix)
+	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/$*/main.mlb
+endif
 
 %Prof: FORCE
 	SML_LIB=~/mlkit/src/Runtime mlkit -no_gc -prof -Pcee -o $*Prof.exe $*Prof/main.mlb > out.txt
 
 .PRECIOUS: %.exe
-%-app: $(t) %.exe 
-	:
-ifeq ($(t), xen)
-	- rm -r app.a
-	- rm -r build
-	mkdir build
-	ar -x --output build XenRuntimeMini/libm.a
-	ar -x --output build XenRuntimeMini/lib/runtimeSystem.a
-	cp libnetiflib.a build/libnetiflib.o
-	cp $(shell cat $*.exe | cut -d " " -f2-) build
-	ar -rc app.a build/*.o
-	rm -r build
-	(cd $(MINIOS_PATH); make)
+%-app: $(t)
+ifeq ($(t), unix)
+	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/$*/main.mlb
 endif
+# ifeq ($(t), xen)
+# 	- rm -r app.a
+# 	- rm -r build
+# 	mkdir build
+# 	ar -x --output build XenRuntimeMini/libm.a
+# 	ar -x --output build XenRuntimeMini/lib/runtimeSystem.a
+# 	cp libnetiflib.a build/libnetiflib.o
+# 	cp $(shell cat $*.exe | cut -d " " -f2-) build
+# 	ar -rc app.a build/*.o
+# 	rm -r build
+# 	(cd $(MINIOS_PATH); make)
+# endif
 ifeq ($(t), uk)
 	- rm -rf $(UNI)/build 
 	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/$*/main.mlb
@@ -79,7 +77,6 @@ uk:
 	:
 
 unix:
-	(cd UnixRuntimeMini; make)
 	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c Libs/netiflib/netif-tuntap.c
 
 xen:
@@ -91,7 +88,8 @@ run-uk:
     -nographic \
     -m 4096 \
     -cpu max \
-    -netdev bridge,id=en0,br=virbr0 -device virtio-net-pci,netdev=en0 \
+    -netdev bridge,id=en0,br=virbr0 \
+	-device virtio-net-pci,netdev=en0,mac=76:75:b2:39:d4:84 \
     -append "c-http netdev.ip=172.44.0.2/24:172.44.0.1::: -- " \
     -kernel $(UNI)/workdir/build/c-http_qemu-x86_64
 
