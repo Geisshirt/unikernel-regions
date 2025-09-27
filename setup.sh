@@ -3,6 +3,8 @@ git submodule update --init --recursive
 
 chown -R $USER:$USER external/openlib
 
+mkdir unikraft/build
+
 cat libm-replace/Make_src.files > external/openlib/src/Make.files
 cat libm-replace/Make_i387.files > external/openlib/i387/Make.files
 cat libm-replace/Make_ld80.files > external/openlib/ld80/Make.files
