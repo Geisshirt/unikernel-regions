@@ -20,12 +20,21 @@ struct uk_alloc *a = NULL;
 
 void setup() {
     dev = uk_netdev_get(0);
+
+    struct uk_hwaddr *hw = uk_netdev_hwaddr_get(dev);
+
+    printf("HW-length: %d\n", UK_NETDEV_HWADDR_LEN);
+
+    for (int i = 0; i < UK_NETDEV_HWADDR_LEN; i++) {
+        printf("%x ", (hw->addr_bytes)[i]);
+    }
+
+    printf("\n");
+
     a = uk_alloc_get_default();
 	printf("Address of _tx_queue %p in main!\n", dev->_tx_queue[0]);
 
 	uk_netdev_info_get(dev, &dev_info);
-
-	struct uk_netbuf *pkt = NULL;
 	
 }
 
@@ -93,10 +102,16 @@ void Send(uintptr_t byte_list) {
     printf("Printing packet answered (bytes %d):\n", pkt->len);
     for (int j = 0; j < pkt->len; j++) {
         printf("%u ", ((unsigned char *)pkt->data)[j]);
+        if (j == i/2) {
+            printf("\n");
+        }
     }
     printf("\n\nPrinting NB data (bytes %d):\n", i);
     for (int j = 0; j < i; j++) {
         printf("%u ", ((unsigned char *)nb->data)[j]);
+        if (j == i/2) {
+            printf("\n");
+        }
     }
     printf("\n");
     
