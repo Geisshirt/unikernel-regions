@@ -3,7 +3,6 @@
 
 lib/
 MLB/
-repos/
 unikraft/build/*.o 
 unikraft/workdir 
 *.o
@@ -11,5 +10,3 @@ unikraft/workdir
 *.exe
 *.txt
 main
-repos/
-unikraft/
