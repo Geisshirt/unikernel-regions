@@ -80,7 +80,7 @@ $ echo -n "Hello, World!" | nc -u -nw1 10.0.0.2 8080
 ## Building and running for Unikraft (through QEMU)
 First run the setup command to update and build external dependencies:
 ```sh
-$ make tsetup
+$ make t=uk setup
 ```
 
 The `make` rule for compiling an app to Unikraft:
