@@ -1,7 +1,7 @@
 open Network
 
 val _ = (
-    logOn ();
+    (* logOn (); *)
     bindUDP 8080 (fn data => data);
     listen ()
 )
