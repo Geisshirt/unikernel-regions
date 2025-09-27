@@ -1,7 +1,6 @@
 structure Network : NETWORK = struct
 
-    (* val mac = [124, 1, 2, 3, 4, 5] *)
-    val mac = [120, 0x75, 0xb2, 0x39, 0xd4, 0x84]
+    val mac = [0x7c, 0x75, 0xb2, 0x39, 0xd4, 0x84]
 
     (* val ipAddress = [10, 0, 0, 2] *)
     val ipAddress = [172, 44, 0, 2]
@@ -93,14 +92,6 @@ structure Network : NETWORK = struct
                 }) payload
             val fullList = ethHeader |> toByteList
         in  
-            "Printing length: " |> logPrint;
-            length fullList |> Int.toString |> logPrint;
-            "\n" |> logPrint;
-            "Printing send package:\n" |> logPrint;
-            List.take (fullList, ((length fullList) div 2)+1) |> rawBytesString |> logPrint;
-            "\n" |> logPrint;
-            List.drop (fullList, ((length fullList) div 2)+1) |> rawBytesString |> logPrint;
-            "\n\n" |> logPrint;
             fullList |> Netif.send
         end 
 
@@ -236,7 +227,6 @@ structure Network : NETWORK = struct
             val (ethHeader, ethPayload) = ethFrame |> Eth.decode 
             val Eth.Header {et, dstMac, srcMac} = ethHeader
         in  
-            "New version\n" |> print;
             "\n==== FROM: " ^ (rawBytesString srcMac) ^ " ====\n" |> logPrint;
             Eth.toString ethHeader |> logPrint;
             (case et of 
