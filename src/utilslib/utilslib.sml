@@ -10,19 +10,19 @@ fun findi f l =
       in  findi_ l 0
       end
 
-fun toByteList s = s |> explode |> map Char.ord 
+fun toByteList (s : string) : int list = s |> explode |> map Char.ord 
 
 fun rawBytesString (b: int list) = b |> foldl (fn (x, acc) => if acc = "" then (Int.toString x) else acc ^ " " ^ (Int.toString x)) ""
 
 fun byteListToString b = (b |> map Char.chr |> implode)
 
-fun intToRawbyteString i nb = 
+fun intToRawbyteString i0 nb = 
     let fun h_intToRawbyteString i 1 acc = Char.chr i :: acc |> implode
           | h_intToRawbyteString i nb acc = 
             if nb <= 0 then ""
             else Char.chr (i mod 256) :: acc |> h_intToRawbyteString (i div 256) (nb-1)
     in 
-        h_intToRawbyteString i nb []
+        h_intToRawbyteString i0 nb []
     end
 
 fun getLBits octet nb = octet div (2**(8-nb))

@@ -25,7 +25,7 @@ structure Network : NETWORK = struct
 
     fun pktIDCmp (PktID pktID1) (PktID pktID2) = 
         let fun ipCmp [] [] = true
-            | ipCmp (hd1::tl1) (hd2::tl2) = if hd1 = hd2 then ipCmp tl1 tl2 else false
+            | ipCmp (hd1::tl1) (hd2::tl2) = hd1 = hd2 andalso ipCmp tl1 tl2
             | ipCmp _ _ = false
         in ipCmp (#ipaddr pktID1) (#ipaddr pktID2) andalso (#id pktID1) = (#id pktID2) andalso (#prot pktID1) = (#prot pktID2)
         end  
@@ -34,7 +34,7 @@ structure Network : NETWORK = struct
 
     val assemblingList : (packetID * (char array)) list ref = ref []
 
-    val listenOn = ref []
+    val listenOn : (int * (string -> string)) list ref = ref []
 
     fun bindUDP (port : int) (cbf : string -> string) = listenOn := (port, cbf) :: !listenOn 
 
@@ -84,19 +84,19 @@ structure Network : NETWORK = struct
             |   NONE => raise Fail "Could not assemble packet."
         end
 
-    fun ethSend et dstMac payload = 
+    fun ethSend et dstMac payload : unit = 
         let val ethHeader = Eth.encode (Eth.Header { 
                     et = et,
                     dstMac = dstMac,
                     srcMac = mac
                 }) payload
-            val fullList = ethHeader |> toByteList
+            val fullList : int list = ethHeader |> toByteList
         in  
             fullList |> Netif.send
         end 
 
     (* Uses same identification as sender *)
-    fun ipv4Send ({identification, protocol, dest_addr, dstMac}) payload = 
+    fun ipv4Send {identification, protocol, dest_addr, dstMac} payload = 
         let val nfb = (mtu - 20) div 8
             fun sendFragments offset payload = 
                 if String.size payload + 20 <= mtu 
@@ -141,19 +141,20 @@ structure Network : NETWORK = struct
         in
             case arp of
                 SOME (ARP.Header arpHeader) => 
-                    (ARP.toString (ARP.Header arpHeader) |> logPrint;
-                    ARP.encode (ARP.Header {
-                        htype = 1, 
-                        ptype = 0x0800,
-                        hlen = 6,
-                        plen = 4,
-                        oper = ARP.Reply,
-                        sha = mac, 
-                        spa = ipAddress,
-                        tha = (#sha arpHeader),
-                        tpa = List.concat [(#spa arpHeader), [0, 0]]
-                    }) 
-                    |> ethSend Eth.ARP (#dstMac ethHeader))
+                    if #tpa arpHeader = ipAddress then (
+                        ARP.toString (ARP.Header arpHeader) |> logPrint;
+                        ARP.encode (ARP.Header {
+                            htype = 1, 
+                            ptype = 0x0800,
+                            hlen = 6,
+                            plen = 4,
+                            oper = ARP.Reply,
+                            sha = mac, 
+                            spa = ipAddress,
+                            tha = (#sha arpHeader),
+                            tpa = List.concat [(#spa arpHeader), [0, 0]]
+                        }) |> ethSend Eth.ARP (#dstMac ethHeader)
+                    ) else ()
             |   NONE => logPrint "Arp packet could not be decoded.\n"
         end
 
@@ -221,20 +222,22 @@ structure Network : NETWORK = struct
         end
 
     fun listen () = 
-        (let 
+        let 
             val rawTap = Netif.receive () 
             val ethFrame = String.extract (rawTap, 0, NONE)
             val (ethHeader, ethPayload) = ethFrame |> Eth.decode 
             val Eth.Header {et, dstMac, srcMac} = ethHeader
         in  
-            "\n==== FROM: " ^ (rawBytesString srcMac) ^ " ====\n" |> logPrint;
-            Eth.toString ethHeader |> logPrint;
-            (case et of 
-                  Eth.ARP => handleArp ethHeader ethFrame
-                | Eth.IPv4 => handleIPv4 ethHeader ethFrame
-                | _ => logPrint "\nlisten: Protocol not supported.\n"
-            );
-            "\n==== END: " ^ (rawBytesString srcMac) ^ " ====\n" |> logPrint;
+            if dstMac = mac orelse dstMac = [255, 255, 255, 255, 255, 255] then (
+                "\n==== FROM: " ^ (rawBytesString srcMac) ^ " ====\n" |> logPrint;
+                Eth.toString ethHeader |> logPrint;
+                (case et of 
+                      Eth.ARP => handleArp ethHeader ethFrame
+                    | Eth.IPv4 => handleIPv4 ethHeader ethFrame
+                    | _ => logPrint "\nlisten: Protocol not supported.\n"
+                );
+                "\n==== END: " ^ (rawBytesString srcMac) ^ " ====\n" |> logPrint
+            ) else ();
             listen ()
-        end) handle _ => (logPrint "Encountered an error in handling!\n"; listen ())
+        end handle _ => (logPrint "Encountered an error in handling!\n"; listen ())
 end

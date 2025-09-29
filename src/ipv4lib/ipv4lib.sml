@@ -55,15 +55,15 @@ structure IPv4 : IPV4 = struct
         | UDP => "UDP"
         | _ => "Uknown protocol"
 
-    fun isFragmented (Header r) = if (#flags r) = 1 then true else false
+    fun isFragmented (Header r) = (#flags r) = 1
 
     fun verifyChecksumIPv4 header payload =
         let val (Header {
-                version,
+                version=_,
                 ihl,
                 dscp,
                 ecn,
-                total_length,
+                total_length=_,
                 identification,
                 flags,
                 fragment_offset,
@@ -84,7 +84,7 @@ structure IPv4 : IPV4 = struct
                 intToRawbyteString 0 2 ^
                 byteListToString source_addr ^
                 byteListToString dest_addr
-            val checkSum = checksumHeader |> toByteList |> toHextets |> ipv4Checksum
+            val checkSum : int = checksumHeader |> toByteList |> toHextets |> ipv4Checksum
         in  if checkSum = header_checksum then (header, payload) 
             else raise Fail "Bad checksum in incomming IPv4 packet."
         end
