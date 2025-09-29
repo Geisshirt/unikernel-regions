@@ -74,7 +74,7 @@ $ ./<application name>.exe
 
 Once the unikernel is running one can send UDP packets to the unikernel via netcat:
 ```sh
-$ echo -n "Hello, World!" | nc -u -nw1 10.0.0.2 8080
+$ echo -n $'Hello, World!\n' | nc -u -nw1 10.0.0.2 8080
 ```
 
 ## Building and running for Unikraft (through QEMU)
@@ -95,7 +95,7 @@ $ make run-uk
 
 Once the unikernel is running one can send UDP packets to the unikernel via netcat:
 ```sh
-$ echo -n "Hello, World!" | nc -u -nw1 172.44.0.2 8080
+$ echo -n $'Hello, World!\n' | nc -u -nw1 172.44.0.2 8080
 ```
 
 ## Creating your own application

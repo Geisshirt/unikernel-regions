@@ -209,19 +209,20 @@ structure Network : NETWORK = struct
                         SOME (assemblePacket (IPv4.Header ipv4Header)))
                     else 
                         NONE)
-        in
-            IPv4.toString (IPv4.Header ipv4Header) |> logPrint;
-            case payloadOpt of 
-            SOME payload => (
-                case (#protocol ipv4Header) of 
-                  IPv4.UDP => handleUDP (#srcMac ethHeader) (IPv4.Header ipv4Header) payload
-                | IPv4.TCP => (logPrint "got TCP!\n"; handleTCP (#dstMac ethHeader) (IPv4.Header ipv4Header) payload)
-                | _ => logPrint "IPv4 Handler: Protocol is not supported.\n"
-            )
-            | NONE => ()
+        in  if #dest_addr ipv4Header = ipAddress then (
+                IPv4.toString (IPv4.Header ipv4Header) |> logPrint;
+                case payloadOpt of 
+                SOME payload => (
+                    case (#protocol ipv4Header) of 
+                    IPv4.UDP => handleUDP (#srcMac ethHeader) (IPv4.Header ipv4Header) payload
+                    | IPv4.TCP => (logPrint "got TCP!\n"; handleTCP (#dstMac ethHeader) (IPv4.Header ipv4Header) payload)
+                    | _ => logPrint "IPv4 Handler: Protocol is not supported.\n"
+                )
+                | NONE => ()
+            ) else ()
         end
 
-    fun listen () = 
+    fun listen () : unit = 
         let 
             val rawTap = Netif.receive () 
             val ethFrame = String.extract (rawTap, 0, NONE)
