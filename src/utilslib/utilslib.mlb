@@ -2,4 +2,6 @@ local
     $(SML_LIB)/basis/basis.mlb
 in 
     utilslib.sml 
+    MAP.sig
+    maplist.sml
 end 
