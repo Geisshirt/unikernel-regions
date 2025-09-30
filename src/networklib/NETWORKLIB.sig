@@ -4,8 +4,8 @@
 *)
 
 signature NETWORK = sig
-    val logOn : unit -> unit
-    val logOff : unit -> unit  
+    (* val logOn : unit -> unit
+    val logOff : unit -> unit   *)
     val bindUDP : int -> (string -> string) -> unit
     val listen : unit -> unit
 end

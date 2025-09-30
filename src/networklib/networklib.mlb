@@ -1,4 +1,5 @@
 local $(SML_LIB)/basis/basis.mlb
+../logging/logging.mlb
 ../utilslib/utilslib.mlb
 ../arplib/arplib.mlb
 ../ipv4lib/ipv4lib.mlb
