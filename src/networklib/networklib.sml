@@ -1,3 +1,5 @@
+open Logging
+
 structure Network : NETWORK = struct
 
     val mac = [0x7c, 0x75, 0xb2, 0x39, 0xd4, 0x84]
@@ -214,9 +216,9 @@ structure Network : NETWORK = struct
                 case payloadOpt of 
                 SOME payload => (
                     case (#protocol ipv4Header) of 
-                    IPv4.UDP => handleUDP (#srcMac ethHeader) (IPv4.Header ipv4Header) payload
-                    | IPv4.TCP => (logPrint "got TCP!\n"; handleTCP (#dstMac ethHeader) (IPv4.Header ipv4Header) payload)
-                    | _ => logPrint "IPv4 Handler: Protocol is not supported.\n"
+                      IPv4.UDP => handleUDP (#srcMac ethHeader) (IPv4.Header ipv4Header) payload
+                    | IPv4.TCP => handleTCP (#dstMac ethHeader) (IPv4.Header ipv4Header) payload
+                    | _ => logMsg IPv4 "IPv4 Handler: Protocol is not supported.\n"
                 )
                 | NONE => ()
             ) else ()

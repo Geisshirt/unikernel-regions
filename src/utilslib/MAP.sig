@@ -1,13 +1,22 @@
 signature MAP = sig 
-  type 'a t
-  type offset
-  type length
-  type id
-  type 'a frags
+  type map
+  type id = string
+  type payload = string
 
-  val lookup : 'a t -> id -> 'a frags option
+  datatype fragment = Fragment of {
+    offset : int,
+    length : int,
+    isLast : bool,
+    fragPayload : payload
+  }
 
-  val add : 'a t -> id -> (offset * length * 'a) -> 'a t
+  (* val lookup : id -> 'a t -> 'a frags option *)
 
-  val empty : unit -> 'a t
+  val add : id -> fragment -> map -> map
+
+  val assemble : id -> map -> (payload * map) option
+
+  (* Either do clean up on user side or in map *)
+
+  val empty : unit -> map
 end 

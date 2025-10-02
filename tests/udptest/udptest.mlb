@@ -1,7 +1,7 @@
 local 
     $(SML_LIB)/basis/basis.mlb
-    ../../Libs/utilslib/utilslib.mlb
-    ../../Libs/udplib/udplib.mlb
+    ../../src/utilslib/utilslib.mlb
+    ../../src/udplib/udplib.mlb
     ../testutils/testutils.mlb
 in 
     udptest.sml

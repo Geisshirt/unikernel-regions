@@ -1,6 +1,6 @@
 local 
     $(SML_LIB)/basis/basis.mlb
-    ../../Libs/utilslib/utilslib.mlb
+    ../../src/utilslib/utilslib.mlb
 in 
     testutils.sml
 end 
