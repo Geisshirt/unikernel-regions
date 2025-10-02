@@ -1,3 +1,5 @@
+open Logging
+
 structure Network : NETWORK = struct
 
     val mac = [0x7c, 0x75, 0xb2, 0x39, 0xd4, 0x84]
@@ -134,7 +136,7 @@ structure Network : NETWORK = struct
             case arp of
                 SOME (ARP.Header arpHeader) => 
                     if #tpa arpHeader = ipAddress then (
-                        Logger.logARP (ARP.Header arpHeader);
+                        logARP (ARP.Header arpHeader);
                         ARP.encode (ARP.Header {
                             htype = 1, 
                             ptype = 0x0800,
@@ -147,7 +149,7 @@ structure Network : NETWORK = struct
                             tpa = List.concat [(#spa arpHeader), [0, 0]]
                         }) |> ethSend Eth.ARP (#dstMac ethHeader)
                     ) else ()
-            |   NONE => Logger.logMsg Logger.ARP "Arp packet could not be decoded.\n"
+            |   NONE => logMsg ARP "Arp packet could not be decoded.\n"
         
         end
 
@@ -156,7 +158,7 @@ structure Network : NETWORK = struct
             val (UDP.Header udpHeader, udpPayload) = payload |> UDP.decode
             val found = List.find (fn (port, cb) => (#dest_port udpHeader) = port) (!listenOn)
         in
-            Logger.logUDP (UDP.Header udpHeader, udpPayload);
+            logUDP (UDP.Header udpHeader, udpPayload);
             case found of 
             SOME (_, cb) => 
                 let val payload = cb udpPayload 
@@ -182,8 +184,8 @@ structure Network : NETWORK = struct
             val (TCP.Header tcpHeader, tcpPayload) = payload |> TCP.decode
             val (TCP.Header tcpHeader2, tcpPayload2) = TCP.encode (TCP.Header tcpHeader) tcpPayload |> TCP.decode
         in
-            Logger.logTCP (TCP.Header tcpHeader, tcpPayload);
-            Logger.logTCP (TCP.Header tcpHeader2, tcpPayload2)
+            logTCP (TCP.Header tcpHeader, tcpPayload);
+            logTCP (TCP.Header tcpHeader2, tcpPayload2)
         end
 
     fun handleIPv4 (Eth.Header ethHeader) ethFrame = 
@@ -199,13 +201,13 @@ structure Network : NETWORK = struct
                     else 
                         NONE)
         in  if #dest_addr ipv4Header = ipAddress then (
-                Logger.logIPv4 (IPv4.Header ipv4Header, "");
+                logIPv4 (IPv4.Header ipv4Header, "");
                 case payloadOpt of 
                 SOME payload => (
                     case (#protocol ipv4Header) of 
                     IPv4.UDP => handleUDP (#srcMac ethHeader) (IPv4.Header ipv4Header) payload
                     | IPv4.TCP => handleTCP (#dstMac ethHeader) (IPv4.Header ipv4Header) payload
-                    | _ => Logger.logMsg Logger.IPv4 "IPv4 Handler: Protocol is not supported.\n"
+                    | _ => logMsg IPv4 "IPv4 Handler: Protocol is not supported.\n"
                 )
                 | NONE => ()
             ) else ()
