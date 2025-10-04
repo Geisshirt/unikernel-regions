@@ -38,7 +38,7 @@ structure ARP : ARPLIB = struct
         "Operation: " ^ arpOperationToString oper ^ "\n" ^
         "Sender hardware address: [" ^ rawBytesString sha ^ "]\n" ^
         "Sender protocol address: [" ^ rawBytesString spa ^ "]\n" ^
-        "Target hardware adress: [" ^ rawBytesString tha ^ "]\n" ^
+        "Target hardware address: [" ^ rawBytesString tha ^ "]\n" ^
         "Target protocol address: [" ^ rawBytesString tpa ^ "]\n\n" 
 
     fun encode (Header { htype, ptype, hlen, plen, oper, sha, spa, tha, tpa }) =
