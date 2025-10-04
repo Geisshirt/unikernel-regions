@@ -16,6 +16,8 @@ fun permutate [] = [[]]
   | permutate (x::xs) = flat (map (permu_insert x) (permutate xs))
 
 functor MapTest (Map : MAP) :> MAPTEST = struct
+    val frags2string = rawBytesString o map (fn (Map.Fragment frag) => #offset frag)
+
     fun test () = 
         let val emptymap = Map.empty () 
         in (
@@ -127,7 +129,7 @@ functor MapTest (Map : MAP) :> MAPTEST = struct
                         |> Map.add "0" (Map.Fragment {
                             offset = 2, 
                             length = 4,
-                            isLast = true, 
+                            isLast = true,
                             fragPayload = "llo "})
                         |> Map.add "0" (Map.Fragment {
                             offset = 0, 
@@ -167,9 +169,8 @@ functor MapTest (Map : MAP) :> MAPTEST = struct
                 
             ), "SOME Hello SOME world SOME from Mars!", fn x => x);
 
-            assert("Assembling packets\n", fn () => (
-                map (fn frags => foldl (fn (m, f) => Map.add "0" m f) emptymap frags |> Map.assemble "0" |>  optionstr2str) 
-                (permutate [
+
+            let val permFrags = permutate [
                     Map.Fragment {
                         offset = 0, 
                         length = 2, 
@@ -191,48 +192,9 @@ functor MapTest (Map : MAP) :> MAPTEST = struct
                     Map.Fragment {
                         offset = 12, 
                         length = 5, 
-                        isLast = true, 
+                        isLast = false, 
                         fragPayload = "from "
-                    }
-                ]) |> foldl (fn (s, fs) => s ^ "\n" ^ fs) ""
-            ), replicate 24 "SOME Hello world from " |> foldl (fn (s, fs) => s ^ "\n" ^ fs) "", 
-            fn x => x);
-
-            assert("Assembling packets\n", fn () => (
-                    emptymap
-                    |> Map.add "0" (Map.Fragment {
-                        offset = 0, 
-                        length = 2, 
-                        isLast = false, 
-                        fragPayload = "He"
-                    })
-                    |> Map.add "0" (Map.Fragment {
-                        offset = 2, 
-                        length = 4, 
-                        isLast = false, 
-                        fragPayload = "llo "
-                    })
-                    |> Map.add "0" (Map.Fragment {
-                        offset = 12, 
-                        length = 5, 
-                        isLast = true, 
-                        fragPayload = "from "
-                    })
-                    |> Map.add "0" (Map.Fragment {
-                        offset = 6, 
-                        length = 6, 
-                        isLast = false, 
-                        fragPayload = "world "
-                    })
-
-                    |> Map.assemble "0"
-                    |> optionstr2str
-            ), "SOME Hello world from ", fn x => x)
-        )
-        end
-end
-
-                    (* 
+                    },
                     Map.Fragment {
                         offset = 17, 
                         length = 4, 
@@ -244,7 +206,18 @@ end
                         length = 1, 
                         isLast = true, 
                         fragPayload = "!"
-                    } *)
+                    }
+                ]
+            in  (List.app (fn frags => (
+                    assert("Assembling permutation: " ^ (frags |> frags2string), fn () =>
+                        foldl (fn (m, f) => Map.add "0" m f) emptymap frags 
+                        |> Map.assemble "0" 
+                        |> optionstr2str
+                    , "SOME Hello world from Mars!", fn x => x))) permFrags)
+            end
+        )
+        end
+end
 
 structure testMapL = MapTest(MapL)
 
