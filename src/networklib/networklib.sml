@@ -7,7 +7,7 @@ structure Network : NETWORK = struct
     val ipAddress = [10, 0, 0, 2]
     (* val ipAddress = [172, 44, 0, 2] *)
 
-    val mtu = 1518
+    val mtu = 1500
 
     val log = ref false
 
