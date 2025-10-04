@@ -19,7 +19,7 @@ struct
           SOME (_, _, l) => SOME l
         | NONE => NONE *)
 
-  (* What happens with replace? *)
+  (* What happens with double replacement ? *)
 
 
   fun add id (Fragment frag) (m : map) : map = 
