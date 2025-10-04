@@ -68,7 +68,4 @@ structure Logging : LOGGING = struct
     fun logMsg (prot: protocol) (msg: string) =
         if isEnabled prot then print (msg ^ "\n") 
         else ()
-
     end
-
-(* structure Logger = Logging *)
