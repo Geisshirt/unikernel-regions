@@ -46,7 +46,7 @@ jobs:
           echo "SML_LIB $HOME/mlkit-bin-dist-${{env.OS}}/lib/mlkit" > .mlkit/mlb-path-map
 
       - name: build application test
-        run: make echo-app
+        run: make echo-ex-app
 
       - name: Run unit tests
         run: make tests
