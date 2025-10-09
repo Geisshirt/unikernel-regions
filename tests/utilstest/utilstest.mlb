@@ -4,6 +4,4 @@ local
     ../testutils/testutils.mlb
 in 
     utilstest.sml
-    MAPTEST.sig
-    mapListtest.sml
 end 

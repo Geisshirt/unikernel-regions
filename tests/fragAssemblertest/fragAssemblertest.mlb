@@ -1,8 +1,8 @@
 local 
     $(SML_LIB)/basis/basis.mlb
     ../../src/utilslib/utilslib.mlb
-    ../../src/ipv4lib/ipv4Codeclib.mlb
+    ../../src/ipv4lib/ipv4Handlelib.mlb
     ../testutils/testutils.mlb
 in 
-    ipv4test.sml
+    fragAssemblertest.sml
 end 

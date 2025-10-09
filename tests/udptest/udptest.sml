@@ -17,33 +17,33 @@ val () = (
     printStart ();
 
     assert  ("toString", 
-            (fn () => UDP.toString (UDP.Header header)),
+            (fn () => CodecUDP.toString (CodecUDP.Header header)),
             ("\n-- UDP INFO --\nSource port: 12345\nDestination port: 8080\nUDP length: 20\nChecksum: 0\n"),
             (fn s => s));
 
     assert  ("decode", 
-            (fn () => UDP.decode testRaw), 
-            (UDP.Header header, payload),
-            (fn (h, p) => "(" ^ (UDP.toString h) ^ ", " ^ p ^ ")"));
+            (fn () => CodecUDP.decode testRaw), 
+            (CodecUDP.Header header, payload),
+            (fn (h, p) => "(" ^ (CodecUDP.toString h) ^ ", " ^ p ^ ")"));
     
     assert  ("encode", 
-            (fn () => UDP.encode (UDP.Header header) payload), 
+            (fn () => CodecUDP.encode (CodecUDP.Header header) payload), 
             testRaw, 
             (rawBytesString o toByteList));
 
     assert  ("decode |> encode", 
-            (fn () => UDP.decode testRaw |> (fn (h, p) => UDP.encode h p)), 
+            (fn () => CodecUDP.decode testRaw |> (fn (h, p) => CodecUDP.encode h p)), 
             testRaw,
             (rawBytesString o toByteList));
     
     assert  ("encode |> decode", 
-            (fn () => UDP.encode (UDP.Header header) payload |> UDP.decode), 
-            (UDP.Header header, payload), 
-            (fn (h, p) => "(" ^ (UDP.toString h) ^ ", " ^ p ^ ")"));
+            (fn () => CodecUDP.encode (CodecUDP.Header header) payload |> CodecUDP.decode), 
+            (CodecUDP.Header header, payload), 
+            (fn (h, p) => "(" ^ (CodecUDP.toString h) ^ ", " ^ p ^ ")"));
 
     (* Length is calculated independent of length value in header *)
     assert  ("encode with wrong header", 
-            (fn () => UDP.encode (UDP.Header wrongHeader) payload), 
+            (fn () => CodecUDP.encode (CodecUDP.Header wrongHeader) payload), 
             testRaw, 
             (rawBytesString o toByteList));
     

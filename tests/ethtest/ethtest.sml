@@ -1,5 +1,5 @@
 val header = {
-        et=Eth.ARP, 
+        et=EthCodec.ARP, 
         dstMac = [133, 134, 135, 136, 137, 138], 
         srcMac = [123, 124, 125, 126, 127, 128]
 }
@@ -18,82 +18,82 @@ val () = (
     printStart ();
 
     assert  ("ethTypeToInt ARP",
-            (fn () => Eth.ethTypeToInt Eth.ARP),
+            (fn () => EthCodec.ethTypeToInt EthCodec.ARP),
             0x0806,
             Int.toString         
     );
     assert  ("ethTypeToInt IPv4",
-            (fn () => Eth.ethTypeToInt Eth.IPv4),
+            (fn () => EthCodec.ethTypeToInt EthCodec.IPv4),
             0x0800,
             Int.toString         
     );
     assert  ("ethTypeToInt IPv6",
-            (fn () => Eth.ethTypeToInt Eth.IPv6),
+            (fn () => EthCodec.ethTypeToInt EthCodec.IPv6),
             0x86dd,
             Int.toString         
     );
 
     assert  ("ethTypeToString ARP",
-            (fn () => Eth.ethTypeToString Eth.ARP),
+            (fn () => EthCodec.ethTypeToString EthCodec.ARP),
             "ARP",
             (fn s => s)         
     );
     assert  ("ethTypeToString IPv4",
-            (fn () => Eth.ethTypeToString Eth.IPv4),
+            (fn () => EthCodec.ethTypeToString EthCodec.IPv4),
             "IPv4",
             (fn s => s)         
     );
     assert  ("ethTypeToString IPv6",
-            (fn () => Eth.ethTypeToString Eth.IPv6),
+            (fn () => EthCodec.ethTypeToString EthCodec.IPv6),
             "IPv6",
             (fn s => s)         
     );
 
     assert  ("bytesToEthType ARP",
-            (fn () => Eth.bytesToEthType "\u0008\u0006"),
-            SOME (Eth.ARP),
-            (fn SOME et => "SOME " ^ (Eth.ethTypeToString et) | NONE => "NONE")         
+            (fn () => EthCodec.bytesToEthType "\u0008\u0006"),
+            SOME (EthCodec.ARP),
+            (fn SOME et => "SOME " ^ (EthCodec.ethTypeToString et) | NONE => "NONE")         
     );
     assert  ("bytesToEthType IPv4",
-            (fn () => Eth.bytesToEthType "\u0008\u0000"),
-            SOME (Eth.IPv4),
-            (fn SOME et => "SOME " ^ (Eth.ethTypeToString et) | NONE => "NONE")         
+            (fn () => EthCodec.bytesToEthType "\u0008\u0000"),
+            SOME (EthCodec.IPv4),
+            (fn SOME et => "SOME " ^ (EthCodec.ethTypeToString et) | NONE => "NONE")         
     );
     assert  ("bytesToEthType IPv6",
-            (fn () => Eth.bytesToEthType "\u0086\u00dd"),
-            SOME (Eth.IPv6),
-            (fn SOME et => "SOME " ^ (Eth.ethTypeToString et) | NONE => "NONE")         
+            (fn () => EthCodec.bytesToEthType "\u0086\u00dd"),
+            SOME (EthCodec.IPv6),
+            (fn SOME et => "SOME " ^ (EthCodec.ethTypeToString et) | NONE => "NONE")         
     );
     assert  ("bytesToEthType IPv6",
-            (fn () => Eth.bytesToEthType "\u0000\u0000"),
+            (fn () => EthCodec.bytesToEthType "\u0000\u0000"),
             NONE,
-            (fn SOME et => "SOME " ^ (Eth.ethTypeToString et) | NONE => "NONE")         
+            (fn SOME et => "SOME " ^ (EthCodec.ethTypeToString et) | NONE => "NONE")         
     );
 
     assert  ("toString", 
-            (fn () => Eth.toString (Eth.Header header)),
+            (fn () => EthCodec.toString (EthCodec.Header header)),
             ("\n-- ETHERFRAME INFO --\nType: ARP\nDestination mac-address: [ 133 134 135 136 137 138 ]\nSource mac-address: [ 123 124 125 126 127 128 ]\n"),
             (fn s => s));
 
     assert  ("decode", 
-            (fn () => Eth.decode testRaw), 
-            (Eth.Header header, payload),
-            (fn (h, p) => "(" ^ (Eth.toString h) ^ ", " ^ p ^ ")"));
+            (fn () => EthCodec.decode testRaw), 
+            (EthCodec.Header header, payload),
+            (fn (h, p) => "(" ^ (EthCodec.toString h) ^ ", " ^ p ^ ")"));
     
     assert  ("encode", 
-            (fn () => Eth.encode (Eth.Header header) payload), 
+            (fn () => EthCodec.encode (EthCodec.Header header) payload), 
             testRaw, 
             (rawBytesString o toByteList));
 
    assert  ("decode |> encode", 
-            (fn () => Eth.decode testRaw |> (fn (h, p) => Eth.encode h p)), 
+            (fn () => EthCodec.decode testRaw |> (fn (h, p) => EthCodec.encode h p)), 
             testRaw,
             (rawBytesString o toByteList));
     
     assert  ("encode |> decode", 
-            (fn () => Eth.encode (Eth.Header header) payload |> Eth.decode), 
-            (Eth.Header header, payload), 
-            (fn (h, p) => "(" ^ (Eth.toString h) ^ ", " ^ p ^ ")"));
+            (fn () => EthCodec.encode (EthCodec.Header header) payload |> EthCodec.decode), 
+            (EthCodec.Header header, payload), 
+            (fn (h, p) => "(" ^ (EthCodec.toString h) ^ ", " ^ p ^ ")"));
         
     printResult ()
 )

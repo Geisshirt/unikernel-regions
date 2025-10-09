@@ -15,7 +15,7 @@ fun flat l = foldl (op @) [] l
 fun permutate [] = [[]]
   | permutate (x::xs) = flat (map (permu_insert x) (permutate xs))
 
-functor MapTest (Map : MAP) :> MAPTEST = struct
+functor MapTest (Map : FRAG_ASSEMBLER) = struct
     val frags2string = rawBytesString o map (fn (Map.Fragment frag) => #offset frag)
 
     fun test () = 
@@ -219,10 +219,10 @@ functor MapTest (Map : MAP) :> MAPTEST = struct
         end
 end
 
-structure testMapL = MapTest(MapL)
+structure testMapL = MapTest(FragAssemblerList)
 
 val () = (
-    setTestSuiteName "Map - MapL";
+    setTestSuiteName "FragmentAssemblerList";
     
     printStart ();
 

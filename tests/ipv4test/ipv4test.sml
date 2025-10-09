@@ -8,7 +8,7 @@ val header = {
         flags = 2,
         fragment_offset = 0,
         time_to_live = 64,
-        protocol = IPv4.UDP,
+        protocol = IPv4Codec.UDP,
         header_checksum = 24985,
         source_addr = [10, 0, 0, 1],
         dest_addr = [10, 0, 0, 2]
@@ -24,7 +24,7 @@ val headerFragmented = {
         flags = 1,
         fragment_offset = 0,
         time_to_live = 64,
-        protocol = IPv4.UDP,
+        protocol = IPv4Codec.UDP,
         header_checksum = 24985,
         source_addr = [10, 0, 0, 1],
         dest_addr = [10, 0, 0, 2]
@@ -39,7 +39,7 @@ val testRaw =
     intToRawbyteString (#identification header) 2 ^
     intToRawbyteString ((setLBits (#flags header) 3 * (2 ** 8)) + (#fragment_offset header)) 2 ^
     intToRawbyteString (#time_to_live header) 1 ^
-    intToRawbyteString ((#protocol header) |> IPv4.protToInt) 1 ^ 
+    intToRawbyteString ((#protocol header) |> IPv4Codec.protToInt) 1 ^ 
     intToRawbyteString 24985 2 ^
     byteListToString (#source_addr header) ^
     byteListToString (#dest_addr header) ^
@@ -51,99 +51,99 @@ val () = (
     printStart ();
 
     assert ("intToProt ICMP",
-        (fn () => IPv4.intToProt 0x01),
-        (IPv4.ICMP),
-        (fn x => IPv4.protToString x)
+        (fn () => IPv4Codec.intToProt 0x01),
+        (IPv4Codec.ICMP),
+        (fn x => IPv4Codec.protToString x)
     );
 
     assert ("intToProt TCP",
-        (fn () => IPv4.intToProt 0x06),
-        (IPv4.TCP),
-        (fn x => IPv4.protToString x)
+        (fn () => IPv4Codec.intToProt 0x06),
+        (IPv4Codec.TCP),
+        (fn x => IPv4Codec.protToString x)
     );
 
     assert ("intToProt UDP",
-        (fn () => IPv4.intToProt 0x11),
-        (IPv4.UDP),
-        (fn x => IPv4.protToString x)
+        (fn () => IPv4Codec.intToProt 0x11),
+        (IPv4Codec.UDP),
+        (fn x => IPv4Codec.protToString x)
     );
 
     assert ("protToInt ICMP",
-        (fn () => IPv4.protToInt IPv4.ICMP),
+        (fn () => IPv4Codec.protToInt IPv4Codec.ICMP),
         (0x01),
         (Int.toString)
     );
 
     assert ("protToInt TCP",
-        (fn () => IPv4.protToInt IPv4.TCP),
+        (fn () => IPv4Codec.protToInt IPv4Codec.TCP),
         (0x06),
         (Int.toString)
     );
 
     assert ("protToInt UDP",
-        (fn () => IPv4.protToInt IPv4.UDP),
+        (fn () => IPv4Codec.protToInt IPv4Codec.UDP),
         (0x11),
         (Int.toString)
     );
 
     assert ("protToString ICMP",
-        (fn () => IPv4.protToString IPv4.ICMP),
+        (fn () => IPv4Codec.protToString IPv4Codec.ICMP),
         ("ICMP"),
         (fn s => s)
     );
 
     assert ("protToString TCP",
-        (fn () => IPv4.protToString IPv4.TCP),
+        (fn () => IPv4Codec.protToString IPv4Codec.TCP),
         ("TCP"),
         (fn s => s)
     );
 
     assert ("protToString UDP",
-        (fn () => IPv4.protToString IPv4.UDP),
+        (fn () => IPv4Codec.protToString IPv4Codec.UDP),
         ("UDP"),
         (fn s => s)
     );
 
     assert ("isFragmented (no)",
-        (fn () => IPv4.isFragmented (IPv4.Header header)),
+        (fn () => IPv4Codec.isFragmented (IPv4Codec.Header header)),
         (false),
         (fn x => Bool.toString x)
     );
 
     assert ("isFragmented (yes)",
-        (fn () => IPv4.isFragmented (IPv4.Header headerFragmented)),
+        (fn () => IPv4Codec.isFragmented (IPv4Codec.Header headerFragmented)),
         (true),
         (fn x => Bool.toString x)
     );
 
     assert ("toString",
-        (fn () => IPv4.toString (IPv4.Header header)),
+        (fn () => IPv4Codec.toString (IPv4Codec.Header header)),
         ("\n-- IPV4 INFO --\nVersion: 4\nIHL: 5\nDSCP: 0\nECN: 0\nTotal length: 32\nIdentification: 50481\nFlags: 2\nFragment offset: 0\nTime to live: 64\nProtocol: UDP\nHeader checksum: 24985\nSRC-ADDRESS: 10 0 0 1\nDST-ADDRESS: 10 0 0 2\n"),
         (fn s => s)
     );
  
     assert ("decode",
-        (fn () => IPv4.decode testRaw),
-        (IPv4.Header header, payload),
-        (fn (h, p) => (IPv4.toString h) ^ ", " ^ p ^ ")")
+        (fn () => IPv4Codec.decode testRaw),
+        (IPv4Codec.Header header, payload),
+        (fn (h, p) => (IPv4Codec.toString h) ^ ", " ^ p ^ ")")
     );
 
     assert ("encode",
-        (fn () => IPv4.encode (IPv4.Header header) payload),
+        (fn () => IPv4Codec.encode (IPv4Codec.Header header) payload),
         testRaw,
         (rawBytesString o toByteList)
     );
 
     assert  ("decode |> encode", 
-        (fn () => IPv4.decode testRaw |> (fn (h, p) => IPv4.encode h p)), 
+        (fn () => IPv4Codec.decode testRaw |> (fn (h, p) => IPv4Codec.encode h p)), 
         testRaw,
         (rawBytesString o toByteList)
     );
 
     assert  ("encode |> decode", 
-        (fn () => IPv4.encode (IPv4.Header header) payload |> IPv4.decode), 
-        (IPv4.Header header, payload), 
-        (fn (h, p) => (IPv4.toString h) ^ ", " ^ p ^ ")")
+        (fn () => IPv4Codec.encode (IPv4Codec.Header header) payload |> IPv4Codec.decode), 
+        (IPv4Codec.Header header, payload), 
+        (fn (h, p) => (IPv4Codec.toString h) ^ ", " ^ p ^ ")")
     );
 
     printResult ()
