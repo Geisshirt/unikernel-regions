@@ -74,6 +74,7 @@ clean:
 	-rm run
 	-rm *.a 
 	-rm -rf src/*lib/MLB MLB
+	-rm -rf tests/*/MLB	
 	-rm -rf examples/*/MLB
 	-rm -rf unikraft/build/*.o
 	-rm -rf unikraft/wordir/build/*.o
