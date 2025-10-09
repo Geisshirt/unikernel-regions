@@ -2,7 +2,7 @@
     The IPv4lib structure provides useful functions for a ipv4 header.
 *)
 
-signature IPV4 = sig 
+signature IPV4_CODEC = sig 
     datatype protocol = ICMP | TCP | UDP | UNKNOWN
 
     datatype header = Header of {

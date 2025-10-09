@@ -1,6 +1,10 @@
 local $(SML_LIB)/basis/basis.mlb
     ../utilslib/utilslib.mlb
+    ../ipv4lib/ipv4Codeclib.mlb
+    ../ipv4lib/ipv4Sendlib.mlb
 in
+    UDP_CODEC_LIB.sig
+    udpCodeclib.sml
     UDPLIB.sig
     udplib.sml
 end

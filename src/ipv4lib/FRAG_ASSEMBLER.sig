@@ -1,5 +1,5 @@
-signature MAP = sig 
-  type map
+signature FRAG_ASSEMBLER = sig 
+  type fragContainer
   type id = string
   type payload = string
 
@@ -12,11 +12,11 @@ signature MAP = sig
 
   (* val lookup : id -> 'a t -> 'a frags option *)
 
-  val add : id -> fragment -> map -> map
+  val add : id -> fragment -> fragContainer -> fragContainer
 
-  val assemble : id -> map -> (payload * map) option
+  val assemble : id -> fragContainer -> (payload * fragContainer) option
 
   (* Either do clean up on user side or in map *)
 
-  val empty : unit -> map
+  val empty : unit -> fragContainer
 end 

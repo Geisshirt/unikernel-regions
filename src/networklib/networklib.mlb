@@ -2,9 +2,7 @@ local $(SML_LIB)/basis/basis.mlb
 ../utilslib/utilslib.mlb
 ../logging/logging.mlb
 ../arplib/arplib.mlb
-../ipv4lib/ipv4lib.mlb
-../tcplib/tcplib.mlb
-../udplib/udplib.mlb
+../ipv4lib/ipv4Handlelib.mlb
 ../ethlib/ethlib.mlb
 ../netiflib/netiflib.mlb
 in 

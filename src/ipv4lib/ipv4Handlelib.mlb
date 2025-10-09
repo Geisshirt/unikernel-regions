@@ -1,0 +1,11 @@
+local 
+    $(SML_LIB)/basis/basis.mlb
+    ../utilslib/utilslib.mlb
+    ../udplib/udplib.mlb
+    ipv4Codeclib.mlb
+in
+    FRAG_ASSEMBLER.sig 
+    fragAssemblerList.sml
+    IPV4_HANDLE.sig
+    ipv4Handle.sml
+end 

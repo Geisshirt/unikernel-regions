@@ -1,4 +1,4 @@
-structure MapL : MAP = 
+structure FragAssemblerList :> FRAG_ASSEMBLER = 
 struct
   type id = string
   type payload = string
@@ -12,7 +12,7 @@ struct
 
   type nxtOffset = int
   
-  type map = (id * nxtOffset * (fragment list)) list
+  type fragContainer = (id * nxtOffset * (fragment list)) list
 
   (* fun lookup id m : fragment list option = 
     case List.find (fn (k, _, _) => k = id) m of
@@ -22,7 +22,7 @@ struct
   (* What happens with double replacement ? *)
 
 
-  fun add id (Fragment frag) (m : map) : map = 
+  fun add id (Fragment frag) (m : fragContainer) : fragContainer = 
     let val offset = (#offset frag)
         val length = (#length frag)
         fun replace [] = (id, if offset = 0 then length else 0, [Fragment frag]) :: m
@@ -51,7 +51,7 @@ struct
     in  replace m 
     end
 
-  fun assemble id m : (string * map) option = 
+  fun assemble id m : (string * fragContainer) option = 
     let val assembledPayload : (string option) ref = ref NONE
         fun removeAndAssemble [] = []
           | removeAndAssemble ((_, _, []) :: ms) = ms
@@ -68,5 +68,5 @@ struct
         | NONE => NONE
     end
 
-  fun empty () : map = []
+  fun empty () : fragContainer = []
 end

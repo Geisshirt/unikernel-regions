@@ -1,4 +1,4 @@
-structure IPv4 : IPV4 = struct 
+structure IPv4Codec : IPV4_CODEC = struct 
     datatype protocol = ICMP | TCP | UDP | UNKNOWN
 
     datatype header = Header of {

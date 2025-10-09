@@ -1,4 +1,5 @@
-structure UDP: UDPLIB = struct
+structure Udp :> UDP = struct
+    type port = int
 
     datatype header = Header of {
         source_port: int,
@@ -7,30 +8,34 @@ structure UDP: UDPLIB = struct
         checksum: int
     } 
 
-    fun toString (Header {
-        source_port,
-        dest_port,
-        length,
-        checksum
-    }) = 
-        "\n-- UDP INFO --\n" ^
-        "Source port: " ^ Int.toString source_port ^ "\n" ^
-        "Destination port: " ^ Int.toString dest_port ^ "\n" ^
-        "UDP length: " ^ Int.toString length ^ "\n" ^
-        "Checksum: " ^ Int.toString checksum ^ "\n"
-    
-    fun decode s = (Header {
-        source_port = String.substring (s, 0, 2) |> convertRawBytes,
-        dest_port = String.substring (s, 2, 2) |> convertRawBytes,
-        length = String.substring (s, 4, 2) |> convertRawBytes,
-        checksum = String.substring (s, 6, 2) |> convertRawBytes
-    }, String.extract (s, 8, NONE))
-
-    fun encode (Header { length, source_port, dest_port, checksum}) data =
-        (intToRawbyteString source_port 2) ^
-        (intToRawbyteString dest_port 2) ^
-        (intToRawbyteString (String.size data + 8) 2) ^ (* Fix this *)
-        (intToRawbyteString 0 2) ^
-        data
-
+    fun handl {bindings, ownMac, dstMac, ownIPaddr, dstIPaddr, ipv4Header, udpPayload} =
+        let val (CodecUDP.Header udpHeader, udpPayload) = udpPayload |> CodecUDP.decode
+            val binding = List.find (fn (port, cb) => (#dest_port udpHeader) = port) bindings
+            val IPv4Codec.Header ipv4Header = ipv4Header
+            val payload = (
+                case binding of
+                  SOME (_, cb) => cb udpPayload
+                | NONE => "Port is not mapped to a function.\n"
+            )
+            val udpHeader = (CodecUDP.Header 
+                            {   length = 0, 
+                                source_port = (#dest_port udpHeader), 
+                                dest_port = (#source_port udpHeader), 
+                                checksum = 0
+                            }
+                        ) 
+        in  IPv4Send.send {
+                ownMac = ownMac,
+                ownIPaddr = ownIPaddr,
+                dstMac = dstMac,
+                dstIPaddr = dstIPaddr,
+                identification = (#identification ipv4Header), 
+                protocol = IPv4Codec.UDP, 
+                payload = (
+                    CodecUDP.encode 
+                        udpHeader
+                        payload
+                    )
+            }
+        end
 end

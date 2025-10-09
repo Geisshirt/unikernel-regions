@@ -4,10 +4,12 @@
 *)
 
 signature NETWORK = sig
+    datatype protocol = UDP | TCP
+    type port = int
+    type callback = string -> string
     val logOn : unit -> unit
     val logOff : unit -> unit  
-    val bindUDP : int -> (string -> string) -> unit
-    val listen : unit -> unit
+    val listen : (protocol * ((port * callback) list)) list -> unit
 end
 
 (*
