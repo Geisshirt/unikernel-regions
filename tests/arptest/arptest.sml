@@ -3,7 +3,7 @@ val header = {
         ptype = 0x0800, 
         hlen = 6, 
         plen = 4, 
-        oper = ARP.Reply, 
+        oper = ARPCodec.Reply, 
         sha = [123, 124, 125, 126, 127, 128], 
         spa = [10, 0, 0, 2], 
         tha = [123, 124, 125, 126, 127, 128], 
@@ -27,55 +27,55 @@ val () = (
     printStart ();
 
     assert ("toArpOperation request",
-        (fn () => ARP.toArpOperation 1),
-        (ARP.Request),
-        (fn x => ARP.arpOperationToString x)
+        (fn () => ARPCodec.toArpOperation 1),
+        (ARPCodec.Request),
+        (fn x => ARPCodec.arpOperationToString x)
     );
 
     assert ("toArpOperation reply",
-        (fn () => ARP.toArpOperation 2),
-        (ARP.Reply),
-        (fn x => ARP.arpOperationToString x)
+        (fn () => ARPCodec.toArpOperation 2),
+        (ARPCodec.Reply),
+        (fn x => ARPCodec.arpOperationToString x)
     );
 
     assert ("arpOperationToString request",
-        (fn () => ARP.arpOperationToString ARP.Request),
+        (fn () => ARPCodec.arpOperationToString ARPCodec.Request),
         ("Request"),
         (fn s => s)
     );
 
     assert ("arpOperationToString reply",
-        (fn () => ARP.arpOperationToString ARP.Reply),
+        (fn () => ARPCodec.arpOperationToString ARPCodec.Reply),
         ("Reply"),
         (fn s => s)
     );
 
     assert ("arpOperationToInt request",
-        (fn () => ARP.arpOperationToInt ARP.Request),
+        (fn () => ARPCodec.arpOperationToInt ARPCodec.Request),
         (1),
-        (fn x => x |> ARP.toArpOperation |> ARP.arpOperationToString)
+        (fn x => x |> ARPCodec.toArpOperation |> ARPCodec.arpOperationToString)
     );
 
     assert ("arpOperationToInt reply",
-        (fn () => ARP.arpOperationToInt ARP.Reply),
+        (fn () => ARPCodec.arpOperationToInt ARPCodec.Reply),
         (2),
-        (fn x => x |> ARP.toArpOperation |> ARP.arpOperationToString)
+        (fn x => x |> ARPCodec.toArpOperation |> ARPCodec.arpOperationToString)
     );
 
     assert ("toString",
-        (fn () => ARP.toString (ARP.Header header)),
-        ("\n-- ARP-packet --\nHardware type: 1\nProtocol type: 2048\nHardware address length: 6\nProtocol address length: 4\nOperation: Reply\nSender hardware address: [123 124 125 126 127 128]\nSender protocol address: [10 0 0 2]\nTarget hardware adress: [123 124 125 126 127 128]\nTarget protocol address: [10 0 0 2]\n\n"),
+        (fn () => ARPCodec.toString (ARPCodec.Header header)),
+        ("\n-- ARP-packet --\nHardware type: 1\nProtocol type: 2048\nHardware address length: 6\nProtocol address length: 4\nOperation: Reply\nSender hardware address: [123 124 125 126 127 128]\nSender protocol address: [10 0 0 2]\nTarget hardware address: [123 124 125 126 127 128]\nTarget protocol address: [10 0 0 2]\n\n"),
         (fn s => s)
     );
 
     assert ("decode",
-        (fn () => ARP.decode testRaw),
-        (ARP.Header header),
-        (fn (h) => ARP.toString h)
+        (fn () => ARPCodec.decode testRaw),
+        (ARPCodec.Header header),
+        (fn (h) => ARPCodec.toString h)
     );
 
     assert ("encode",
-        (fn () => ARP.encode (ARP.Header header)),
+        (fn () => ARPCodec.encode (ARPCodec.Header header)),
         testRaw,
         (rawBytesString o toByteList)
     );

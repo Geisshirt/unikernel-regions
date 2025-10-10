@@ -1,6 +1,9 @@
 local $(SML_LIB)/basis/basis.mlb
     ../utilslib/utilslib.mlb
+    ../ethlib/ethlib.mlb
 in 
+    ARP_CODEC_LIB.sig
+    arpCodeclib.sml
     ARPLIB.sig
     arplib.sml
 end     

@@ -1,7 +1,7 @@
 local $(SML_LIB)/basis/basis.mlb
     ../utilslib/utilslib.mlb
     ../arplib/arplib.mlb
-    ../ipv4lib/ipv4lib.mlb
+    ../ipv4lib/ipv4Codeclib.mlb
     ../tcplib/tcplib.mlb
     ../udplib/udplib.mlb
     ../ethlib/ethlib.mlb

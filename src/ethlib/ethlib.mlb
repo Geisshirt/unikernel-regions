@@ -1,6 +1,10 @@
 local
 $(SML_LIB)/basis/basis.mlb
 ../utilslib/utilslib.mlb
+../netiflib/netiflib.mlb
 in 
-    ETHLIB.sig ethlib.sml
+    ETH_CODEC_LIB.sig 
+    ethCodeclib.sml
+    ETHLIB.sig
+    ethlib.sml
 end

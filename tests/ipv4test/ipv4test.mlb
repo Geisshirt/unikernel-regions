@@ -1,7 +1,7 @@
 local 
     $(SML_LIB)/basis/basis.mlb
-    ../../Libs/utilslib/utilslib.mlb
-    ../../Libs/ipv4lib/ipv4lib.mlb
+    ../../src/utilslib/utilslib.mlb
+    ../../src/ipv4lib/ipv4Codeclib.mlb
     ../testutils/testutils.mlb
 in 
     ipv4test.sml

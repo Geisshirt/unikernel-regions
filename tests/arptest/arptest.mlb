@@ -1,7 +1,7 @@
 local 
     $(SML_LIB)/basis/basis.mlb
-    ../../Libs/utilslib/utilslib.mlb
-    ../../Libs/arplib/arplib.mlb
+    ../../src/utilslib/utilslib.mlb
+    ../../src/arplib/arplib.mlb
     ../testutils/testutils.mlb
 in 
     arptest.sml

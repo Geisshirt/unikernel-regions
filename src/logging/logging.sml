@@ -13,7 +13,7 @@ structure Logging : LOGGING = struct
     fun isEnabled prot =
         !loggingEnabled andalso List.exists (fn p => p = prot) (!activeProtocols)
 
-    fun logMsg prot msg =
+    (* fun logMsg prot msg =
         if isEnabled prot then print msg else ()
 
     fun logARP (ARP.Header arp) =
@@ -51,7 +51,21 @@ structure Logging : LOGGING = struct
                 print payload;
                 print "\n"
             ) else ()
-        ) else ()
-end
+        ) else () *)
 
-structure Logger = Logging
+    fun log (prot: protocol) (header: string) (payload: string option) =
+        if isEnabled prot then (
+            if !currentLevel >= 2 then print (header ^ "\n")
+            else ();
+
+            if !currentLevel >= 1 then
+                case payload of
+                      SOME p => print ("Payload: " ^ p ^ "\n")
+                    | NONE => ()
+            else ()
+        ) else()
+
+    fun logMsg (prot: protocol) (msg: string) =
+        if isEnabled prot then print (msg ^ "\n") 
+        else ()
+    end

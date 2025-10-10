@@ -1,8 +1,10 @@
-open Network
-open Logging
+structure NetworkDefault = Network(IPv4L)
+
+open NetworkDefault
 
 val _ = (
-    enable {protocols=[UDP], level = 2};
-    bindUDP 8080 (fn data => data);
-    listen ()
+    (* Logging.enable {protocols=[IPv4], level = 2}; *)
+    listen [
+            (UDP, [(8080, fn data => data)])
+           ]
 )
