@@ -1,5 +1,6 @@
-local 
+local
     $(SML_LIB)/basis/basis.mlb
-in 
-    utilslib.sml 
-end 
+in
+    logging.sml
+    utilslib.sml
+end

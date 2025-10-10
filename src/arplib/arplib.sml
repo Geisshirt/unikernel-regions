@@ -1,3 +1,5 @@
+open Logging
+
 structure Arp :> ARP = struct 
 
     fun handl {ownMac, ownIPaddr, dstMac, arpPacket} =
@@ -6,7 +8,7 @@ structure Arp :> ARP = struct
             case arp of
                 SOME (ARPCodec.Header arpHeader) => 
                     if #tpa arpHeader = ownIPaddr then (
-                        (* ARP.toString (ARP.Header arpHeader) |> logPrint; *)
+                        log ARP (ARPCodec.toString (ARPCodec.Header arpHeader)) NONE;
                         Eth.send {
                             ownMac = ownMac, 
                             dstMac = dstMac, 
@@ -25,8 +27,7 @@ structure Arp :> ARP = struct
                                 })
                         }
                     ) else ()
-            |   NONE => ()
-                (* logPrint "Arp packet could not be decoded.\n" *)
+            |   NONE => logMsg Logging.ARP "Arp packet could not be decoded\n"
         end
 end 
 

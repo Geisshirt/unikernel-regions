@@ -44,7 +44,7 @@ functor IPv4Handle(FragAssembler : FRAG_ASSEMBLER) :> IPV4_HANDLE = struct
                                 |   NONE => (NONE, new_m1)
                             end
         in  if #dest_addr ipv4Header = ownIPaddr then (
-                (* IPv4.toString (IPv4.Header ipv4Header) |> logPrint; *)
+                log IPv4 (IPv4Codec.toString (IPv4Codec.Header ipv4Header)) NONE;
                 case payloadOpt of 
                     SOME payload => (
                         case (#protocol ipv4Header) of 
@@ -58,8 +58,7 @@ functor IPv4Handle(FragAssembler : FRAG_ASSEMBLER) :> IPV4_HANDLE = struct
                                     ipv4Header = IPv4Codec.Header ipv4Header,
                                     udpPayload = payload
                                 }
-                        | _ =>  ()
-                        (* logMsg IPv4 "IPv4 Handler: Protocol is not supported.\n" *)
+                        | _ =>  logMsg IPv4 "IPv4 Handler: Protocol is not supported.\n"
                     )
                 |   NONE => ()
             ) else ();

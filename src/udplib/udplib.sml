@@ -1,3 +1,5 @@
+open Logging
+
 structure Udp :> UDP = struct
     type port = int
 
@@ -23,8 +25,9 @@ structure Udp :> UDP = struct
                                 dest_port = (#source_port udpHeader), 
                                 checksum = 0
                             }
-                        ) 
-        in  IPv4Send.send {
+                        )
+        in  log UDP (udpHeader |> CodecUDP.toString) (SOME udpPayload);
+            IPv4Send.send {
                 ownMac = ownMac,
                 ownIPaddr = ownIPaddr,
                 dstMac = dstMac,
