@@ -1,4 +1,3 @@
-
 signature LOGGING = sig
     datatype protocol = ARP | IPv4 | UDP | TCP | Other
 
