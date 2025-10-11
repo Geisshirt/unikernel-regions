@@ -3,7 +3,7 @@
 *)
 
 signature IPV4_CODEC = sig 
-    datatype protocol = ICMP | TCP | UDP | UNKNOWN
+    type protocol
 
     datatype header = Header of {
         version : int,

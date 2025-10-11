@@ -1,3 +1,5 @@
+open Protocols
+
 val header = {
         version = 4,
         ihl = 5,
@@ -8,7 +10,7 @@ val header = {
         flags = 2,
         fragment_offset = 0,
         time_to_live = 64,
-        protocol = IPv4Codec.UDP,
+        protocol = UDP,
         header_checksum = 24985,
         source_addr = [10, 0, 0, 1],
         dest_addr = [10, 0, 0, 2]
@@ -24,7 +26,7 @@ val headerFragmented = {
         flags = 1,
         fragment_offset = 0,
         time_to_live = 64,
-        protocol = IPv4Codec.UDP,
+        protocol = UDP,
         header_checksum = 24985,
         source_addr = [10, 0, 0, 1],
         dest_addr = [10, 0, 0, 2]
@@ -52,54 +54,54 @@ val () = (
 
     assert ("intToProt ICMP",
         (fn () => IPv4Codec.intToProt 0x01),
-        (IPv4Codec.ICMP),
+        (ICMP),
         (fn x => IPv4Codec.protToString x)
     );
 
     assert ("intToProt TCP",
         (fn () => IPv4Codec.intToProt 0x06),
-        (IPv4Codec.TCP),
+        (TCP),
         (fn x => IPv4Codec.protToString x)
     );
 
     assert ("intToProt UDP",
         (fn () => IPv4Codec.intToProt 0x11),
-        (IPv4Codec.UDP),
+        (UDP),
         (fn x => IPv4Codec.protToString x)
     );
 
     assert ("protToInt ICMP",
-        (fn () => IPv4Codec.protToInt IPv4Codec.ICMP),
+        (fn () => IPv4Codec.protToInt ICMP),
         (0x01),
         (Int.toString)
     );
 
     assert ("protToInt TCP",
-        (fn () => IPv4Codec.protToInt IPv4Codec.TCP),
+        (fn () => IPv4Codec.protToInt TCP),
         (0x06),
         (Int.toString)
     );
 
     assert ("protToInt UDP",
-        (fn () => IPv4Codec.protToInt IPv4Codec.UDP),
+        (fn () => IPv4Codec.protToInt UDP),
         (0x11),
         (Int.toString)
     );
 
     assert ("protToString ICMP",
-        (fn () => IPv4Codec.protToString IPv4Codec.ICMP),
+        (fn () => IPv4Codec.protToString ICMP),
         ("ICMP"),
         (fn s => s)
     );
 
     assert ("protToString TCP",
-        (fn () => IPv4Codec.protToString IPv4Codec.TCP),
+        (fn () => IPv4Codec.protToString TCP),
         ("TCP"),
         (fn s => s)
     );
 
     assert ("protToString UDP",
-        (fn () => IPv4Codec.protToString IPv4Codec.UDP),
+        (fn () => IPv4Codec.protToString UDP),
         ("UDP"),
         (fn s => s)
     );

@@ -1,5 +1,5 @@
 val header = {
-        et=EthCodec.ARP, 
+        et=ARP, 
         dstMac = [133, 134, 135, 136, 137, 138], 
         srcMac = [123, 124, 125, 126, 127, 128]
 }
@@ -18,50 +18,50 @@ val () = (
     printStart ();
 
     assert  ("ethTypeToInt ARP",
-            (fn () => EthCodec.ethTypeToInt EthCodec.ARP),
+            (fn () => EthCodec.ethTypeToInt ARP),
             0x0806,
             Int.toString         
     );
     assert  ("ethTypeToInt IPv4",
-            (fn () => EthCodec.ethTypeToInt EthCodec.IPv4),
+            (fn () => EthCodec.ethTypeToInt IPv4),
             0x0800,
             Int.toString         
     );
     assert  ("ethTypeToInt IPv6",
-            (fn () => EthCodec.ethTypeToInt EthCodec.IPv6),
+            (fn () => EthCodec.ethTypeToInt IPv6),
             0x86dd,
             Int.toString         
     );
 
     assert  ("ethTypeToString ARP",
-            (fn () => EthCodec.ethTypeToString EthCodec.ARP),
+            (fn () => EthCodec.ethTypeToString ARP),
             "ARP",
             (fn s => s)         
     );
     assert  ("ethTypeToString IPv4",
-            (fn () => EthCodec.ethTypeToString EthCodec.IPv4),
+            (fn () => EthCodec.ethTypeToString IPv4),
             "IPv4",
             (fn s => s)         
     );
     assert  ("ethTypeToString IPv6",
-            (fn () => EthCodec.ethTypeToString EthCodec.IPv6),
+            (fn () => EthCodec.ethTypeToString IPv6),
             "IPv6",
             (fn s => s)         
     );
 
     assert  ("bytesToEthType ARP",
             (fn () => EthCodec.bytesToEthType "\u0008\u0006"),
-            SOME (EthCodec.ARP),
+            SOME (ARP),
             (fn SOME et => "SOME " ^ (EthCodec.ethTypeToString et) | NONE => "NONE")         
     );
     assert  ("bytesToEthType IPv4",
             (fn () => EthCodec.bytesToEthType "\u0008\u0000"),
-            SOME (EthCodec.IPv4),
+            SOME (IPv4),
             (fn SOME et => "SOME " ^ (EthCodec.ethTypeToString et) | NONE => "NONE")         
     );
     assert  ("bytesToEthType IPv6",
             (fn () => EthCodec.bytesToEthType "\u0086\u00dd"),
-            SOME (EthCodec.IPv6),
+            SOME (IPv6),
             (fn SOME et => "SOME " ^ (EthCodec.ethTypeToString et) | NONE => "NONE")         
     );
     assert  ("bytesToEthType IPv6",

@@ -6,7 +6,7 @@ signature ETH = sig
 
     val send :  {ownMac : int list,
                  dstMac : int list, 
-                 ethType : EthCodec.ethType,
+                 ethType : Protocols.protocol,
                  ethPayload : string
                  } -> unit 
 

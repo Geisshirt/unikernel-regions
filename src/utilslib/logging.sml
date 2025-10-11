@@ -1,14 +1,13 @@
 signature LOGGING = sig
-    datatype protocol = ARP | IPv4 | UDP | TCP | Other
-
+    type protocol = Protocols.protocol
     val enable : { protocols : protocol list, level : int } -> unit
     val isEnabled : protocol -> bool
     val log : protocol -> string -> string option -> unit
     val logMsg : protocol -> string -> unit
 end
 
-structure Logging : LOGGING = struct
-    datatype protocol = ARP | IPv4 | UDP | TCP | Other
+structure Logging :> LOGGING = struct
+    open Protocols
 
     val loggingEnabled = ref false
     val currentLevel   = ref 1

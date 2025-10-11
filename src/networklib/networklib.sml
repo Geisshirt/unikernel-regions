@@ -1,7 +1,6 @@
 open Logging
 
 functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
-    datatype protocol = UDP | TCP
     type port = int
     type callback = string -> string
 
@@ -28,7 +27,7 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
                 if dstMac = ownMac orelse dstMac = [255, 255, 255, 255, 255, 255] then (
                     EthCodec.toString ethHeader |> logPrint;
                     (case et of 
-                      EthCodec.ARP => (
+                      ARP => (
                         Arp.handl {
                             ownMac = ownMac, 
                             ownIPaddr = ownIPaddr,
@@ -38,7 +37,7 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
                         m
                     )
                     (* List.filter (fn (prot, _) => prot = TCP) bindings |> map (fn (_, l) => l) *)
-                    | EthCodec.IPv4 => 
+                    | IPv4 => 
                         IPv4.handl {
                             fragContainer = m,
                             protBindings = IPv4.PBindings {

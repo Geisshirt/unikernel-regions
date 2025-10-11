@@ -3,17 +3,18 @@
 *)
 
 signature ETH_CODEC = sig 
-    datatype ethType = ARP | IPv4 | IPv6 
+    (* datatype ethType = ARP | IPv4 | IPv6  *)
+
 
     datatype header = Header of { 
-        et : ethType, 
+        et : Protocols.protocol, 
         dstMac : int list, 
         srcMac : int list
     }
 
-    val bytesToEthType : string -> (ethType option)
-    val ethTypeToInt : ethType -> int 
-    val ethTypeToString : ethType -> string
+    val bytesToEthType : string -> (Protocols.protocol option)
+    val ethTypeToInt : Protocols.protocol -> int 
+    val ethTypeToString : Protocols.protocol -> string
 
     val toString : header -> string
     val decode : string -> header * string

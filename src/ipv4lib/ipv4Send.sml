@@ -10,7 +10,7 @@ structure IPv4Send :> IPV4_SEND = struct
                         Eth.send {
                             ownMac = ownMac,
                             dstMac = dstMac,
-                            ethType = EthCodec.IPv4,
+                            ethType = IPv4,
                             ethPayload = IPv4Codec.encode (IPv4Codec.Header {
                                     version = 4,                (* This is only for version 4 (ipv4) *)
                                     ihl = 5,                    (* Options are not allowed *)
@@ -32,7 +32,7 @@ structure IPv4Send :> IPV4_SEND = struct
                     (Eth.send {
                         ownMac = ownMac,
                         dstMac = dstMac,
-                        ethType = EthCodec.IPv4,
+                        ethType = IPv4,
                         ethPayload = (
                             IPv4Codec.encode 
                                 (IPv4Codec.Header {

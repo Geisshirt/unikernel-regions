@@ -1,8 +1,9 @@
+open Protocols
 structure EthCodec :> ETH_CODEC = struct
-  datatype ethType = ARP | IPv4 | IPv6 
+  (* datatype ethType = ARP | IPv4 | IPv6  *)
 
   datatype header = Header of { 
-    et : ethType, 
+    et : protocol, 
     dstMac : int list, 
     srcMac : int list
   }
@@ -16,15 +17,17 @@ structure EthCodec :> ETH_CODEC = struct
 
   fun ethTypeToString ethType =
       (case ethType of
-        ARP => "ARP"
+        ARP  => "ARP"
       | IPv4 => "IPv4"
-      | IPv6 => "IPv6")
+      | IPv6 => "IPv6"
+      | _    => "Unknown" )
 
   fun ethTypeToInt ethType = 
       (case ethType of
-        ARP => 0x0806
+        ARP  => 0x0806
       | IPv4 => 0x0800
-      | IPv6 => 0x86dd)
+      | IPv6 => 0x86dd
+      | _    => 0x0)
 
   fun toString (Header {et, dstMac, srcMac}) =
       "\n-- ETHERFRAME INFO --\n" ^

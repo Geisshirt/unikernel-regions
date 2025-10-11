@@ -48,7 +48,7 @@ functor IPv4Handle(FragAssembler : FRAG_ASSEMBLER) :> IPV4_HANDLE = struct
                 case payloadOpt of 
                     SOME payload => (
                         case (#protocol ipv4Header) of 
-                          IPv4Codec.UDP => 
+                          UDP => 
                             Udp.handl {
                                     bindings = #UDP protBindings,
                                     ownMac = ownMac, 

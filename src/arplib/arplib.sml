@@ -1,7 +1,7 @@
 open Logging
+open Protocols
 
 structure Arp :> ARP = struct 
-
     fun handl {ownMac, ownIPaddr, dstMac, arpPacket} =
         let val arp = SOME (arpPacket |> ARPCodec.decode) handle _ => NONE
         in
@@ -12,7 +12,7 @@ structure Arp :> ARP = struct
                         Eth.send {
                             ownMac = ownMac, 
                             dstMac = dstMac, 
-                            ethType = EthCodec.ARP, 
+                            ethType = ARP, 
                             ethPayload = 
                                 ARPCodec.encode (ARPCodec.Header {
                                     htype = 1, 
@@ -27,7 +27,6 @@ structure Arp :> ARP = struct
                                 })
                         }
                     ) else ()
-            |   NONE => logMsg Logging.ARP "Arp packet could not be decoded\n"
+            |   NONE => logMsg ARP "Arp packet could not be decoded\n"
         end
 end 
-

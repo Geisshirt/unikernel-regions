@@ -1,4 +1,5 @@
 open Logging
+open Protocols
 
 structure Udp :> UDP = struct
     type port = int
@@ -33,7 +34,7 @@ structure Udp :> UDP = struct
                 dstMac = dstMac,
                 dstIPaddr = dstIPaddr,
                 identification = (#identification ipv4Header), 
-                protocol = IPv4Codec.UDP, 
+                protocol = UDP, 
                 payload = (
                     CodecUDP.encode 
                         udpHeader
