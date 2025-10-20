@@ -1,4 +1,7 @@
-open Network
+structure NetworkDefault = Network(IPv4L)
+
+open NetworkDefault
+open Protocols
 
 structure Sobol = Sobol(val D = 2
                         structure SobolDir = SobolDir50)
@@ -21,13 +24,12 @@ fun monteCarlo n =
     end
 
 val _ = (
-    bindUDP 8080 (
-        fn data =>
-            case Int.fromString data of
-                SOME n => monteCarlo n |> Real.toString
-                | NONE => "Invalid input"
-    );
-
-
-    listen ()
+    listen [
+        (UDP, [
+            (8080, fn data =>
+                    case Int.fromString data of
+                        SOME n => monteCarlo n |> Real.toString
+                    | NONE => "Invalid input")
+        ])
+    ]
 )
