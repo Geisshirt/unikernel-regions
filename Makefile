@@ -1,11 +1,11 @@
-MLKIT_SOURCE_RUNTIME=~/mlkit/src/Runtime 
+MLKIT_SOURCE_RUNTIME=~/mlkit/src/Runtime
 
 MINIOS_PATH=
 
 SL=$(shell pwd)/UnixRuntimeMini
 UNI=$(shell pwd)/unikraft
 
-ifndef t 
+ifndef t
 t=unix
 endif
 
@@ -35,7 +35,7 @@ tests/%test: FORCE
 
 FORCE: ;
 
-tests: unix tests/*test 
+tests: unix tests/*test
 
 %.exe: $(t)
 	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
@@ -48,7 +48,7 @@ tests: unix tests/*test
 %-ex-app: %.exe
 	:
 ifeq ($(t), uk)
-	rm -rf $(UNI)/build/*.o 
+	rm -rf $(UNI)/build/*.o
 	cp $(shell cat $*.exe | cut -d " " -f2-) $(UNI)/build
 	(cd $(UNI); ar -x --output build libopenlibm.a; bash build.sh)
 endif
@@ -58,7 +58,7 @@ unix:
 
 uk:
 	:
-	
+
 run-uk:
 	sudo qemu-system-x86_64 \
     -nographic \
@@ -70,11 +70,11 @@ run-uk:
     -kernel $(UNI)/workdir/build/unikraft_qemu-x86_64
 
 clean:
-	-(cd UnixRuntimeMini; make clean)
+	# -(cd UnixRuntimeMini; make clean)
 	-rm run
-	-rm *.a 
+	-rm *.a
 	-rm -rf src/*lib/MLB MLB
-	-rm -rf tests/*/MLB	
+	-rm -rf tests/*/MLB
 	-rm -rf examples/*/MLB
 	-rm -rf unikraft/build/*.o
 	-rm -rf unikraft/wordir/build/*.o
