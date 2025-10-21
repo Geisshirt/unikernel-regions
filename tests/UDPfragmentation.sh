@@ -2,7 +2,7 @@
 
 # Make setup and echo
 make setup
-make echo-app
+make echo-ex-app
 
 # Run echo
 nohup ./echo.exe 2>&1 &
