@@ -11,50 +11,28 @@ message.
 open Network
 
 val _ = (
-    bindUDP 8080 (fn data => data);
-    listen ()
+    listen [
+            (UDP, [(8080, fn data => data)])
+           ]
 )
 ```
-Logging can be turned on with the `logOn()` function and the service will 
-print and log useful information:
+
+Logging can be turned on with the `Logging.enable` function and the service will 
+print and log useful information depending on the specified protocol. For instance logging UDP will result in:
 ```sh
-==== FROM: 74 212 82 133 150 162 ====
-
--- ETHERFRAME INFO --
-Type: IPv4
-Destination mac-address: [ 123 124 125 126 127 128 ]
-Source mac-address: [ 74 212 82 133 150 162 ]
-
--- IPV4 INFO --
-Version: 4
-IHL: 5
-DSCP: 0
-ECN: 0
-Total length: 34
-Identification: 43066
-Flags: 2
-Fragment offset: 0
-Time to live: 64
-Protocol: UDP
-Header checksum: 32398
-SRC-ADDRESS: 10 0 0 1
-DST-ADDRESS: 10 0 0 2
-
 -- UDP INFO --
 Source port: 50083
 Destination port: 8080
 UDP length: 14
 Checksum: 30513
-
-==== END: 74 212 82 133 150 162 ====
 ```
 
 ### Further examples
 The project include four small examples (these run on both Unix and Xen - see below):
-* Echo: a simple echo server that mirrors exactly what it receives
-* Facfib: serves two ports with the factorial and fibonacci functions respectively
+* Echo: a simple echo server that mirrors exactly what it receives.
+* Facfib: serves two ports with the factorial and fibonacci functions respectively.
 * MonteCarlo: estimates pi using the [sml-sobol library](https://github.com/diku-dk/sml-sobol) (run `smlpkg sync` before use).
-* Sort: sorts its given integers using mergesort
+* Sort: sorts its given integers using mergesort.
 
 ## Building and running for Unix
 First run the setup command to setup a tuntap device:
