@@ -70,8 +70,6 @@ run-uk:
     -kernel $(UNI)/workdir/build/unikraft_qemu-x86_64
 
 clean:
-	# -(cd UnixRuntimeMini; make clean)
-	-rm run
 	-rm *.a
 	-rm -rf src/*lib/MLB MLB
 	-rm -rf tests/*/MLB
@@ -80,3 +78,6 @@ clean:
 	-rm -rf unikraft/wordir/build/*.o
 	-rm -r *.exe
 	-rm -r tests/*.exe
+
+realclean: clean
+	-(cd UnixRuntimeMini; make clean)
