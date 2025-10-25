@@ -1,0 +1,8 @@
+local 
+    $(SML_LIB)/basis/basis.mlb
+    ../../ipv4lib/IPV4CODEC/ipv4Codeclib.mlb
+    ../../utilslib/utilslib.mlb
+in 
+    TCP_CODEC.sig
+    tcpCodec.sml
+end 

@@ -1,5 +1,8 @@
 local $(SML_LIB)/basis/basis.mlb
     ../utilslib/utilslib.mlb
+    ../ipv4lib/IPV4CODEC/ipv4Codeclib.mlb
+    TCPHANDLE/tcpHandle.mlb
+    TCPCODEC/tcpCodec.mlb
 in
     TCPLIB.sig
     tcplib.sml

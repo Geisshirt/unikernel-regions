@@ -1,4 +1,4 @@
-signature TCP = sig
+signature TCP_HANDLE = sig
     type port = int
 
     val handl : {
