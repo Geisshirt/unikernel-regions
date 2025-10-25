@@ -17,33 +17,33 @@ val () = (
     printStart ();
 
     assert  ("toString", 
-            (fn () => CodecUDP.toString (CodecUDP.Header header)),
+            (fn () => UdpCodec.toString (UdpCodec.Header header)),
             ("\n-- UDP INFO --\nSource port: 12345\nDestination port: 8080\nUDP length: 20\nChecksum: 0\n"),
             (fn s => s));
 
     assert  ("decode", 
-            (fn () => CodecUDP.decode testRaw), 
-            (CodecUDP.Header header, payload),
-            (fn (h, p) => "(" ^ (CodecUDP.toString h) ^ ", " ^ p ^ ")"));
+            (fn () => UdpCodec.decode testRaw), 
+            (UdpCodec.Header header, payload),
+            (fn (h, p) => "(" ^ (UdpCodec.toString h) ^ ", " ^ p ^ ")"));
     
     assert  ("encode", 
-            (fn () => CodecUDP.encode (CodecUDP.Header header) payload), 
+            (fn () => UdpCodec.encode (UdpCodec.Header header) payload), 
             testRaw, 
             (rawBytesString o toByteList));
 
     assert  ("decode |> encode", 
-            (fn () => CodecUDP.decode testRaw |> (fn (h, p) => CodecUDP.encode h p)), 
+            (fn () => UdpCodec.decode testRaw |> (fn (h, p) => UdpCodec.encode h p)), 
             testRaw,
             (rawBytesString o toByteList));
     
     assert  ("encode |> decode", 
-            (fn () => CodecUDP.encode (CodecUDP.Header header) payload |> CodecUDP.decode), 
-            (CodecUDP.Header header, payload), 
-            (fn (h, p) => "(" ^ (CodecUDP.toString h) ^ ", " ^ p ^ ")"));
+            (fn () => UdpCodec.encode (UdpCodec.Header header) payload |> UdpCodec.decode), 
+            (UdpCodec.Header header, payload), 
+            (fn (h, p) => "(" ^ (UdpCodec.toString h) ^ ", " ^ p ^ ")"));
 
     (* Length is calculated independent of length value in header *)
     assert  ("encode with wrong header", 
-            (fn () => CodecUDP.encode (CodecUDP.Header wrongHeader) payload), 
+            (fn () => UdpCodec.encode (UdpCodec.Header wrongHeader) payload), 
             testRaw, 
             (rawBytesString o toByteList));
     

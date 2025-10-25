@@ -1,7 +1,7 @@
 local 
     $(SML_LIB)/basis/basis.mlb
     ../../src/utilslib/utilslib.mlb
-    ../../src/ipv4lib/ipv4Handlelib.mlb
+    ../../src/ipv4lib/IPV4_FRAG_ASSEMBLER/fragAssembler.mlb
     ../testutils/testutils.mlb
 in 
     fragAssemblertest.sml
