@@ -1,6 +1,6 @@
 local 
     $(SML_LIB)/basis/basis.mlb
-    ../utilslib/utilslib.mlb
+    ../../utilslib/utilslib.mlb
 in 
     IPV4_CODEC_LIB.sig
     ipv4Codeclib.sml 

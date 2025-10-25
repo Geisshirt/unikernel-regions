@@ -1,3 +1,5 @@
+open Logging
+
 functor IPv4Handle(FragAssembler : FRAG_ASSEMBLER) :> IPV4_HANDLE = struct
     type fragContainer = FragAssembler.fragContainer
 
@@ -49,7 +51,7 @@ functor IPv4Handle(FragAssembler : FRAG_ASSEMBLER) :> IPV4_HANDLE = struct
                     SOME payload => (
                         case (#protocol ipv4Header) of 
                           UDP => 
-                            Udp.handl {
+                                Udp.handl {
                                     bindings = #UDP protBindings,
                                     ownMac = ownMac, 
                                     dstMac = dstMac,
@@ -57,6 +59,16 @@ functor IPv4Handle(FragAssembler : FRAG_ASSEMBLER) :> IPV4_HANDLE = struct
                                     dstIPaddr = #source_addr ipv4Header,
                                     ipv4Header = IPv4Codec.Header ipv4Header,
                                     udpPayload = payload
+                                }
+                          | TCP => 
+                                Tcp.handl {
+                                    bindings = #TCP protBindings,
+                                    ownMac = ownMac, 
+                                    dstMac = dstMac,
+                                    ownIPaddr = ownIPaddr,
+                                    dstIPaddr = #source_addr ipv4Header,
+                                    ipv4Header = IPv4Codec.Header ipv4Header,
+                                    tcpPayload = payload
                                 }
                         | _ =>  logMsg IPv4 "IPv4 Handler: Protocol is not supported.\n"
                     )

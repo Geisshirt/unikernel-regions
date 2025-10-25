@@ -19,15 +19,7 @@ structure IPv4Codec : IPV4_CODEC = struct
         dest_addr : int list
     }
 
-    fun toHextets [] = []
-      | toHextets [x] = [x]
-      | toHextets (x::y::t) = x * (2 ** 8) + y :: toHextets t
-
-    fun hextetIsNeg ht = ht - 0x7FFF = 0x8000
-
-    fun hextetToOC ht =
-        if hextetIsNeg ht then 0xFFFF - ht - 1
-        else ht
+    
 
     fun ipv4Checksum l =
         let

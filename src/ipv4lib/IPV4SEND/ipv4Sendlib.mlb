@@ -1,0 +1,9 @@
+local 
+    $(SML_LIB)/basis/basis.mlb
+    ../../utilslib/utilslib.mlb
+    ../../ethlib/ethlib.mlb
+    ../IPV4CODEC/ipv4Codeclib.mlb
+in 
+    IPV4_SEND.sig
+    ipv4Send.sml
+end 
