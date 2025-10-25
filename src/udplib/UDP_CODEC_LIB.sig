@@ -2,7 +2,7 @@
     The UDPLib codec structure provides to de- and encode UDP headers.
 *)
 
-signature CODEC_UDP = sig
+signature UDP_CODEC = sig
     datatype header = Header of {
         source_port: int,
         dest_port: int,

@@ -1,4 +1,4 @@
-structure CodecUDP :> CODEC_UDP = struct  
+structure UdpCodec :> UDP_CODEC = struct  
     datatype header = Header of {
         source_port: int,
         dest_port: int,

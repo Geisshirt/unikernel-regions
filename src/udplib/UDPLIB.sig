@@ -1,13 +1,6 @@
 signature UDP = sig
     type port = int
 
-    datatype header = Header of {
-        source_port: int,
-        dest_port: int,
-        length : int,
-        checksum: int
-    } 
-
     val handl : {
         bindings : (port * (string -> string)) list,
         ownMac : int list,
