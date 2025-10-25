@@ -72,6 +72,7 @@ run-uk:
 clean:
 	-rm *.a
 	-rm -rf src/*lib/MLB MLB
+	-rm -rf src/*lib/*/MLB
 	-rm -rf tests/*/MLB
 	-rm -rf examples/*/MLB
 	-rm -rf unikraft/build/*.o

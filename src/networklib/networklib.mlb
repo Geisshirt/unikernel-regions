@@ -2,9 +2,12 @@ local
     $(SML_LIB)/basis/basis.mlb
     ../utilslib/utilslib.mlb
     ../arplib/arplib.mlb
-    ../ipv4lib/ipv4Handlelib.mlb
     ../ethlib/ethlib.mlb
     ../netiflib/netiflib.mlb
+    ../ipv4lib/IPV4_FRAG_ASSEMBLER/fragAssembler.mlb
+    ../ipv4lib/IPV4HANDLE/ipv4Handlelib.mlb
+    ../tcplib/tcplib.mlb
+    ../udplib/udplib.mlb
 in 
     NETWORKLIB.sig networklib.sml
 end
