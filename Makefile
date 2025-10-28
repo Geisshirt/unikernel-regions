@@ -41,6 +41,21 @@ tests: unix tests/*test
 	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
 	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
 
+ICFLAGS=--reml -Pcee -maximum_inline_size 0 
+
+service:
+	mlkit $(FLAGS) -no_gc -o service.exe  $(shell pwd)/examples/service/main.mlb
+
+service.ic:
+	mlkit $(FLAGS) -no_gc $(ICFLAGS) -o service.ic $(shell pwd)/examples/service/main.mlb
+
+%.ic: $(t)
+	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
+	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc $(ICFLAGS) -o $*.ic -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
+
+%.prof: $(t)
+	mlkit $(FLAGS) -no_gc --reml -prof -o $*.prof -libdirs current_dir -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
+
 %Prof: FORCE
 	SML_LIB=~/mlkit/src/Runtime mlkit -no_gc -prof -Pcee -o $*Prof.exe $*Prof/main.mlb > out.txt
 
@@ -58,7 +73,7 @@ unix:
 
 uk:
 	:
-	
+
 run-uk:
 	sudo qemu-system-x86_64 \
     -nographic \
@@ -79,4 +94,6 @@ clean:
 	-rm -rf unikraft/build/*.o
 	-rm -rf unikraft/wordir/build/*.o
 	-rm -r *.exe
+	-rm -r *.ic
+	-rm -r *.prof
 	-rm -r tests/*.exe

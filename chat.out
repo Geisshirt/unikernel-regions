@@ -1,0 +1,2755 @@
+(cd UnixRuntimeMini; make)
+make[1]: Entering directory '/home/mikkel/repos/speciale/unikernel-regions/UnixRuntimeMini'
+mkdir lib
+(cd src/RuntimeMini; make)
+make[2]: Entering directory '/home/mikkel/repos/speciale/unikernel-regions/UnixRuntimeMini/src/RuntimeMini'
+gcc -c -Wall -std=gnu99 -fPIC -g -O2 -o Runtime.o Runtime.c
+gcc -c -Wall -std=gnu99 -fPIC -g -O2 -o String.o String.c
+gcc -c -Wall -std=gnu99 -fPIC -g -O2 -o Math.o Math.c
+gcc -c -Wall -std=gnu99 -fPIC -g -O2 -o Region.o Region.c
+gcc -c -Wall -std=gnu99 -fPIC -g -O2 -o Table.o Table.c
+gcc -c -Wall -std=gnu99 -fPIC -g -O2 -o CommandLine.o CommandLine.c
+ar rc runtimeSystem.a Runtime.o String.o Math.o Region.o Table.o CommandLine.o
+/usr/bin/install -c -m 644  runtimeSystem.a ../../lib
+cp -a runtimeSystem.a ../../lib/
+make[2]: Leaving directory '/home/mikkel/repos/speciale/unikernel-regions/UnixRuntimeMini/src/RuntimeMini'
+SML_LIB=. mlkit -no_gc -c basis/basis.mlb
+[reading source file:	basis/InitialMini.sml]
+[wrote X64 code file:	basis/MLB/RI/InitialMini.sml.s]
+[reading source file:	basis/GENERAL.sig]
+[reading source file:	basis/General.sml]
+[wrote X64 code file:	basis/MLB/RI/General.sml.s]
+[reading source file:	basis/OPTION.sig]
+[reading source file:	basis/Option.sml]
+[wrote X64 code file:	basis/MLB/RI/Option.sml.s]
+[reading source file:	basis/LIST.sig]
+[reading source file:	basis/List.sml]
+[wrote X64 code file:	basis/MLB/RI/List.sml.s]
+[reading source file:	basis/LIST_PAIR.sml]
+[reading source file:	basis/ListPair.sml]
+[wrote X64 code file:	basis/MLB/RI/ListPair.sml.s]
+[reading source file:	basis/polytable.sml]
+[reading source file:	basis/INT_INF_REP.sml]
+[reading source file:	basis/TableSlice.sml]
+[reading source file:	basis/IntInfRep.sml]
+[wrote X64 code file:	basis/MLB/RI/IntInfRep.sml.s]
+[reading source file:	basis/VECTOR.sig]
+[reading source file:	basis/Vector.sml]
+[compiling body of functor PolyTable (from source basis.mlb->polytable.sml) begin]
+[wrote X64 code file:	basis/MLB/RI/Vector.sml.code3.s]
+[compiling body of functor PolyTable end]
+[wrote X64 code file:	basis/MLB/RI/Vector.sml.code4.s]
+[wrote X64 code file:	basis/MLB/RI/Vector.sml.s]
+[reading source file:	basis/VECTOR_SLICE.sml]
+[reading source file:	basis/VectorSlice.sml]
+[compiling body of functor TableSlice (from source basis.mlb->TableSlice.sml) begin]
+[wrote X64 code file:	basis/MLB/RI/VectorSlice.sml.code1.s]
+[wrote X64 code file:	basis/MLB/RI/VectorSlice.sml.code3.s]
+[compiling body of functor TableSlice end]
+[reading source file:	basis/ARRAY.sig]
+[reading source file:	basis/Array.sml]
+[compiling body of functor PolyTable (from source basis.mlb->polytable.sml) begin]
+[wrote X64 code file:	basis/MLB/RI/Array.sml.code3.s]
+[compiling body of functor PolyTable end]
+[reading source file:	basis/ARRAY_SLICE.sml]
+[reading source file:	basis/ArraySlice.sml]
+[compiling body of functor TableSlice (from source basis.mlb->TableSlice.sml) begin]
+[wrote X64 code file:	basis/MLB/RI/ArraySlice.sml.code1.s]
+[wrote X64 code file:	basis/MLB/RI/ArraySlice.sml.code3.s]
+[compiling body of functor TableSlice end]
+[reading source file:	basis/ARRAY2.sig]
+[reading source file:	basis/Array2.sml]
+[wrote X64 code file:	basis/MLB/RI/Array2.sml.s]
+[reading source file:	basis/MONO_VECTOR.sml]
+[reading source file:	basis/MONO_ARRAY.sml]
+[reading source file:	basis/ByteTable.sml]
+[compiling body of functor ByteTable (from source basis.mlb->ByteTable.sml) begin]
+[wrote X64 code file:	basis/MLB/RI/ByteTable.sml.code3.s]
+[compiling body of functor ByteTable end]
+[compiling body of functor ByteTable (from source basis.mlb->ByteTable.sml) begin]
+[wrote X64 code file:	basis/MLB/RI/ByteTable.sml.code7.s]
+[compiling body of functor ByteTable end]
+[compiling body of functor ByteTable (from source basis.mlb->ByteTable.sml) begin]
+[wrote X64 code file:	basis/MLB/RI/ByteTable.sml.code10.s]
+[compiling body of functor ByteTable end]
+[compiling body of functor ByteTable (from source basis.mlb->ByteTable.sml) begin]
+[wrote X64 code file:	basis/MLB/RI/ByteTable.sml.code14.s]
+[compiling body of functor ByteTable end]
+[wrote X64 code file:	basis/MLB/RI/ByteTable.sml.code4.s]
+[wrote X64 code file:	basis/MLB/RI/ByteTable.sml.code11.s]
+[reading source file:	basis/MONO_VECTOR_SLICE.sml]
+[reading source file:	basis/MONO_ARRAY_SLICE.sml]
+[reading source file:	basis/ByteSlice.sml]
+[compiling body of functor ByteSlice (from source basis.mlb->ByteSlice.sml) begin]
+[wrote X64 code file:	basis/MLB/RI/ByteSlice.sml.code1.s]
+[wrote X64 code file:	basis/MLB/RI/ByteSlice.sml.code3.s]
+[compiling body of functor ByteSlice end]
+[compiling body of functor ByteSlice (from source basis.mlb->ByteSlice.sml) begin]
+[wrote X64 code file:	basis/MLB/RI/ByteSlice.sml.code4.s]
+[wrote X64 code file:	basis/MLB/RI/ByteSlice.sml.code6.s]
+[compiling body of functor ByteSlice end]
+[compiling body of functor ByteSlice (from source basis.mlb->ByteSlice.sml) begin]
+[wrote X64 code file:	basis/MLB/RI/ByteSlice.sml.code7.s]
+[wrote X64 code file:	basis/MLB/RI/ByteSlice.sml.code9.s]
+[compiling body of functor ByteSlice end]
+[compiling body of functor ByteSlice (from source basis.mlb->ByteSlice.sml) begin]
+[wrote X64 code file:	basis/MLB/RI/ByteSlice.sml.code10.s]
+[wrote X64 code file:	basis/MLB/RI/ByteSlice.sml.code12.s]
+[compiling body of functor ByteSlice end]
+[reading source file:	basis/MONO_ARRAY2.sml]
+[reading source file:	basis/STRING_CVT.sml]
+[reading source file:	basis/StringCvt.sml]
+[wrote X64 code file:	basis/MLB/RI/StringCvt.sml.s]
+[reading source file:	basis/STR_BASE.sml]
+[reading source file:	basis/StrBase.sml]
+[wrote X64 code file:	basis/MLB/RI/StrBase.sml.s]
+[reading source file:	basis/Char.sml]
+[wrote X64 code file:	basis/MLB/RI/Char.sml.s]
+[reading source file:	basis/String.sml]
+[wrote X64 code file:	basis/MLB/RI/String.sml.s]
+[reading source file:	basis/CHAR.sig]
+[reading source file:	basis/STRING.sig]
+[reading source file:	basis/SUBSTRING.sig]
+[reading source file:	basis/Substring.sml]
+[wrote X64 code file:	basis/MLB/RI/Substring.sml.s]
+[reading source file:	basis/TEXT.sig]
+[reading source file:	basis/BOOL.sig]
+[reading source file:	basis/WORD.sig]
+[reading source file:	basis/INTEGER.sml]
+[reading source file:	basis/IO.sml]
+[wrote X64 code file:	basis/MLB/RI/IO.sml.s]
+[reading source file:	basis/Text.sml]
+[reading source file:	basis/Bool.sml]
+[wrote X64 code file:	basis/MLB/RI/Bool.sml.s]
+[reading source file:	basis/Word.sml]
+[wrote X64 code file:	basis/MLB/RI/Word.sml.s]
+[reading source file:	basis/Int.sml]
+[wrote X64 code file:	basis/MLB/RI/Int.sml.s]
+[reading source file:	basis/Word64.sml]
+[wrote X64 code file:	basis/MLB/RI/Word64.sml.s]
+[reading source file:	basis/Int32.sml]
+[wrote X64 code file:	basis/MLB/RI/Int32.sml.s]
+[reading source file:	basis/Word63.sml]
+[wrote X64 code file:	basis/MLB/RI/Word63.sml.s]
+[reading source file:	basis/Int31.sml]
+[wrote X64 code file:	basis/MLB/RI/Int31.sml.s]
+[reading source file:	basis/Word32.sml]
+[wrote X64 code file:	basis/MLB/RI/Word32.sml.s]
+[reading source file:	basis/Int63.sml]
+[wrote X64 code file:	basis/MLB/RI/Int63.sml.s]
+[reading source file:	basis/Word31.sml]
+[wrote X64 code file:	basis/MLB/RI/Word31.sml.s]
+[reading source file:	basis/Int64.sml]
+[wrote X64 code file:	basis/MLB/RI/Int64.sml.s]
+[reading source file:	basis/Word8.sml]
+[wrote X64 code file:	basis/MLB/RI/Word8.sml.s]
+[reading source file:	basis/WordN.sml]
+[reading source file:	basis/Word16.sml]
+[compiling body of functor WordN (from source basis.mlb->WordN.sml) begin]
+[wrote X64 code file:	basis/MLB/RI/Word16.sml.code1.s]
+[wrote X64 code file:	basis/MLB/RI/Word16.sml.code2.s]
+[compiling body of functor WordN end]
+[reading source file:	basis/PACK_WORD.sml]
+[reading source file:	basis/Pack32Little.sml]
+[wrote X64 code file:	basis/MLB/RI/Pack32Little.sml.s]
+[reading source file:	basis/Pack32Big.sml]
+[wrote X64 code file:	basis/MLB/RI/Pack32Big.sml.s]
+[reading source file:	basis/BYTE.sig]
+[reading source file:	basis/IntN.sml]
+[reading source file:	basis/Byte.sml]
+[wrote X64 code file:	basis/MLB/RI/Byte.sml.s]
+[reading source file:	basis/Ints.sml]
+[compiling body of functor IntN (from source basis.mlb->IntN.sml) begin]
+[wrote X64 code file:	basis/MLB/RI/Ints.sml.code1.s]
+[wrote X64 code file:	basis/MLB/RI/Ints.sml.code2.s]
+[compiling body of functor IntN end]
+[compiling body of functor IntN (from source basis.mlb->IntN.sml) begin]
+[wrote X64 code file:	basis/MLB/RI/Ints.sml.code3.s]
+[wrote X64 code file:	basis/MLB/RI/Ints.sml.code4.s]
+[compiling body of functor IntN end]
+[reading source file:	basis/IEEE_REAL.sig]
+[reading source file:	basis/INT_INF.sml]
+[reading source file:	basis/wordtable-functors.sml]
+[reading source file:	basis/MATH.sig]
+[reading source file:	basis/OS_PATH.sml]
+[reading source file:	basis/COMMAND_LINE.sml]
+[reading source file:	basis/IEEEReal.sml]
+[wrote X64 code file:	basis/MLB/RI/IEEEReal.sml.s]
+[reading source file:	basis/IntInf.sml]
+[wrote X64 code file:	basis/MLB/RI/IntInf.sml.s]
+[reading source file:	basis/wordtables.sml]
+[wrote X64 code file:	basis/MLB/RI/wordtables.sml.s]
+[reading source file:	basis/Math.sml]
+[wrote X64 code file:	basis/MLB/RI/Math.sml.s]
+[reading source file:	basis/Path.sml]
+[wrote X64 code file:	basis/MLB/RI/Path.sml.s]
+[reading source file:	basis/CommandLine.sml]
+[wrote X64 code file:	basis/MLB/RI/CommandLine.sml.s]
+[reading source file:	basis/inttables.sml]
+[wrote X64 code file:	basis/MLB/RI/inttables.sml.s]
+[reading source file:	basis/REAL.sig]
+[reading source file:	basis/Real.sml]
+[wrote X64 code file:	basis/MLB/RI/Real.sml.s]
+[reading source file:	basis/PACK_REAL.sml]
+[reading source file:	basis/PackRealLittle.sml]
+[wrote X64 code file:	basis/MLB/RI/PackRealLittle.sml.s]
+[reading source file:	basis/PackRealBig.sml]
+[wrote X64 code file:	basis/MLB/RI/PackRealBig.sml.s]
+make[1]: Leaving directory '/home/mikkel/repos/speciale/unikernel-regions/UnixRuntimeMini'
+gcc -I /home/mikkel/repos/speciale/unikernel-regions/UnixRuntimeMini/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
+SML_LIB=/home/mikkel/repos/speciale/unikernel-regions/UnixRuntimeMini mlkit  -no_gc --reml -Pcee -maximum_inline_size 0 -o chat.ic -libdirs "." -libs "m,c,dl,netiflib" /home/mikkel/repos/speciale/unikernel-regions/examples/chat/main.mlb
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/utilslib/protocols.sml]
+
+Program After Application Conversion: 
+   let fun eq_protocol attop r1 [] (v127, v128) = 
+           case v128 of 
+             UNKNOWN => (case v127 of UNKNOWN => true | _ => false)
+           | UDP => (case v127 of UDP => true | _ => false)
+           | TCP => (case v127 of TCP => true | _ => false)
+           | Other => (case v127 of Other => true | _ => false)
+           | IPv6 => (case v127 of IPv6 => true | _ => false)
+           | IPv4 => (case v127 of IPv4 => true | _ => false)
+           | ICMP => (case v127 of ICMP => true | _ => false)
+           | ARP => (case v127 of ARP => true | _ => false)
+   in  {|eq_protocol: (_,r1)|}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/utilslib/MLB/RI/protocols.sml.s]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../arplib/../ethlib/../netiflib/NETIFLIB.sig]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/utilslib/logging.sml]
+
+Program After Application Conversion: 
+   let val loggingEnabled = ref attop r6 false; 
+       val currentLevel = ref attop r6 1; 
+       val activeProtocols = ref attop r6 nil; 
+       fun enable attop r1 [] (v224, v225) = 
+           let val _ = (loggingEnabled := true); val _ = (currentLevel := v224)
+           in  (activeProtocols := v225)
+           end; 
+       fun isEnabled attop r1 [] (prot) = 
+           case !loggingEnabled of 
+             true => 
+             let region r27:2; 
+                 fun exists atbot r27 [] (var37) = 
+                     case var37 of 
+                       nil => false
+                     | _ => 
+                       let val v566 = decon_:: var37; val v567 = #0 v566; val v568 = #1 v566
+                       in  case funcall eq_protocol[] <prot, v567> of true => true | _ => jmp exists[] v568
+                       end
+             in  funcall exists[] (!activeProtocols)
+             end
+           | _ => false; 
+       fun log attop r1 [] (prot, header, payload) = 
+           case funcall isEnabled[] prot of 
+             true => 
+             let val _ = 
+                   case !currentLevel >= 2 of 
+                     true => 
+                     let region r59:inf
+                     in  $printStringML(let region r69:0 in concatStringML(atbot r59, header, "\n"atbot r69) end)
+                     end
+                   | _ => ()
+             in  case !currentLevel >= 1 of 
+                   true => 
+                   (case payload of 
+                      SOME => 
+                      let region r77:inf
+                      in  $printStringML(
+                            let region r85:inf, r87:0
+                            in  concatStringML(
+                                  atbot r77, 
+                                  let region r99:0 in concatStringML(atbot r85, "Payload: "atbot r99, decon_SOME payload) end, 
+                                  "\n"atbot r87
+                                )
+                            end
+                          )
+                      end
+                    | _ => ()
+                   )
+                 | _ => ()
+             end
+           | _ => (); 
+       fun logMsg attop r1 [] (prot, msg) = 
+           case funcall isEnabled[] prot of 
+             true => 
+             let region r121:inf
+             in  $printStringML(let region r131:0 in concatStringML(atbot r121, msg, "\n"atbot r131) end)
+             end
+           | _ => ()
+   in  {|enable: (_,r1), isEnabled: (_,r1), log: (_,r1), logMsg: (_,r1)|}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/utilslib/MLB/RI/logging.sml.s]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../arplib/../ethlib/../netiflib/netiflib.sml]
+
+Program After Application Conversion: 
+   let fun receive attop r1 [r15:inf] () = $Receive(sat r15); 
+       fun send attop r1 [] (byte_list) = $Send(byte_list)
+   in  {|receive: (_,r1), send: (_,r1)|}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../arplib/../ethlib/../netiflib/MLB/RI/netiflib.sml.s]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/utilslib/utilslib.sml]
+
+Program After Application Conversion: 
+   let fun |> attop r1 [] (v357, v358) = fnjmp v357 v358; 
+       fun ** attop r1 [] (v359, v360) = 
+           let region r29:1; 
+               val v431 = 
+                 let region r25:1, r27:1
+                 in  $powFloat(
+                       atbot r29, 
+                       f64_to_real(atbot r25, int_to_f64(v360)), 
+                       f64_to_real(atbot r27, int_to_f64(v359))
+                     )
+                 end; 
+               region r41:2
+           in  funcall |>[] <fn atbot r41 v471 => jmp round[] v471, v431>
+           end; 
+       fun findi attop r1 [r99:2, r97:2] (f, l) = 
+           let region r65:1; 
+               fun findi_ atbot r65 [r77:2, r75:2] (var1, var2) = 
+                   case var1 of 
+                     nil => NONE sat r77
+                   | _ => 
+                     let val v124 = decon_:: var1; val v125 = #0 v124; val v126 = #1 v124
+                     in  case fncall f v125 of 
+                           true => SOME sat r77 (var2, v125)sat r75
+                         | _ => let val v341 = var2 + 1 in jmp findi_[sat r77,sat r75] <v126, v341> end
+                     end
+           in  funcall findi_[sat r99,sat r97] <l, 0>
+           end; 
+       fun toByteList attop r1 [r153:inf] (s) = 
+           let region r113:inf; 
+               val v433 = 
+                 let region r115:2
+                 in  funcall |>[] 
+                             < fn atbot r115 v472 => 
+                               let region r119:1; 
+                                   fun h atbot r119 [r125:inf] (v362, v363) = 
+                                       case v363 < 0 of 
+                                         true => v362
+                                       | _ => 
+                                         let val v437 = v363 - 1; val v438 = :: ($__bytetable_sub(v472, v363), v362)attop r125
+                                         in  jmp h[sat r125] <v438, v437>
+                                         end; 
+                                   val v439 = $__bytetable_size(v472) - 1; 
+                                   val v440 = nil
+                               in  funcall h[attop r113] <v440, v439>
+                               end, 
+                              s
+                             >
+                 end; 
+               region r155:2
+           in  funcall |>[] 
+                       < fn atbot r155 v473 => 
+                         let region r159:0; 
+                             fun map atbot r159 [r167:inf] (var20) = 
+                                 case var20 of 
+                                   nil => nil
+                                 | _ => 
+                                   let val v369 = decon_:: var20; val v370 = #0 v369; val v371 = #1 v369
+                                   in  :: ($ord(v370), funcall map[sat r167] v371)attop r167
+                                   end
+                         in  jmp map[attop r153] v473
+                         end, 
+                        v433
+                       >
+           end; 
+       fun rawBytesString attop r1 [r199:inf] (b) = 
+           let region r201:4
+           in  funcall |>[] 
+                       < fn atbot r201 v474 => 
+                         let region r207:inf, r209:3
+                         in  funcall foldl[atbot r207] 
+                                     < fn atbot r209 v139 => 
+                                       let val v144 = #0 v139; val v145 = #1 v139
+                                       in  case let region r217:0 in v145 = ""atbot r217 end of 
+                                             true => jmp toString[attop r199] v144
+                                           | _ => 
+                                             let region r227:inf, r229:inf
+                                             in  concatStringML(
+                                                   attop r199, 
+                                                   let region r243:0 in concatStringML(atbot r227, v145, " "atbot r243) end, 
+                                                   funcall toString[atbot r229] v144
+                                                 )
+                                             end
+                                       end, 
+                                      ""attop r199, 
+                                      v474
+                                     >
+                         end, 
+                        b
+                       >
+           end; 
+       fun byteListToString attop r1 [r303:inf] (b) = 
+           let region r267:inf; 
+               val v443 = 
+                 let region r269:3
+                 in  funcall |>[] 
+                             < fn atbot r269 v475 => 
+                               let region r273:1; 
+                                   fun map atbot r273 [r281:inf] (var20) = 
+                                       case var20 of 
+                                         nil => nil
+                                       | _ => 
+                                         let val v369 = decon_:: var20; val v370 = #0 v369; val v371 = #1 v369
+                                         in  :: (funcall chr[] v370, funcall map[sat r281] v371)attop r281
+                                         end
+                               in  funcall map[attop r267] v475
+                               end, 
+                              b
+                             >
+                 end; 
+               region r305:2
+           in  funcall |>[] <fn atbot r305 v476 => $implodeCharsML(attop r303, v476), v443>
+           end; 
+       fun intToRawbyteString attop r1 [r389:inf] (i0, nb) = 
+           let region r325:3; 
+               fun h_intToRawbyteString atbot r325 [r339:inf, r331:inf] (var3, var4, var5) = 
+                   case var4 of 
+                     1 => 
+                     let val v447 = :: (funcall chr[] var3, var5)attop r331; region r341:2
+                     in  funcall |>[] <fn atbot r341 v477 => $implodeCharsML(attop r339, v477), v447>
+                     end
+                   | _ => 
+                     (case var4 <= 0 of 
+                        true => ""sat r339
+                      | _ => 
+                        let val v449 = :: (funcall chr[] $__mod_int64ub(var3, 256, Div), var5)attop r331; 
+                            region r375:7; 
+                            val v450 = 
+                              let val v347 = var4 - 1
+                              in   fn atbot r375 v348 => 
+                                   let val v346 = $__div_int64ub(var3, 256, Div)
+                                   in  jmp h_intToRawbyteString[attop r339,attop r331] <v346, v347, v348>
+                                   end
+                              end
+                        in  funcall |>[] <v450, v449>
+                        end
+                     ); 
+               region r385:inf; 
+               val v350 = nil
+           in  funcall h_intToRawbyteString[sat r389,atbot r385] <i0, nb, v350>
+           end; 
+       fun getLBits attop r1 [] (octet, nb) = 
+           $__div_int64ub(octet, let val v452 = 8 - nb in funcall **[] <v452, 2> end, Div); 
+       fun getRBits attop r1 [] (octet, nb) = $__mod_int64ub(octet, funcall **[] <nb, 2>, Div); 
+       fun setLBits attop r1 [] (num, nb) = num * let val v454 = 8 - nb in funcall **[] <v454, 2> end; 
+       fun printCharsOfRawbytes attop r1 [] (s) = 
+           let region r421:inf, r423:inf; 
+               val v455 = 
+                 let region r425:6
+                 in  funcall |>[] 
+                             < fn atbot r425 v479 => 
+                               let region r429:3; 
+                                   fun map atbot r429 [r441:inf, r439:inf] (var20) = 
+                                       case var20 of 
+                                         nil => nil
+                                       | _ => 
+                                         let val v369 = decon_:: var20; val v370 = #0 v369; val v371 = #1 v369
+                                         in  :: 
+                                             (let region r461:inf, r463:0
+                                              in  concatStringML(
+                                                    sat r439, 
+                                                    let val v459 = funcall chr[] v370; region r471:3
+                                                    in  funcall |>[] <fn atbot r471 v478 => jmp toString[attop r461] v478, v459>
+                                                    end, 
+                                                    " "atbot r463
+                                                  )
+                                              end, 
+                                              funcall map[sat r441,attop r439] v371
+                                             )attop r441
+                                         end
+                               in  funcall map[attop r423,attop r421] v479
+                               end, 
+                              s
+                             >
+                 end; 
+               region r493:1
+           in  funcall |>[] 
+                       < fn atbot r493 v480 => 
+                         let region r499:0; 
+                             fun app atbot r499 [] (var18) = 
+                                 case var18 of 
+                                   nil => ()
+                                 | _ => 
+                                   let val v348 = decon_:: var18; val v349 = #0 v348; val v350 = #1 v348; val _ = $printStringML(v349)
+                                   in  jmp app[] v350
+                                   end
+                         in  jmp app[] v480
+                         end, 
+                        v455
+                       >
+           end; 
+       fun convertRawBytes attop r1 [] (s) = 
+           let region r539:inf; 
+               val v461 = 
+               let region r541:3 in funcall |>[] <fn atbot r541 v481 => jmp toByteList[attop r539] v481, s> end; 
+               region r553:2
+           in  funcall |>[] 
+                       < fn atbot r553 v482 => 
+                         let region r557:inf, r559:1
+                         in  funcall foldl[atbot r557] 
+                                     <fn atbot r559 v220 => let val v221 = #0 v220 in (#1 v220 * 256) + v221 end, 0, v482>
+                         end, 
+                        v461
+                       >
+           end; 
+       fun printRawBytes attop r1 [] (s) = 
+           let region r593:inf, r595:inf; 
+               val v465 = 
+                 let region r579:inf; 
+                     val v467 = 
+                     let region r581:3 in funcall |>[] <fn atbot r581 v483 => jmp toByteList[attop r579] v483, s> end; 
+                     region r597:4
+                 in  funcall |>[] 
+                             < fn atbot r597 v484 => 
+                               let region r601:1; 
+                                   fun map atbot r601 [r613:inf, r611:inf] (var20) = 
+                                       case var20 of 
+                                         nil => nil
+                                       | _ => 
+                                         let val v369 = decon_:: var20; val v370 = #0 v369; val v371 = #1 v369
+                                         in  :: 
+                                             (let region r633:inf, r635:0
+                                              in  concatStringML(sat r611, funcall toString[atbot r633] v370, " "atbot r635)
+                                              end, 
+                                              funcall map[sat r613,attop r611] v371
+                                             )attop r613
+                                         end
+                               in  funcall map[attop r595,attop r593] v484
+                               end, 
+                              v467
+                             >
+                 end; 
+               region r659:1
+           in  funcall |>[] 
+                       < fn atbot r659 v485 => 
+                         let region r665:0; 
+                             fun app atbot r665 [] (var18) = 
+                                 case var18 of 
+                                   nil => ()
+                                 | _ => 
+                                   let val v348 = decon_:: var18; val v349 = #0 v348; val v350 = #1 v348; val _ = $printStringML(v349)
+                                   in  jmp app[] v350
+                                   end
+                         in  jmp app[] v485
+                         end, 
+                        v465
+                       >
+           end
+   in  {|
+       |>: (_,r1), 
+       **: (_,r1), 
+       findi: (_,r1), 
+       toByteList: (_,r1), 
+       rawBytesString: (_,r1), 
+       byteListToString: (_,r1), 
+       intToRawbyteString: (_,r1), 
+       getLBits: (_,r1), 
+       getRBits: (_,r1), 
+       setLBits: (_,r1), 
+       printCharsOfRawbytes: (_,r1), 
+       convertRawBytes: (_,r1), 
+       printRawBytes: (_,r1)
+       |}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/utilslib/MLB/RI/utilslib.sml.s]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../arplib/../ethlib/ETH_CODEC_LIB.sig]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/../udplib/../ipv4lib/IPV4_CODEC_LIB.sig]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../arplib/../ethlib/ethCodeclib.sml]
+
+Program After Application Conversion: 
+   let fun eq_header attop r1 [] (v287, v288) = 
+           let val v201 = decon_Header v288; val v202 = decon_Header v287
+           in  case let region r39:0; 
+                        fun eq_list atbot r39 [] (v289, v290) = 
+                            case $__equal_ptr(v290, v289) of 
+                              true => true
+                            | _ => 
+                              (case v290 of 
+                                 :: => 
+                                 (case v289 of 
+                                    :: => 
+                                    let val v176 = decon_:: v290; val v177 = decon_:: v289
+                                    in  case #0 v176 = #0 v177 of 
+                                        true => let val v305 = #1 v176; val v306 = #1 v177 in jmp eq_list[] <v306, v305> end | _ => false
+                                    end
+                                  | _ => false
+                                 )
+                               | nil => (case v289 of nil => true | _ => false)
+                              ); 
+                        val v307 = #0 v201; 
+                        val v308 = #0 v202
+                    in  funcall eq_list[] <v308, v307>
+                    end
+               of 
+                 true => 
+                 (case let val v309 = #1 v201; val v310 = #1 v202 in funcall eq_protocol[] <v310, v309> end of 
+                    true => 
+                    let region r63:0; 
+                        fun eq_list atbot r63 [] (v293, v294) = 
+                            case $__equal_ptr(v294, v293) of 
+                              true => true
+                            | _ => 
+                              (case v294 of 
+                                 :: => 
+                                 (case v293 of 
+                                    :: => 
+                                    let val v176 = decon_:: v294; val v177 = decon_:: v293
+                                    in  case #0 v176 = #0 v177 of 
+                                        true => let val v311 = #1 v176; val v312 = #1 v177 in jmp eq_list[] <v312, v311> end | _ => false
+                                    end
+                                  | _ => false
+                                 )
+                               | nil => (case v293 of nil => true | _ => false)
+                              ); 
+                        val v313 = #2 v201; 
+                        val v314 = #2 v202
+                    in  jmp eq_list[] <v314, v313>
+                    end
+                  | _ => false
+                 )
+               | _ => false
+           end; 
+       fun bytesToEthType attop r1 [r99:2] (s) = 
+           case funcall convertRawBytes[] s of 
+             2054 => SOME sat r99 ARP
+           | 2048 => SOME sat r99 IPv4
+           | 34525 => SOME sat r99 IPv6
+           | _ => NONE sat r99; 
+       fun ethTypeToString attop r1 [r113:0] (ethType) = 
+           case ethType of 
+           ARP => "ARP"sat r113 | IPv4 => "IPv4"sat r113 | IPv6 => "IPv6"sat r113 | _ => "Unknown"sat r113; 
+       fun ethTypeToInt attop r1 [] (ethType) = 
+           case ethType of ARP => 2054 | IPv4 => 2048 | IPv6 => 34525 | _ => 0; 
+       fun toString attop r1 [r153:inf] (var1) = 
+           let val v134 = decon_Header var1; 
+               val v135 = #1 v134; 
+               val v136 = #0 v134; 
+               val v137 = #2 v134; 
+               region r149:inf, r151:0
+           in  concatStringML(
+                 sat r153, 
+                 let region r163:inf, r165:inf
+                 in  concatStringML(
+                       atbot r149, 
+                       let region r179:inf, r181:0
+                       in  concatStringML(
+                             atbot r163, 
+                             let region r193:inf, r195:0
+                             in  concatStringML(
+                                   atbot r179, 
+                                   let region r207:inf, r209:inf
+                                   in  concatStringML(
+                                         atbot r193, 
+                                         let region r223:inf, r225:0
+                                         in  concatStringML(
+                                               atbot r207, 
+                                               let region r237:inf, r239:0
+                                               in  concatStringML(
+                                                     atbot r223, 
+                                                     let region r251:0, r253:0
+                                                     in  concatStringML(
+                                                           atbot r237, 
+                                                           "\n-- ETHERFRAME INFO --\nType: "atbot r251, 
+                                                           funcall ethTypeToString[atbot r253] v135
+                                                         )
+                                                     end, 
+                                                     "\n"atbot r239
+                                                   )
+                                               end, 
+                                               "Destination mac-address: [ "atbot r225
+                                             )
+                                         end, 
+                                         funcall rawBytesString[atbot r209] v136
+                                       )
+                                   end, 
+                                   " ]\n"atbot r195
+                                 )
+                             end, 
+                             "Source mac-address: [ "atbot r181
+                           )
+                       end, 
+                       funcall rawBytesString[atbot r165] v137
+                     )
+                 end, 
+                 " ]\n"atbot r151
+               )
+           end; 
+       fun decode attop r1 [r347:2, r303:inf, r307:3, r305:inf] (s) = 
+           let region r283:2; 
+               val v146 = 
+                 let region r279:inf; val v315 = funcall substring[atbot r279] <2, 12, s>; region r285:3
+                 in  funcall |>[] <fn atbot r285 v335 => jmp bytesToEthType[attop r283] v335, v315>
+                 end
+           in  case v146 of 
+                 SOME => 
+                 let val v151 = decon_SOME v146
+                 in  (Header 
+                      (let region r329:inf; val v320 = funcall substring[atbot r329] <6, 0, s>; region r335:3
+                       in  funcall |>[] <fn atbot r335 v336 => jmp toByteList[attop r305] v336, v320>
+                       end, 
+                       v151, 
+                       let region r311:inf; val v325 = funcall substring[atbot r311] <6, 6, s>; region r317:3
+                       in  funcall |>[] <fn atbot r317 v337 => jmp toByteList[attop r305] v337, v325>
+                       end
+                      )attop r307, 
+                      let region r297:1; val v332 = NONE atbot r297 in funcall extract[sat r303] <v332, 14, s> end
+                     )attop r347
+                 end
+               | _ => raise Fail attop r1 "Protocol not found."attop r3
+           end; 
+       fun encode attop r1 [r391:inf] (var2, payload) = 
+           let val v166 = decon_Header var2; 
+               val v167 = #1 v166; 
+               val v168 = #0 v166; 
+               val v169 = #2 v166; 
+               region r387:inf
+           in  concatStringML(
+                 attop r391, 
+                 let region r399:inf, r401:inf
+                 in  concatStringML(
+                       atbot r387, 
+                       let region r417:inf, r419:inf
+                       in  concatStringML(
+                             atbot r399, 
+                             funcall byteListToString[atbot r417] v168, 
+                             funcall byteListToString[atbot r419] v169
+                           )
+                       end, 
+                       let val v285 = 
+                           let region r405:2 in funcall |>[] <fn atbot r405 v338 => jmp ethTypeToInt[] v338, v167> end
+                       in  funcall intToRawbyteString[atbot r401] <v285, 2>
+                       end
+                     )
+                 end, 
+                 payload
+               )
+           end
+   in  {|
+       bytesToEthType: (_,r1), 
+       ethTypeToString: (_,r1), 
+       ethTypeToInt: (_,r1), 
+       toString: (_,r1), 
+       decode: (_,r1), 
+       encode: (_,r1), 
+       eq_header: (_,r1)
+       |}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../arplib/../ethlib/MLB/RI/ethCodeclib.sml.s]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/../udplib/../ipv4lib/ipv4Codeclib.sml]
+
+Program After Application Conversion: 
+   let fun eq_header attop r1 [] (v687, v688) = 
+           let val v341 = decon_Header v688; val v342 = decon_Header v687
+           in  case let region r39:0; 
+                        fun eq_list atbot r39 [] (v689, v690) = 
+                            case $__equal_ptr(v690, v689) of 
+                              true => true
+                            | _ => 
+                              (case v690 of 
+                                 :: => 
+                                 (case v689 of 
+                                    :: => 
+                                    let val v316 = decon_:: v690; val v317 = decon_:: v689
+                                    in  case #0 v316 = #0 v317 of 
+                                        true => let val v705 = #1 v316; val v706 = #1 v317 in jmp eq_list[] <v706, v705> end | _ => false
+                                    end
+                                  | _ => false
+                                 )
+                               | nil => (case v689 of nil => true | _ => false)
+                              ); 
+                        val v707 = #0 v341; 
+                        val v708 = #0 v342
+                    in  funcall eq_list[] <v708, v707>
+                    end
+               of 
+                 true => 
+                 (case #1 v341 = #1 v342 of 
+                    true => 
+                    (case #2 v341 = #2 v342 of 
+                       true => 
+                       (case #3 v341 = #3 v342 of 
+                          true => 
+                          (case #4 v341 = #4 v342 of 
+                             true => 
+                             (case #5 v341 = #5 v342 of 
+                                true => 
+                                (case #6 v341 = #6 v342 of 
+                                   true => 
+                                   (case #7 v341 = #7 v342 of 
+                                      true => 
+                                      (case let val v709 = #8 v341; val v710 = #8 v342 in funcall eq_protocol[] <v710, v709> end of 
+                                         true => 
+                                         (case let region r63:0; 
+                                                   fun eq_list atbot r63 [] (v693, v694) = 
+                                                       case $__equal_ptr(v694, v693) of 
+                                                         true => true
+                                                       | _ => 
+                                                         (case v694 of 
+                                                            :: => 
+                                                            (case v693 of 
+                                                               :: => 
+                                                               let val v316 = decon_:: v694; val v317 = decon_:: v693
+                                                               in  case #0 v316 = #0 v317 of 
+b64   true => let val v711 = #1 v316; val v712 = #1 v317 in jmp eq_list[] <v712, v711> end | _ => false
+                                                               end
+                                                             | _ => false
+                                                            )
+                                                          | nil => (case v693 of nil => true | _ => false)
+                                                         ); 
+                                                   val v713 = #9 v341; 
+                                                   val v714 = #9 v342
+                                               in  funcall eq_list[] <v714, v713>
+                                               end
+                                          of 
+                                            true => 
+                                            (case #10 v341 = #10 v342 of 
+                                             true => (case #11 v341 = #11 v342 of true => #12 v341 = #12 v342 | _ => false) | _ => false
+                                            )
+                                          | _ => false
+                                         )
+                                       | _ => false
+                                      )
+                                    | _ => false
+                                   )
+                                 | _ => false
+                                )
+                              | _ => false
+                             )
+                           | _ => false
+                          )
+                        | _ => false
+                       )
+                     | _ => false
+                    )
+                  | _ => false
+                 )
+               | _ => false
+           end; 
+       fun toHextets attop r1 [r97:inf] (var2) = 
+           case var2 of 
+             nil => nil
+           | _ => 
+             let val v103 = decon_:: var2; val v104 = #1 v103
+             in  case v104 of 
+                   nil => [#0 v103] attop r97
+                 | _ => 
+                   let val v106 = #0 v103; val v107 = decon_:: v104; val v108 = #0 v107; val v109 = #1 v107
+                   in  :: ((v106 * funcall **[] <8, 2>) + v108, funcall toHextets[sat r97] v109)attop r97
+                   end
+             end; 
+       fun intToProt attop r1 [] (i) = case i of 1 => ICMP | 6 => TCP | 17 => UDP | _ => UNKNOWN; 
+       fun protToInt attop r1 [] (p) = 
+           case p of ICMP => 1 | TCP => 6 | UDP => 17 | _ => raise Fail attop r1 "Unknown protocol."attop r3; 
+       fun protToString attop r1 [r133:0] (p) = 
+           case p of 
+             ICMP => "ICMP"sat r133
+           | TCP => "TCP"sat r133
+           | UDP => "UDP"sat r133
+           | _ => "Unknown protocol"sat r133; 
+       fun isFragmented attop r1 [] (var3) = #3 decon_Header var3 = 1; 
+       fun decode attop r1 [r381:2, r179:inf, r183:13, r181:inf] (s) = 
+           (Header 
+            let val v223 = 
+                  let val v597 = 
+                        let region r187:inf; val v717 = funcall substring[atbot r187] <1, 0, s>; region r191:2
+                        in  funcall |>[] <fn atbot r191 v811 => jmp convertRawBytes[] v811, v717>
+                        end
+                  in  funcall getLBits[] <v597, 4>
+                  end; 
+                val v224 = 
+                  let val v602 = 
+                        let region r201:inf; val v722 = funcall substring[atbot r201] <1, 0, s>; region r205:2
+                        in  funcall |>[] <fn atbot r205 v812 => jmp convertRawBytes[] v812, v722>
+                        end
+                  in  funcall getRBits[] <v602, 4>
+                  end; 
+                val v225 = 
+                  let val v607 = 
+                        let region r215:inf; val v727 = funcall substring[atbot r215] <1, 1, s>; region r219:2
+                        in  funcall |>[] <fn atbot r219 v813 => jmp convertRawBytes[] v813, v727>
+                        end
+                  in  funcall getLBits[] <v607, 6>
+                  end; 
+                val v226 = 
+                  let val v612 = 
+                        let region r229:inf; val v732 = funcall substring[atbot r229] <1, 1, s>; region r233:2
+                        in  funcall |>[] <fn atbot r233 v814 => jmp convertRawBytes[] v814, v732>
+                        end
+                  in  funcall getRBits[] <v612, 2>
+                  end; 
+                val v227 = 
+                  let region r243:inf; val v737 = funcall substring[atbot r243] <2, 2, s>; region r247:2
+                  in  funcall |>[] <fn atbot r247 v815 => jmp convertRawBytes[] v815, v737>
+                  end; 
+                val v228 = 
+                  let region r257:inf; val v742 = funcall substring[atbot r257] <2, 4, s>; region r261:2
+                  in  funcall |>[] <fn atbot r261 v816 => jmp convertRawBytes[] v816, v742>
+                  end; 
+                val v229 = 
+                  let val v623 = 
+                        let region r271:inf; val v747 = funcall substring[atbot r271] <1, 6, s>; region r275:2
+                        in  funcall |>[] <fn atbot r275 v817 => jmp convertRawBytes[] v817, v747>
+                        end
+                  in  funcall getLBits[] <v623, 3>
+                  end; 
+                val v230 = 
+                  let val v628 = 
+                        let region r285:inf; val v752 = funcall substring[atbot r285] <2, 6, s>; region r289:2
+                        in  funcall |>[] <fn atbot r289 v818 => jmp convertRawBytes[] v818, v752>
+                        end
+                  in  funcall getRBits[] <v628, 13>
+                  end; 
+                val v231 = 
+                  let region r299:inf; val v757 = funcall substring[atbot r299] <1, 8, s>; region r303:2
+                  in  funcall |>[] <fn atbot r303 v819 => jmp convertRawBytes[] v819, v757>
+                  end; 
+                val v232 = 
+                  let val v762 = 
+                        let region r313:inf; val v764 = funcall substring[atbot r313] <1, 9, s>; region r317:2
+                        in  funcall |>[] <fn atbot r317 v820 => jmp convertRawBytes[] v820, v764>
+                        end; 
+                      region r325:2
+                  in  funcall |>[] <fn atbot r325 v821 => jmp intToProt[] v821, v762>
+                  end; 
+                val v233 = 
+                  let region r331:inf; val v769 = funcall substring[atbot r331] <2, 10, s>; region r335:2
+                  in  funcall |>[] <fn atbot r335 v822 => jmp convertRawBytes[] v822, v769>
+                  end; 
+                val v234 = 
+                  let region r345:inf; val v774 = funcall substring[atbot r345] <4, 12, s>; region r351:3
+                  in  funcall |>[] <fn atbot r351 v823 => jmp toByteList[attop r181] v823, v774>
+                  end
+            in  (let region r363:inf; val v779 = funcall substring[atbot r363] <4, 16, s>; region r369:3
+                 in  funcall |>[] <fn atbot r369 v824 => jmp toByteList[attop r181] v824, v779>
+                 end, 
+                 v225, 
+                 v226, 
+                 v229, 
+                 v230, 
+                 v233, 
+                 v228, 
+                 v224, 
+                 v232, 
+                 v234, 
+                 v231, 
+                 v227, 
+                 v223
+                )attop r183
+            end, 
+            let region r173:1; val v786 = NONE atbot r173 in funcall extract[sat r179] <v786, 20, s> end
+           )attop r381; 
+       fun toString attop r1 [r411:inf] (var4) = 
+           let val v255 = decon_Header var4; 
+               val v256 = #12 v255; 
+               val v257 = #7 v255; 
+               val v258 = #1 v255; 
+               val v259 = #2 v255; 
+               val v260 = #11 v255; 
+               val v261 = #6 v255; 
+               val v262 = #3 v255; 
+               val v263 = #4 v255; 
+               val v264 = #10 v255; 
+               val v265 = #8 v255; 
+               val v266 = #5 v255; 
+               val v267 = #9 v255; 
+               val v268 = #0 v255; 
+               region r407:inf, r409:0
+           in  concatStringML(
+                 sat r411, 
+                 let region r421:inf, r423:inf
+                 in  concatStringML(
+                       atbot r407, 
+                       let region r437:inf, r439:0
+                       in  concatStringML(
+                             atbot r421, 
+                             let region r451:inf, r453:0
+                             in  concatStringML(
+                                   atbot r437, 
+                                   let region r465:inf, r467:inf
+                                   in  concatStringML(
+                                         atbot r451, 
+                                         let region r481:inf, r483:0
+                                         in  concatStringML(
+                                               atbot r465, 
+                                               let region r495:inf, r497:0
+                                               in  concatStringML(
+                                                     atbot r481, 
+                                                     let region r509:inf, r511:inf
+                                                     in  concatStringML(
+                                                           atbot r495, 
+                                                           let region r523:inf, r525:0
+                                                           in  concatStringML(
+                                                                 atbot r509, 
+b64 let region r537:inf, r539:0
+b64 in  concatStringML(
+b64       atbot r523, 
+b64       let region r551:inf, r553:0
+b64       in  concatStringML(
+b64             atbot r537, 
+b64             let region r565:inf, r567:0
+b64             in  concatStringML(
+b64                   atbot r551, 
+b64                   let region r579:inf, r581:0
+b64                   in  concatStringML(
+b64                         atbot r565, 
+b64                         let region r593:inf, r595:inf
+b64                         in  concatStringML(
+b64                               atbot r579, 
+b64                               let region r607:inf, r609:0
+b64                               in  concatStringML(
+b64                                     atbot r593, 
+b64                                     let region r621:inf, r623:0
+b64                                     in  concatStringML(
+b64                                           atbot r607, 
+b64                                           let region r635:inf, r637:inf
+b64                                           in  concatStringML(
+b64                                                 atbot r621, 
+b64                                                 let region r649:inf, r651:0
+b64                                                 in  concatStringML(
+b64                                                       atbot r635, 
+b64                                                       let region r663:inf, r665:0
+b64                                                       in  concatStringML(
+b64                                                             atbot r649, 
+b64                                                             let region r677:inf, r679:inf
+b64                                                             in  concatStringML(
+b128   atbot r663, 
+b128   let region r691:inf, r693:0
+b128   in  concatStringML(
+b128         atbot r677, 
+b128         let region r705:inf, r707:0
+b128         in  concatStringML(
+b128               atbot r691, 
+b128               let region r719:inf, r721:inf
+b128               in  concatStringML(
+b128                     atbot r705, 
+b128                     let region r733:inf, r735:0
+b128                     in  concatStringML(
+b128                           atbot r719, 
+b128                           let region r747:inf, r749:0
+b128                           in  concatStringML(
+b128                                 atbot r733, 
+b128                                 let region r761:inf, r763:inf
+b128                                 in  concatStringML(
+b128                                       atbot r747, 
+b128                                       let region r775:inf, r777:0
+b128                                       in  concatStringML(
+b128                                             atbot r761, 
+b128                                             let region r789:inf, r791:0
+b128                                             in  concatStringML(
+b128                                                   atbot r775, 
+b128                                                   let region r803:inf, r805:inf
+b128                                                   in  concatStringML(
+b128                                                         atbot r789, 
+b128                                                         let region r817:inf, r819:0
+b128                                                         in  concatStringML(
+b128                                                               atbot r803, 
+b128                                                               let region r831:inf, r833:0
+b128                                                               in  concatStringML(
+b192     atbot r817, 
+b192     let region r845:inf, r847:inf
+b192     in  concatStringML(
+b192           atbot r831, 
+b192           let region r859:inf, r861:0
+b192           in  concatStringML(
+b192                 atbot r845, 
+b192                 let region r873:inf, r875:0
+b192                 in  concatStringML(
+b192                       atbot r859, 
+b192                       let region r887:inf, r889:inf
+b192                       in  concatStringML(
+b192                             atbot r873, 
+b192                             let region r901:inf, r903:0
+b192                             in  concatStringML(
+b192                                   atbot r887, 
+b192                                   let region r915:inf, r917:0
+b192                                   in  concatStringML(
+b192                                         atbot r901, 
+b192                                         let region r929:0, r931:inf
+b192                                         in  concatStringML(
+b192                                               atbot r915, 
+b192                                               "\n-- IPV4 INFO --\nVersion: "atbot r929, 
+b192                                               funcall toString[atbot r931] v256
+b192                                             )
+b192                                         end, 
+b192                                         "\n"atbot r917
+b192                                       )
+b192                                   end, 
+b192                                   "IHL: "atbot r903
+b192                                 )
+b192                             end, 
+b192                             funcall toString[atbot r889] v257
+b192                           )
+b192                       end, 
+b192                       "\n"atbot r875
+b192                     )
+b192                 end, 
+b192                 "DSCP: "atbot r861
+b192               )
+b192           end, 
+b192           funcall toString[atbot r847] v258
+b192         )
+b192     end, 
+b192     "\n"atbot r833
+b192   )
+b128                                                               end, 
+b128                                                               "ECN: "atbot r819
+b128                                                             )
+b128                                                         end, 
+b128                                                         funcall toString[atbot r805] v259
+b128                                                       )
+b128                                                   end, 
+b128                                                   "\n"atbot r791
+b128                                                 )
+b128                                             end, 
+b128                                             "Total length: "atbot r777
+b128                                           )
+b128                                       end, 
+b128                                       funcall toString[atbot r763] v260
+b128                                     )
+b128                                 end, 
+b128                                 "\n"atbot r749
+b128                               )
+b128                           end, 
+b128                           "Identification: "atbot r735
+b128                         )
+b128                     end, 
+b128                     funcall toString[atbot r721] v261
+b128                   )
+b128               end, 
+b128               "\n"atbot r707
+b128             )
+b128         end, 
+b128         "Flags: "atbot r693
+b128       )
+b128   end, 
+b128   funcall toString[atbot r679] v262
+b128 )
+b64                                                             end, 
+b64                                                             "\n"atbot r665
+b64                                                           )
+b64                                                       end, 
+b64                                                       "Fragment offset: "atbot r651
+b64                                                     )
+b64                                                 end, 
+b64                                                 funcall toString[atbot r637] v263
+b64                                               )
+b64                                           end, 
+b64                                           "\n"atbot r623
+b64                                         )
+b64                                     end, 
+b64                                     "Time to live: "atbot r609
+b64                                   )
+b64                               end, 
+b64                               funcall toString[atbot r595] v264
+b64                             )
+b64                         end, 
+b64                         "\n"atbot r581
+b64                       )
+b64                   end, 
+b64                   "Protocol: "atbot r567
+b64                 )
+b64             end, 
+b64             funcall protToString[atbot r553] v265
+b64           )
+b64       end, 
+b64       "\n"atbot r539
+b64     )
+b64 end, 
+b64 "Header checksum: "atbot r525
+                                                               )
+                                                           end, 
+                                                           funcall toString[atbot r511] v266
+                                                         )
+                                                     end, 
+                                                     "\n"atbot r497
+                                                   )
+                                               end, 
+                                               "SRC-ADDRESS: "atbot r483
+                                             )
+                                         end, 
+                                         funcall rawBytesString[atbot r467] v267
+                                       )
+                                   end, 
+                                   "\n"atbot r453
+                                 )
+                             end, 
+                             "DST-ADDRESS: "atbot r439
+                           )
+                       end, 
+                       funcall rawBytesString[atbot r423] v268
+                     )
+                 end, 
+                 "\n"atbot r409
+               )
+           end; 
+       fun encode attop r1 [r1177:inf] (var5, payload) = 
+           let val v296 = decon_Header var5; 
+               val v298 = #7 v296; 
+               val v299 = #1 v296; 
+               val v300 = #2 v296; 
+               val v302 = #6 v296; 
+               val v303 = #3 v296; 
+               val v304 = #4 v296; 
+               val v305 = #10 v296; 
+               val v306 = #8 v296; 
+               val v308 = #9 v296; 
+               val v309 = #0 v296; 
+               region r971:inf; 
+               val checksumHeader = 
+                 let region r967:inf, r969:inf
+                 in  concatStringML(
+                       atbot r971, 
+                       let region r983:inf, r985:inf
+                       in  concatStringML(
+                             atbot r967, 
+                             let region r999:inf, r1001:inf
+                             in  concatStringML(
+                                   atbot r983, 
+                                   let region r1013:inf, r1015:inf
+                                   in  concatStringML(
+                                         atbot r999, 
+                                         let region r1027:inf, r1029:inf
+                                         in  concatStringML(
+                                               atbot r1013, 
+                                               let region r1041:inf, r1043:inf
+                                               in  concatStringML(
+                                                     atbot r1027, 
+                                                     let region r1055:inf, r1057:inf
+                                                     in  concatStringML(
+                                                           atbot r1041, 
+                                                           let region r1069:inf, r1071:inf
+                                                           in  concatStringML(
+                                                                 atbot r1055, 
+b64 let region r1087:inf, r1089:inf
+b64 in  concatStringML(
+b64       atbot r1069, 
+b64       let val v650 = funcall setLBits[] <4, 4> + v298
+b64       in  funcall intToRawbyteString[atbot r1087] <v650, 1>
+b64       end, 
+b64       let val v653 = funcall setLBits[] <v299, 6> + v300
+b64       in  funcall intToRawbyteString[atbot r1089] <v653, 1>
+b64       end
+b64     )
+b64 end, 
+b64 let val v655 = 20 + $__bytetable_size(payload)
+b64 in  funcall intToRawbyteString[atbot r1071] <v655, 2>
+b64 end
+                                                               )
+                                                           end, 
+                                                           funcall intToRawbyteString[atbot r1057] <v302, 2>
+                                                         )
+                                                     end, 
+                                                     let val v660 = (funcall setLBits[] <v303, 3> * funcall **[] <8, 2>) + v304
+                                                     in  funcall intToRawbyteString[atbot r1043] <v660, 2>
+                                                     end
+                                                   )
+                                               end, 
+                                               funcall intToRawbyteString[atbot r1029] <v305, 1>
+                                             )
+                                         end, 
+                                         let val v663 = funcall protToInt[] v306 in funcall intToRawbyteString[atbot r1015] <v663, 1> end
+                                       )
+                                   end, 
+                                   funcall intToRawbyteString[atbot r1001] <0, 2>
+                                 )
+                             end, 
+                             funcall byteListToString[atbot r985] v308
+                           )
+                       end, 
+                       funcall byteListToString[atbot r969] v309
+                     )
+                 end; 
+               val checkSum = 
+                 let region r1113:inf; 
+                     val v789 = 
+                       let region r1099:inf; 
+                           val v791 = 
+                             let region r1101:3
+                             in  funcall |>[] <fn atbot r1101 v825 => jmp toByteList[attop r1099] v825, checksumHeader>
+                             end; 
+                           region r1115:3
+                       in  funcall |>[] <fn atbot r1115 v826 => jmp toHextets[attop r1113] v826, v791>
+                       end; 
+                     region r1127:6
+                 in  funcall |>[] 
+                             < fn atbot r1127 v831 => 
+                               let val sum = 
+                                     let region r1131:0; 
+                                         fun foldl atbot r1131 [] (var34, var35) = 
+                                             case var35 of 
+                                               nil => var34
+                                             | _ => 
+                                               let val v541 = decon_:: var35; val v542 = #0 v541; val v543 = #1 v541; val v671 = v542 + var34
+                                               in  jmp foldl[] <v671, v543>
+                                               end
+                                     in  funcall foldl[] <0, v831>
+                                     end; 
+                                   val carry = $__div_int64ub(sum - funcall getRBits[] <sum, 16>, funcall **[] <16, 2>, Div); 
+                                   val sumWithoutCarry = sum - (sum - funcall getRBits[] <sum, 16>); 
+                                   val v797 = 
+                                     let val v799 = 
+                                           let val v801 = 
+                                                 let val v803 = sumWithoutCarry + carry; region r1149:1
+                                                 in  funcall |>[] <fn atbot r1149 v827 => $id(v827), v803>
+                                                 end; 
+                                               region r1153:1
+                                           in  funcall |>[] <fn atbot r1153 v828 => $__xorb_word64ub(v828, $id(~1)), v801>
+                                           end; 
+                                         region r1157:1
+                                     in  funcall |>[] <fn atbot r1157 v829 => $__andb_word64ub($id(65535), v829), v799>
+                                     end; 
+                                   region r1161:2
+                               in  funcall |>[] <fn atbot r1161 v830 => jmp toInt[] v830, v797>
+                               end, 
+                              v789
+                             >
+                 end; 
+               region r1173:inf
+           in  concatStringML(
+                 attop r1177, 
+                 let region r1185:inf, r1187:inf
+                 in  concatStringML(
+                       atbot r1173, 
+                       let region r1205:inf, r1207:inf
+                       in  concatStringML(
+                             atbot r1185, 
+                             funcall substring[atbot r1205] <10, 0, checksumHeader>, 
+                             funcall intToRawbyteString[atbot r1207] <checkSum, 2>
+                           )
+                       end, 
+                       let region r1191:1; val v810 = NONE atbot r1191
+                       in  funcall extract[atbot r1187] <v810, 12, checksumHeader>
+                       end
+                     )
+                 end, 
+                 payload
+               )
+           end
+   in  {|
+       intToProt: (_,r1), 
+       protToInt: (_,r1), 
+       protToString: (_,r1), 
+       isFragmented: (_,r1), 
+       decode: (_,r1), 
+       toString: (_,r1), 
+       encode: (_,r1), 
+       eq_header: (_,r1)
+       |}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/../udplib/../ipv4lib/MLB/RI/ipv4Codeclib.sml.s]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../arplib/../ethlib/ETHLIB.sig]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../arplib/../ethlib/ethlib.sml]
+
+Program After Application Conversion: 
+   let fun send attop r1 [] (v130, v131, v132, v133) = 
+           let region r25:3; 
+               val ethHeader = Header (v132, v131, v133)atbot r25; 
+               region r39:inf; 
+               val v134 = 
+                 let region r35:inf; val v136 = funcall encode[atbot r35] <ethHeader, v130>; region r41:3
+                 in  funcall |>[] <fn atbot r41 v138 => jmp toByteList[attop r39] v138, v136>
+                 end; 
+               region r53:2
+           in  funcall |>[] <fn atbot r53 v139 => jmp send[] v139, v134>
+           end
+   in  {|send: (_,r1)|}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../arplib/../ethlib/MLB/RI/ethlib.sml.s]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../arplib/ARP_CODEC_LIB.sig]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/../udplib/../ipv4lib/IPV4_SEND.sig]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../arplib/arpCodeclib.sml]
+
+Program After Application Conversion: 
+   let fun eq_ARP_OP attop r1 [] (v435, v436) = 
+           case v436 of 
+             Request => (case v435 of Request => true | _ => false)
+           | Reply => (case v435 of Reply => true | _ => false); 
+       fun eq_header attop r1 [] (v437, v438) = 
+           let val v218 = decon_Header v438; val v219 = decon_Header v437
+           in  case #0 v218 = #0 v219 of 
+                 true => 
+                 (case #1 v218 = #1 v219 of 
+                    true => 
+                    (case let val v474 = #2 v218; val v475 = #2 v219 in funcall eq_ARP_OP[] <v475, v474> end of 
+                       true => 
+                       (case #3 v218 = #3 v219 of 
+                          true => 
+                          (case #4 v218 = #4 v219 of 
+                             true => 
+                             (case let region r43:0; 
+                                       fun eq_list atbot r43 [] (v440, v441) = 
+                                           case $__equal_ptr(v441, v440) of 
+                                             true => true
+                                           | _ => 
+                                             (case v441 of 
+                                                :: => 
+                                                (case v440 of 
+                                                   :: => 
+                                                   let val v189 = decon_:: v441; val v190 = decon_:: v440
+                                                   in  case #0 v189 = #0 v190 of 
+                                                       true => let val v476 = #1 v189; val v477 = #1 v190 in jmp eq_list[] <v477, v476> end | _ => false
+                                                   end
+                                                 | _ => false
+                                                )
+                                              | nil => (case v440 of nil => true | _ => false)
+                                             ); 
+                                       val v478 = #5 v218; 
+                                       val v479 = #5 v219
+                                   in  funcall eq_list[] <v479, v478>
+                                   end
+                              of 
+                                true => 
+                                (case let region r67:0; 
+                                          fun eq_list atbot r67 [] (v444, v445) = 
+                                              case $__equal_ptr(v445, v444) of 
+                                                true => true
+                                              | _ => 
+                                                (case v445 of 
+                                                   :: => 
+                                                   (case v444 of 
+                                                      :: => 
+                                                      let val v189 = decon_:: v445; val v190 = decon_:: v444
+                                                      in  case #0 v189 = #0 v190 of 
+                                                          true => let val v480 = #1 v189; val v481 = #1 v190 in jmp eq_list[] <v481, v480> end | _ => false
+                                                      end
+                                                    | _ => false
+                                                   )
+                                                 | nil => (case v444 of nil => true | _ => false)
+                                                ); 
+                                          val v482 = #6 v218; 
+                                          val v483 = #6 v219
+                                      in  funcall eq_list[] <v483, v482>
+                                      end
+                                 of 
+                                   true => 
+                                   (case let region r91:0; 
+                                             fun eq_list atbot r91 [] (v448, v449) = 
+                                                 case $__equal_ptr(v449, v448) of 
+                                                   true => true
+                                                 | _ => 
+                                                   (case v449 of 
+                                                      :: => 
+                                                      (case v448 of 
+                                                         :: => 
+                                                         let val v189 = decon_:: v449; val v190 = decon_:: v448
+                                                         in  case #0 v189 = #0 v190 of 
+                                                             true => let val v484 = #1 v189; val v485 = #1 v190 in jmp eq_list[] <v485, v484> end | _ => false
+                                                         end
+                                                       | _ => false
+                                                      )
+                                                    | nil => (case v448 of nil => true | _ => false)
+                                                   ); 
+                                             val v486 = #7 v218; 
+                                             val v487 = #7 v219
+                                         in  funcall eq_list[] <v487, v486>
+                                         end
+                                    of 
+                                      true => 
+                                      let region r115:0; 
+                                          fun eq_list atbot r115 [] (v452, v453) = 
+                                              case $__equal_ptr(v453, v452) of 
+                                                true => true
+                                              | _ => 
+                                                (case v453 of 
+                                                   :: => 
+                                                   (case v452 of 
+                                                      :: => 
+                                                      let val v189 = decon_:: v453; val v190 = decon_:: v452
+                                                      in  case #0 v189 = #0 v190 of 
+                                                          true => let val v488 = #1 v189; val v489 = #1 v190 in jmp eq_list[] <v489, v488> end | _ => false
+                                                      end
+                                                    | _ => false
+                                                   )
+                                                 | nil => (case v452 of nil => true | _ => false)
+                                                ); 
+                                          val v490 = #8 v218; 
+                                          val v491 = #8 v219
+                                      in  jmp eq_list[] <v491, v490>
+                                      end
+                                    | _ => false
+                                   )
+                                 | _ => false
+                                )
+                              | _ => false
+                             )
+                           | _ => false
+                          )
+                        | _ => false
+                       )
+                     | _ => false
+                    )
+                  | _ => false
+                 )
+               | _ => false
+           end; 
+       fun toArpOperation attop r1 [] (i) = 
+           case i of 
+           1 => Request | 2 => Reply | _ => raise Fail attop r1 "Could not determine arp operation"attop r3; 
+       fun arpOperationToString attop r1 [r151:0] (arp) = 
+           case arp of Request => "Request"sat r151 | _ => "Reply"sat r151; 
+       fun arpOperationToInt attop r1 [] (var1) = case var1 of Request => 1 | _ => 2; 
+       fun toString attop r1 [r187:inf] (var2) = 
+           let val v136 = decon_Header var2; 
+               val v137 = #1 v136; 
+               val v138 = #4 v136; 
+               val v139 = #0 v136; 
+               val v140 = #3 v136; 
+               val v141 = #2 v136; 
+               val v142 = #5 v136; 
+               val v143 = #6 v136; 
+               val v144 = #7 v136; 
+               val v145 = #8 v136; 
+               region r183:inf, r185:0
+           in  concatStringML(
+                 sat r187, 
+                 let region r197:inf, r199:inf
+                 in  concatStringML(
+                       atbot r183, 
+                       let region r213:inf, r215:0
+                       in  concatStringML(
+                             atbot r197, 
+                             let region r227:inf, r229:0
+                             in  concatStringML(
+                                   atbot r213, 
+                                   let region r241:inf, r243:inf
+                                   in  concatStringML(
+                                         atbot r227, 
+                                         let region r257:inf, r259:0
+                                         in  concatStringML(
+                                               atbot r241, 
+                                               let region r271:inf, r273:0
+                                               in  concatStringML(
+                                                     atbot r257, 
+                                                     let region r285:inf, r287:inf
+                                                     in  concatStringML(
+                                                           atbot r271, 
+                                                           let region r301:inf, r303:0
+                                                           in  concatStringML(
+                                                                 atbot r285, 
+b64 let region r315:inf, r317:0
+b64 in  concatStringML(
+b64       atbot r301, 
+b64       let region r329:inf, r331:inf
+b64       in  concatStringML(
+b64             atbot r315, 
+b64             let region r345:inf, r347:0
+b64             in  concatStringML(
+b64                   atbot r329, 
+b64                   let region r359:inf, r361:0
+b64                   in  concatStringML(
+b64                         atbot r345, 
+b64                         let region r373:inf, r375:0
+b64                         in  concatStringML(
+b64                               atbot r359, 
+b64                               let region r387:inf, r389:0
+b64                               in  concatStringML(
+b64                                     atbot r373, 
+b64                                     let region r401:inf, r403:0
+b64                                     in  concatStringML(
+b64                                           atbot r387, 
+b64                                           let region r415:inf, r417:inf
+b64                                           in  concatStringML(
+b64                                                 atbot r401, 
+b64                                                 let region r429:inf, r431:0
+b64                                                 in  concatStringML(
+b64                                                       atbot r415, 
+b64                                                       let region r443:inf, r445:0
+b64                                                       in  concatStringML(
+b64                                                             atbot r429, 
+b64                                                             let region r457:inf, r459:inf
+b64                                                             in  concatStringML(
+b128   atbot r443, 
+b128   let region r471:inf, r473:0
+b128   in  concatStringML(
+b128         atbot r457, 
+b128         let region r485:inf, r487:0
+b128         in  concatStringML(
+b128               atbot r471, 
+b128               let region r499:inf, r501:inf
+b128               in  concatStringML(
+b128                     atbot r485, 
+b128                     let region r513:inf, r515:0
+b128                     in  concatStringML(
+b128                           atbot r499, 
+b128                           let region r527:inf, r529:0
+b128                           in  concatStringML(
+b128                                 atbot r513, 
+b128                                 let region r541:0, r543:inf
+b128                                 in  concatStringML(
+b128                                       atbot r527, 
+b128                                       "\n-- ARP-packet --\nHardware type: "atbot r541, 
+b128                                       funcall toString[atbot r543] v137
+b128                                     )
+b128                                 end, 
+b128                                 "\n"atbot r529
+b128                               )
+b128                           end, 
+b128                           "Protocol type: "atbot r515
+b128                         )
+b128                     end, 
+b128                     funcall toString[atbot r501] v138
+b128                   )
+b128               end, 
+b128               "\n"atbot r487
+b128             )
+b128         end, 
+b128         "Hardware address length: "atbot r473
+b128       )
+b128   end, 
+b128   funcall toString[atbot r459] v139
+b128 )
+b64                                                             end, 
+b64                                                             "\n"atbot r445
+b64                                                           )
+b64                                                       end, 
+b64                                                       "Protocol address length: "atbot r431
+b64                                                     )
+b64                                                 end, 
+b64                                                 funcall toString[atbot r417] v140
+b64                                               )
+b64                                           end, 
+b64                                           "\n"atbot r403
+b64                                         )
+b64                                     end, 
+b64                                     "Operation: "atbot r389
+b64                                   )
+b64                               end, 
+b64                               funcall arpOperationToString[atbot r375] v141
+b64                             )
+b64                         end, 
+b64                         "\n"atbot r361
+b64                       )
+b64                   end, 
+b64                   "Sender hardware address: ["atbot r347
+b64                 )
+b64             end, 
+b64             funcall rawBytesString[atbot r331] v142
+b64           )
+b64       end, 
+b64       "]\n"atbot r317
+b64     )
+b64 end, 
+b64 "Sender protocol address: ["atbot r303
+                                                               )
+                                                           end, 
+                                                           funcall rawBytesString[atbot r287] v143
+                                                         )
+                                                     end, 
+                                                     "]\n"atbot r273
+                                                   )
+                                               end, 
+                                               "Target hardware address: ["atbot r259
+                                             )
+                                         end, 
+                                         funcall rawBytesString[atbot r243] v144
+                                       )
+                                   end, 
+                                   "]\n"atbot r229
+                                 )
+                             end, 
+                             "Target protocol address: ["atbot r215
+                           )
+                       end, 
+                       funcall rawBytesString[atbot r199] v145
+                     )
+                 end, 
+                 "]\n\n"atbot r185
+               )
+           end; 
+       fun encode attop r1 [r579:inf] (var3) = 
+           let val v161 = decon_Header var3; 
+               val v162 = #1 v161; 
+               val v163 = #4 v161; 
+               val v164 = #0 v161; 
+               val v165 = #3 v161; 
+               val v167 = #5 v161; 
+               val v168 = #6 v161; 
+               val v169 = #7 v161; 
+               val v170 = #8 v161; 
+               region r575:inf, r577:inf
+           in  concatStringML(
+                 sat r579, 
+                 let region r591:inf, r593:inf
+                 in  concatStringML(
+                       atbot r575, 
+                       let region r607:inf, r609:inf
+                       in  concatStringML(
+                             atbot r591, 
+                             let region r623:inf, r625:inf
+                             in  concatStringML(
+                                   atbot r607, 
+                                   let region r639:inf, r641:inf
+                                   in  concatStringML(
+                                         atbot r623, 
+                                         let region r653:inf, r655:inf
+                                         in  concatStringML(
+                                               atbot r639, 
+                                               let region r667:inf, r669:inf
+                                               in  concatStringML(
+                                                     atbot r653, 
+                                                     let region r681:inf, r683:inf
+                                                     in  concatStringML(
+                                                           atbot r667, 
+                                                           funcall intToRawbyteString[atbot r681] <v162, 2>, 
+                                                           funcall intToRawbyteString[atbot r683] <v163, 2>
+                                                         )
+                                                     end, 
+                                                     funcall intToRawbyteString[atbot r669] <v164, 1>
+                                                   )
+                                               end, 
+                                               funcall intToRawbyteString[atbot r655] <v165, 1>
+                                             )
+                                         end, 
+                                         funcall intToRawbyteString[atbot r641] <2, 2>
+                                       )
+                                   end, 
+                                   funcall byteListToString[atbot r625] v167
+                                 )
+                             end, 
+                             funcall byteListToString[atbot r609] v168
+                           )
+                       end, 
+                       funcall byteListToString[atbot r593] v169
+                     )
+                 end, 
+                 funcall byteListToString[atbot r577] v170
+               )
+           end; 
+       fun decode attop r1 [r705:9, r703:inf] (s) = 
+           Header 
+           let val v175 = 
+                 let region r709:inf; val v492 = funcall substring[atbot r709] <2, 0, s>; region r713:2
+                 in  funcall |>[] <fn atbot r713 v539 => jmp convertRawBytes[] v539, v492>
+                 end; 
+               val v176 = 
+                 let region r723:inf; val v497 = funcall substring[atbot r723] <2, 2, s>; region r727:2
+                 in  funcall |>[] <fn atbot r727 v540 => jmp convertRawBytes[] v540, v497>
+                 end; 
+               val v177 = 
+                 let region r737:inf; val v502 = funcall substring[atbot r737] <1, 4, s>; region r741:2
+                 in  funcall |>[] <fn atbot r741 v541 => jmp convertRawBytes[] v541, v502>
+                 end; 
+               val v178 = 
+                 let region r751:inf; val v507 = funcall substring[atbot r751] <1, 5, s>; region r755:2
+                 in  funcall |>[] <fn atbot r755 v542 => jmp convertRawBytes[] v542, v507>
+                 end
+           in  (v177, 
+                v175, 
+                let val v512 = 
+                      let region r837:inf; val v514 = funcall substring[atbot r837] <2, 6, s>; region r841:2
+                      in  funcall |>[] <fn atbot r841 v543 => jmp convertRawBytes[] v543, v514>
+                      end; 
+                    region r849:2
+                in  funcall |>[] <fn atbot r849 v544 => jmp toArpOperation[] v544, v512>
+                end, 
+                v178, 
+                v176, 
+                let region r819:inf; val v519 = funcall substring[atbot r819] <6, 8, s>; region r825:3
+                in  funcall |>[] <fn atbot r825 v545 => jmp toByteList[attop r703] v545, v519>
+                end, 
+                let region r801:inf; val v524 = funcall substring[atbot r801] <4, 14, s>; region r807:3
+                in  funcall |>[] <fn atbot r807 v546 => jmp toByteList[attop r703] v546, v524>
+                end, 
+                let region r783:inf; val v529 = funcall substring[atbot r783] <6, 18, s>; region r789:3
+                in  funcall |>[] <fn atbot r789 v547 => jmp toByteList[attop r703] v547, v529>
+                end, 
+                let region r765:inf; val v534 = funcall substring[atbot r765] <4, 24, s>; region r771:3
+                in  funcall |>[] <fn atbot r771 v548 => jmp toByteList[attop r703] v548, v534>
+                end
+               )sat r705
+           end
+   in  {|
+       toArpOperation: (_,r1), 
+       arpOperationToString: (_,r1), 
+       arpOperationToInt: (_,r1), 
+       toString: (_,r1), 
+       encode: (_,r1), 
+       decode: (_,r1), 
+       eq_ARP_OP: (_,r1), 
+       eq_header: (_,r1)
+       |}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../arplib/MLB/RI/arpCodeclib.sml.s]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/../udplib/../ipv4lib/ipv4Send.sml]
+
+Program After Application Conversion: 
+   let fun send attop r1 [] (v190, v191, v192, v193, v194, v195, v196) = 
+           let region r31:10; 
+               fun sendFragments atbot r31 [] (offset, payload) = 
+                   case ($__bytetable_size(payload) + 20) <= 1500 of 
+                     true => 
+                     let region r57:inf, r59:4; 
+                         val v180 = 
+                           let val v122 = IPv4
+                           in  (v193, 
+                                let region r43:13; 
+                                    val v178 = 
+                                      Header 
+                                      (v194, 0, 0, 0, offset, 0, v192, 5, v191, v195, 128, 20 + $__bytetable_size(payload), 4)atbot r43
+                                in  funcall encode[atbot r57] <v178, payload>
+                                end, 
+                                v122, 
+                                v196
+                               )atbot r59
+                           end
+                     in  funcall send[] <#1 v180, #2 v180, #0 v180, #3 v180>
+                     end
+                   | _ => 
+                     let val _ = 
+                           let region r81:inf, r83:4; 
+                               val v184 = 
+                                 let val v141 = IPv4
+                                 in  (v193, 
+                                      let region r67:inf; 
+                                          val v182 = funcall substring[atbot r67] <1480, 0, payload>; 
+                                          region r71:13; 
+                                          val v181 = Header (v194, 0, 0, 1, offset, 0, v192, 5, v191, v195, 128, 1500, 4)atbot r71
+                                      in  funcall encode[atbot r81] <v181, v182>
+                                      end, 
+                                      v141, 
+                                      v196
+                                     )atbot r83
+                                 end
+                           in  funcall send[] <#1 v184, #2 v184, #0 v184, #3 v184>
+                           end; 
+                         region r95:inf; 
+                         val v186 = 
+                         let region r89:1; val v202 = NONE atbot r89 in funcall extract[atbot r95] <v202, 1480, payload> end; 
+                         val v185 = offset + 185
+                     in  funcall sendFragments[] <v185, v186>
+                     end
+           in  funcall sendFragments[] <0, v190>
+           end
+   in  {|send: (_,r1)|}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/../udplib/../ipv4lib/MLB/RI/ipv4Send.sml.s]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../arplib/ARPLIB.sig]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/../udplib/UDP_CODEC_LIB.sig]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../arplib/arplib.sml]
+
+Program After Application Conversion: 
+   let fun handl attop r1 [r21:inf] (v193, v194, v195, v196) = 
+           let region r29:9, r31:inf; 
+               val arp = 
+                 let region r59:2
+                 in   SOME atbot r31 
+                      let region r39:4
+                      in  funcall |>[] <fn atbot r39 v221 => jmp decode[attop r29,attop r21] v221, v193>
+                      end handle 
+                      (fn atbot r59 v93 => NONE attop r31)
+                 end
+           in  case arp of 
+                 SOME => 
+                 let val v131 = decon_SOME arp; val v132 = decon_Header v131
+                 in  case let val v182 = #8 v132; 
+                              region r71:0; 
+                              fun eq_list atbot r71 [] (v197, v198) = 
+                                  case $__equal_ptr(v198, v197) of 
+                                    true => true
+                                  | _ => 
+                                    (case v198 of 
+                                       :: => 
+                                       (case v197 of 
+                                          :: => 
+                                          let val v142 = decon_:: v198; val v143 = decon_:: v197
+                                          in  case #0 v142 = #0 v143 of 
+                                              true => let val v217 = #1 v142; val v218 = #1 v143 in jmp eq_list[] <v218, v217> end | _ => false
+                                          end
+                                        | _ => false
+                                       )
+                                     | nil => (case v197 of nil => true | _ => false)
+                                    )
+                          in  funcall eq_list[] <v195, v182>
+                          end
+                     of 
+                       true => 
+                       let val _ = 
+                             let region r99:inf; 
+                                 val v188 = funcall toString[atbot r99] Header v132; 
+                                 region r105:0, r107:1; 
+                                 val v189 = NONE atbot r107; 
+                                 val v187 = ARP
+                             in  funcall log[] <v187, v188, v189>
+                             end; 
+                           region r119:inf, r159:4; 
+                           val v190 = 
+                             let val v125 = ARP
+                             in  (v194, 
+                                  let region r117:9
+                                  in  funcall encode[atbot r119] 
+                                              Header 
+                                              (6, 
+                                               1, 
+                                               Reply, 
+                                               4, 
+                                               2048, 
+                                               v196, 
+                                               v195, 
+                                               #5 v132, 
+                                               let region r127:inf in funcall concat[attop r21] [#6 v132,[0,0] attop r21] attop r127 end
+                                              )atbot r117
+                                  end, 
+                                  v125, 
+                                  v196
+                                 )atbot r159
+                             end
+                       in  funcall send[] <#1 v190, #2 v190, #0 v190, #3 v190>
+                       end
+                     | _ => ()
+                 end
+               | _ => 
+                 let val v191 = ARP; region r165:0
+                 in  funcall logMsg[] <v191, "Arp packet could not be decoded\n"atbot r165>
+                 end
+           end
+   in  {|handl: (_,r1)|}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../arplib/MLB/RI/arplib.sml.s]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/../udplib/udpCodeclib.sml]
+
+Program After Application Conversion: 
+   let fun eq_header attop r1 [] (v248, v249) = 
+           let val v163 = decon_Header v249; val v164 = decon_Header v248
+           in  case #0 v163 = #0 v164 of 
+                 true => 
+                 (case #1 v163 = #1 v164 of 
+                  true => (case #2 v163 = #2 v164 of true => #3 v163 = #3 v164 | _ => false) | _ => false
+                 )
+               | _ => false
+           end; 
+       fun toString attop r1 [r47:inf] (var1) = 
+           let val v99 = decon_Header var1; 
+               val v100 = #3 v99; 
+               val v101 = #1 v99; 
+               val v102 = #2 v99; 
+               val v103 = #0 v99; 
+               region r43:inf, r45:0
+           in  concatStringML(
+                 sat r47, 
+                 let region r57:inf, r59:inf
+                 in  concatStringML(
+                       atbot r43, 
+                       let region r71:inf, r73:0
+                       in  concatStringML(
+                             atbot r57, 
+                             let region r85:inf, r87:0
+                             in  concatStringML(
+                                   atbot r71, 
+                                   let region r99:inf, r101:inf
+                                   in  concatStringML(
+                                         atbot r85, 
+                                         let region r113:inf, r115:0
+                                         in  concatStringML(
+                                               atbot r99, 
+                                               let region r127:inf, r129:0
+                                               in  concatStringML(
+                                                     atbot r113, 
+                                                     let region r141:inf, r143:inf
+                                                     in  concatStringML(
+                                                           atbot r127, 
+                                                           let region r155:inf, r157:0
+                                                           in  concatStringML(
+                                                                 atbot r141, 
+b64 let region r169:inf, r171:0
+b64 in  concatStringML(
+b64       atbot r155, 
+b64       let region r183:0, r185:inf
+b64       in  concatStringML(
+b64             atbot r169, 
+b64             "\n-- UDP INFO --\nSource port: "atbot r183, 
+b64             funcall toString[atbot r185] v100
+b64           )
+b64       end, 
+b64       "\n"atbot r171
+b64     )
+b64 end, 
+b64 "Destination port: "atbot r157
+                                                               )
+                                                           end, 
+                                                           funcall toString[atbot r143] v101
+                                                         )
+                                                     end, 
+                                                     "\n"atbot r129
+                                                   )
+                                               end, 
+                                               "UDP length: "atbot r115
+                                             )
+                                         end, 
+                                         funcall toString[atbot r101] v102
+                                       )
+                                   end, 
+                                   "\n"atbot r87
+                                 )
+                             end, 
+                             "Checksum: "atbot r73
+                           )
+                       end, 
+                       funcall toString[atbot r59] v103
+                     )
+                 end, 
+                 "\n"atbot r45
+               )
+           end; 
+       fun decode attop r1 [r275:2, r213:inf, r215:4] (s) = 
+           (Header 
+            let val v108 = 
+                  let region r219:inf; val v250 = funcall substring[atbot r219] <2, 0, s>; region r223:2
+                  in  funcall |>[] <fn atbot r223 v273 => jmp convertRawBytes[] v273, v250>
+                  end; 
+                val v109 = 
+                  let region r233:inf; val v255 = funcall substring[atbot r233] <2, 2, s>; region r237:2
+                  in  funcall |>[] <fn atbot r237 v274 => jmp convertRawBytes[] v274, v255>
+                  end; 
+                val v110 = 
+                  let region r247:inf; val v260 = funcall substring[atbot r247] <2, 4, s>; region r251:2
+                  in  funcall |>[] <fn atbot r251 v275 => jmp convertRawBytes[] v275, v260>
+                  end
+            in  (let region r261:inf; val v265 = funcall substring[atbot r261] <2, 6, s>; region r265:2
+                 in  funcall |>[] <fn atbot r265 v276 => jmp convertRawBytes[] v276, v265>
+                 end, 
+                 v109, 
+                 v110, 
+                 v108
+                )attop r215
+            end, 
+            let region r207:1; val v272 = NONE atbot r207 in funcall extract[sat r213] <v272, 8, s> end
+           )sat r275; 
+       fun encode attop r1 [r303:inf] (var2, data) = 
+           let val v127 = decon_Header var2; val v129 = #3 v127; val v130 = #1 v127; region r299:inf
+           in  concatStringML(
+                 attop r303, 
+                 let region r311:inf, r313:inf
+                 in  concatStringML(
+                       atbot r299, 
+                       let region r325:inf, r327:inf
+                       in  concatStringML(
+                             atbot r311, 
+                             let region r343:inf, r345:inf
+                             in  concatStringML(
+                                   atbot r325, 
+                                   funcall intToRawbyteString[atbot r343] <v129, 2>, 
+                                   funcall intToRawbyteString[atbot r345] <v130, 2>
+                                 )
+                             end, 
+                             let val v244 = $__bytetable_size(data) + 8 in funcall intToRawbyteString[atbot r327] <v244, 2> end
+                           )
+                       end, 
+                       funcall intToRawbyteString[atbot r313] <0, 2>
+                     )
+                 end, 
+                 data
+               )
+           end
+   in  {|toString: (_,r1), decode: (_,r1), encode: (_,r1), eq_header: (_,r1)|}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/../udplib/MLB/RI/udpCodeclib.sml.s]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/../udplib/UDPLIB.sig]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/../udplib/udplib.sml]
+
+Program After Application Conversion: 
+   let fun eq_header attop r1 [] (v221, v222) = 
+           let val v193 = decon_Header v222; val v194 = decon_Header v221
+           in  case #0 v193 = #0 v194 of 
+                 true => 
+                 (case #1 v193 = #1 v194 of 
+                  true => (case #2 v193 = #2 v194 of true => #3 v193 = #3 v194 | _ => false) | _ => false
+                 )
+               | _ => false
+           end; 
+       fun handl attop r1 [r69:0, r67:inf] (v223, v224, v225, v226, v227, v228, v229) = 
+           let region r81:4, r83:2; 
+               val v152 = 
+                 let region r85:5
+                 in  funcall |>[] <fn atbot r85 v235 => jmp decode[attop r83,attop r67,attop r81] v235, v223>
+                 end; 
+               val v153 = #0 v152; 
+               val v154 = decon_Header v153; 
+               val v155 = #1 v152; 
+               region r113:2; 
+               val binding = 
+               let region r109:2 in funcall find[atbot r113] <fn atbot r109 v106 => #1 v154 = #0 v106, v229> end; 
+               val v151 = decon_Header v224; 
+               val payload = 
+                 case binding of 
+                   SOME => let val v122 = decon_SOME binding; val v123 = #1 v122 in fncall v123 v155 end
+                 | _ => "Port is not mapped to a function.\n"attop r69; 
+               region r141:4; 
+               val udpHeader = Header (0, #3 v154, 0, #1 v154)atbot r141; 
+               val _ = 
+                 let region r147:inf; 
+                     val v215 = 
+                       let region r149:3
+                       in  funcall |>[] <fn atbot r149 v236 => jmp toString[attop r147] v236, udpHeader>
+                       end; 
+                     region r161:2; 
+                     val v216 = SOME atbot r161 v155; 
+                     val v214 = UDP
+                 in  funcall log[] <v214, v215, v216>
+                 end; 
+               val v147 = #6 v151; 
+               region r173:inf, r175:7; 
+               val v220 = 
+                 let val v148 = UDP
+                 in  (v225, v227, v147, v226, v228, funcall encode[atbot r173] <udpHeader, payload>, v148)atbot r175
+                 end
+           in  funcall send[] <#5 v220, #6 v220, #2 v220, #1 v220, #0 v220, #3 v220, #4 v220>
+           end
+   in  {|handl: (_,r1), eq_header: (_,r1)|}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/../udplib/MLB/RI/udplib.sml.s]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/FRAG_ASSEMBLER.sig]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/fragAssemblerList.sml]
+
+Program After Application Conversion: 
+   let fun eq_fragment attop r1 [] (v409, v410) = 
+           let val v347 = decon_Fragment v410; val v348 = decon_Fragment v409
+           in  case #0 v347 = #0 v348 of 
+                 true => 
+                 (case #1 v347 = #1 v348 of 
+                  true => (case #2 v347 = #2 v348 of true => #3 v347 = #3 v348 | _ => false) | _ => false
+                 )
+               | _ => false
+           end; 
+       fun add attop r1 [r89:inf, r87:inf, r83:inf] (id, var17, m) = 
+           let val v232 = decon_Fragment var17; 
+               val offset = #3 v232; 
+               val length = #2 v232; 
+               region r95:8; 
+               fun replace atbot r95 [] (var15) = 
+                   case var15 of 
+                     nil => 
+                     :: 
+                     ((id, case offset = 0 of true => length | _ => 0, [Fragment v232] attop r83)attop r87, m)attop r89
+                   | _ => 
+                     let val v224 = decon_:: var15; 
+                         val v225 = #0 v224; 
+                         val v226 = #0 v225; 
+                         val v227 = #1 v225; 
+                         val v228 = #2 v225; 
+                         val v229 = #1 v224
+                     in  case (case v226 = id of true => false | _ => true) of 
+                           true => :: ((v226, v227, v228)attop r87, funcall replace[] v229)attop r89
+                         | _ => 
+                           let region r469:2; 
+                               val v221 = 
+                                 let region r219:0; 
+                                     fun updatePrevFrags atbot r219 [r253:2, r251:inf] (var12, var13, var14) = 
+                                         case var13 of 
+                                           nil => (var12, var14)sat r253
+                                         | _ => 
+                                           let val v176 = decon_:: var13; val v177 = #0 v176; val v178 = decon_Fragment v177; val v179 = #1 v176
+                                           in  case #3 v178 = var12 of 
+                                                 true => 
+                                                 let val v393 = :: (Fragment v178, var14)attop r251; val v391 = #3 v178 + #2 v178
+                                                 in  jmp updatePrevFrags[sat r253,sat r251] <v391, v179, v393>
+                                                 end
+                                               | _ => 
+                                                 let val v395 = :: (Fragment v178, var14)attop r251
+                                                 in  jmp updatePrevFrags[sat r253,sat r251] <var12, v179, v395>
+                                                 end
+                                           end; 
+                                     region r331:5; 
+                                     fun insertFrag atbot r331 [r391:2, r363:inf, r357:inf] (prevFrags, nxtFrags) = 
+                                         case nxtFrags of 
+                                           nil => 
+                                           let val v398 = [Fragment v232] attop r363; val v396 = case offset = 0 of true => length | _ => v227
+                                           in  jmp updatePrevFrags[sat r391,sat r363] <v396, prevFrags, v398>
+                                           end
+                                         | _ => 
+                                           let val v214 = decon_:: nxtFrags; val v215 = #0 v214; val v216 = decon_Fragment v215; val v217 = #1 v214
+                                           in  case offset >= (#3 v216 + #2 v216) of 
+                                                 true => 
+                                                 let val v401 = :: (Fragment v232, nxtFrags)attop r363; 
+                                                     val v399 = case offset = v227 of true => offset + length | _ => v227
+                                                 in  jmp updatePrevFrags[sat r391,sat r363] <v399, prevFrags, v401>
+                                                 end
+                                               | _ => 
+                                                 let val v402 = :: (Fragment v216, prevFrags)attop r357
+                                                 in  jmp insertFrag[sat r391,sat r363,sat r357] <v402, v217>
+                                                 end
+                                           end; 
+                                     region r463:inf; 
+                                     val v404 = nil
+                                 in  funcall insertFrag[atbot r469,attop r83,atbot r463] <v404, v228>
+                                 end
+                           in  :: ((v226, #0 v221, #1 v221)attop r87, v229)attop r89
+                           end
+                     end
+           in  funcall replace[] m
+           end; 
+       fun assemble attop r1 [r767:2, r765:2, r539:inf, r537:inf, r535:inf, r531:inf] (id, m) = 
+           let region r541:inf, r543:1; 
+               val assembledPayload = ref atbot r543 NONE atbot r541; 
+               val newList = 
+                 let region r545:5; 
+                     fun removeAndAssemble atbot r545 [r581:inf, r579:inf, r575:inf] (var19) = 
+                         case var19 of 
+                           nil => nil
+                         | _ => 
+                           let val v258 = decon_:: var19; val v259 = #0 v258; val v260 = #2 v259
+                           in  case v260 of 
+                                 nil => #1 v258
+                               | _ => 
+                                 let val v299 = #0 v259; 
+                                     val v300 = #1 v259; 
+                                     val v301 = decon_:: v260; 
+                                     val v302 = #0 v301; 
+                                     val v303 = decon_Fragment v302; 
+                                     val v304 = #1 v301; 
+                                     val v305 = #1 v258
+                                 in  case v299 = id of 
+                                       true => 
+                                       (case (case #1 v303 of true => v300 = (#3 v303 + #2 v303) | _ => false) of 
+                                          true => 
+                                          let val _ = 
+                                                (assembledPayload := 
+                                                 SOME attop r541 
+                                                 let val v408 = :: (Fragment v303, v304)attop r575; region r639:inf, r641:2
+                                                 in  funcall foldl[atbot r639] 
+                                                             <fn atbot r641 v275 => concatStringML(attop r539, #0 decon_Fragment #0 v275, #1 v275), 
+                                                              ""attop r539, 
+                                                              v408
+                                                             >
+                                                 end
+                                                )
+                                          in  v305
+                                          end
+                                        | _ => nil
+                                       )
+                                     | _ => 
+                                       :: 
+                                       ((v299, v300, :: (Fragment v303, v304)attop r575)attop r579, 
+                                        funcall removeAndAssemble[attop r581,attop r579,attop r575] v305
+                                       )attop r581
+                                 end
+                           end
+                 in  funcall removeAndAssemble[sat r537,sat r535,sat r531] m
+                 end; 
+               val v311 = !assembledPayload
+           in  case v311 of SOME => SOME attop r767 (decon_SOME v311, newList)attop r765 | _ => NONE sat r767
+           end; 
+       fun empty attop r1 [r819:0] () = nil
+   in  {|add: (_,r1), assemble: (_,r1), empty: (_,r1), eq_fragment: (_,r1)|}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/MLB/RI/fragAssemblerList.sml.s]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/IPV4_HANDLE.sig]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/../ipv4lib/ipv4Handle.sml]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/NETWORKLIB.sig]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/networklib.sml]
+[compiling body of functor IPv4Handle (from source ipv4Handlelib.mlb->ipv4Handle.sml) begin]
+
+Program After Application Conversion: 
+   let fun emptyFragContainer attop r1 [r39:0] () = jmp empty[sat r39] <>; 
+       val mtu = 1500; 
+       fun mkPktID attop r1 [r69:inf] (var13) = 
+           let val v144 = decon_Header var13; region r65:inf, r67:0
+           in  concatStringML(
+                 sat r69, 
+                 let region r79:inf, r81:inf
+                 in  concatStringML(
+                       atbot r65, 
+                       funcall rawBytesString[atbot r79] #9 v144, 
+                       funcall toString[atbot r81] #6 v144
+                     )
+                 end, 
+                 funcall protToString[atbot r67] #8 v144
+               )
+           end; 
+       fun handl 
+           attop r1 
+           [r157:inf, r155:inf, r151:inf, r149:4, r147:inf, r153:inf, r141:inf, r139:inf] 
+           (v327, v328, v329, v330, v331, v332) = 
+           let val v256 = decon_PBindings v331; 
+               region r169:13, r173:2; 
+               val v251 = funcall decode[atbot r173,attop r147,atbot r169,attop r139] v327; 
+               val v252 = #0 v251; 
+               val v253 = decon_Header v252; 
+               val v254 = #1 v251; 
+               region r181:2, r183:2; 
+               val v204 = 
+                 case (case #4 v253 = 0 of true => #3 v253 = 2 | _ => false) of 
+                   true => (SOME atbot r181 v254, v332)atbot r183
+                 | _ => 
+                   let val pktID = funcall mkPktID[attop r153] Header v253; 
+                       val new_m1 = 
+                         let val v317 = 
+                               Fragment 
+                               let val v225 = #4 v253; val v226 = $__div_int64ub(#11 v253 - 20, 8, Div)
+                               in  (v254, #3 v253 = 0, v226, v225)attop r149
+                               end
+                         in  funcall add[attop r157,attop r155,attop r151] <pktID, v317, v332>
+                         end; 
+                       region r233:2, r235:2; 
+                       val v234 = 
+                       funcall assemble[atbot r235,atbot r233,attop r147,attop r157,attop r155,attop r151] <pktID, new_m1>
+                   in  case v234 of 
+                         SOME => let val v236 = decon_SOME v234 in (SOME atbot r181 #0 v236, #1 v236)atbot r183 end
+                       | _ => (NONE atbot r181, new_m1)atbot r183
+                   end; 
+               val v205 = #0 v204; 
+               val v206 = #1 v204; 
+               val _ = 
+                 case let val v314 = #0 v253; 
+                          region r267:0; 
+                          fun eq_list atbot r267 [] (v333, v334) = 
+                              case $__equal_ptr(v334, v333) of 
+                                true => true
+                              | _ => 
+                                (case v334 of 
+                                   :: => 
+                                   (case v333 of 
+                                      :: => 
+                                      let val v268 = decon_:: v334; val v269 = decon_:: v333
+                                      in  case #0 v268 = #0 v269 of 
+                                          true => let val v351 = #1 v268; val v352 = #1 v269 in jmp eq_list[] <v352, v351> end | _ => false
+                                      end
+                                    | _ => false
+                                   )
+                                 | nil => (case v333 of nil => true | _ => false)
+                                )
+                      in  funcall eq_list[] <v330, v314>
+                      end
+                 of 
+                   true => 
+                   let val _ = 
+                         let region r295:inf; 
+                             val v322 = funcall toString[atbot r295] Header v253; 
+                             region r301:0, r303:1; 
+                             val v323 = NONE atbot r303; 
+                             val v321 = IPv4
+                         in  funcall log[] <v321, v322, v323>
+                         end
+                   in  case v205 of 
+                         SOME => 
+                         let val v199 = decon_SOME v205
+                         in  case #8 v253 of 
+                               UDP => 
+                               let val v355 = #1 v256; val v356 = #9 v253; val v358 = Header v253
+                               in  funcall handl[attop r141,attop r141] <v199, v358, v356, v330, v328, v329, v355>
+                               end
+                             | _ => 
+                               let val v325 = IPv4; region r339:0
+                               in  funcall logMsg[] <v325, "IPv4 Handler: Protocol is not supported.\n"atbot r339>
+                               end
+                         end
+                       | _ => ()
+                   end
+                 | _ => ()
+           in  v206
+           end
+   in  {|emptyFragContainer: (_,r1), mtu: _, mkPktID: (_,r1), handl: (_,r1)|}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/../../src/networklib/MLB/RI/networklib.sml.code1.s]
+[compiling body of functor IPv4Handle end]
+[reading source file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/main.sml]
+[compiling body of functor Network (from source networklib.mlb->networklib.sml) begin]
+
+Program After Application Conversion: 
+   let val ownMac = [124,117,178,57,212,132] attop r4; 
+       val ownIPaddr = [10,0,0,2] attop r4; 
+       val log = ref attop r6 false; 
+       fun logPrint attop r1 [] (str) = case !log of true => $printStringML(str) | _ => (); 
+       fun logOn attop r1 [] () = (log := true); 
+       fun logOff attop r1 [] () = (log := false); 
+       fun recListen 
+           attop r1 
+           [r121:inf, r115:inf, r113:inf, r111:inf, r107:inf, r105:inf, r103:inf, r109:inf] 
+           (m, bindings) = 
+           let region r1245:12
+           in   let region r129:inf; 
+                    val rawTap = funcall receive[atbot r129] <>; 
+                    region r137:inf; 
+                    val ethFrame = 
+                    let region r131:1; val v387 = NONE atbot r131 in funcall extract[atbot r137] <v387, 0, rawTap> end; 
+                    region r141:inf, r145:3, r147:2; 
+                    val v171 = 
+                      let region r149:6
+                      in  funcall |>[] 
+                                  <fn atbot r149 v422 => jmp decode[attop r147,attop r141,attop r145,attop r4] v422, ethFrame>
+                      end; 
+                    val v172 = #0 v171; 
+                    val v173 = #1 v171; 
+                    val v167 = decon_Header v172; 
+                    val v168 = #1 v167; 
+                    val v169 = #0 v167; 
+                    val v170 = #2 v167; 
+                    val new_m = 
+                      case (case let region r169:0; 
+                                     fun eq_list atbot r169 [] (v347, v348) = 
+                                         case $__equal_ptr(v348, v347) of 
+                                           true => true
+                                         | _ => 
+                                           (case v348 of 
+                                              :: => 
+                                              (case v347 of 
+                                                 :: => 
+                                                 let val v187 = decon_:: v348; val v188 = decon_:: v347
+                                                 in  case #0 v187 = #0 v188 of 
+                                                     true => let val v390 = #1 v187; val v391 = #1 v188 in jmp eq_list[] <v391, v390> end | _ => false
+                                                 end
+                                               | _ => false
+                                              )
+                                            | nil => (case v347 of nil => true | _ => false)
+                                           )
+                                 in  funcall eq_list[] <ownMac, v169>
+                                 end
+                            of 
+                              true => true
+                            | _ => 
+                              let val v313 = [255,255,255,255,255,255] attop r4; 
+                                  region r219:0; 
+                                  fun eq_list atbot r219 [] (v350, v351) = 
+                                      case $__equal_ptr(v351, v350) of 
+                                        true => true
+                                      | _ => 
+                                        (case v351 of 
+                                           :: => 
+                                           (case v350 of 
+                                              :: => 
+                                              let val v187 = decon_:: v351; val v188 = decon_:: v350
+                                              in  case #0 v187 = #0 v188 of 
+                                                  true => let val v394 = #1 v187; val v395 = #1 v188 in jmp eq_list[] <v395, v394> end | _ => false
+                                              end
+                                            | _ => false
+                                           )
+                                         | nil => (case v350 of nil => true | _ => false)
+                                        )
+                              in  funcall eq_list[] <v313, v169>
+                              end
+                           )
+                      of 
+                        true => 
+                        let val _ = 
+                              let region r247:inf; val v398 = funcall toString[atbot r247] v172; region r251:2
+                              in  funcall |>[] <fn atbot r251 v423 => jmp logPrint[] v423, v398>
+                              end
+                        in  case v168 of 
+                              ARP => let val _ = funcall handl[attop r4] <v173, v170, ownIPaddr, ownMac> in m end
+                            | IPv4 => 
+                              let val v409 = 
+                                    PBindings 
+                                    let val v146 = 
+                                          let region r451:inf; 
+                                              val v410 = 
+                                                let region r425:inf; 
+                                                    val v412 = 
+                                                      let region r265:1; 
+                                                          fun filter atbot r265 [r321:inf] (var26) = 
+                                                              case var26 of 
+                                                                nil => nil
+                                                              | _ => 
+b64let val v446 = decon_:: var26; val v447 = #0 v446; val v448 = #1 v446
+b64in  case let val v133 = #0 v447; val v315 = UDP in funcall eq_protocol[] <v315, v133> end of 
+b64    true => :: (v447, funcall filter[sat r321] v448)attop r321 | _ => jmp filter[sat r321] v448
+b64end
+                                                      in  funcall filter[atbot r425] bindings
+                                                      end; 
+                                                    region r453:2
+                                                in  funcall |>[] 
+                                                            < fn atbot r453 v424 => 
+                                                              let region r469:0; 
+b64  fun map atbot r469 [r521:inf] (var20) = 
+b64      case var20 of 
+b64        nil => nil
+b64      | _ => 
+b64        let val v369 = decon_:: var20; val v370 = #0 v369; val v371 = #1 v369
+b64        in  :: (#1 v370, funcall map[sat r521] v371)attop r521
+b64        end
+                                                              in  jmp map[attop r451] v424
+                                                              end, 
+                                                             v412
+                                                            >
+                                                end; 
+                                              region r681:5; 
+                                              val v411 = 
+                                                let val v332 = nil
+                                                in   fn atbot r681 v333 => 
+                                                     let region r639:inf, r641:3
+                                                     in  funcall foldl[atbot r639] <fn atbot r641 a => jmp @[attop r121] <#1 a, #0 a>, v332, v333>
+                                                     end
+                                                end
+                                          in  funcall |>[] <v411, v410>
+                                          end
+                                    in  (let region r893:inf; 
+                                             val v416 = 
+                                               let region r867:inf; 
+                                                   val v418 = 
+                                                     let region r707:1; 
+                                                         fun filter atbot r707 [r763:inf] (var26) = 
+                                                             case var26 of 
+                                                               nil => nil
+                                                             | _ => 
+                                                               let val v446 = decon_:: var26; val v447 = #0 v446; val v448 = #1 v446
+                                                               in  case let val v141 = #0 v447; val v317 = TCP in funcall eq_protocol[] <v317, v141> end of 
+b64   true => :: (v447, funcall filter[sat r763] v448)attop r763 | _ => jmp filter[sat r763] v448
+                                                               end
+                                                     in  funcall filter[atbot r867] bindings
+                                                     end; 
+                                                   region r895:2
+                                               in  funcall |>[] 
+                                                           < fn atbot r895 v425 => 
+                                                             let region r911:0; 
+b64 fun map atbot r911 [r963:inf] (var20) = 
+b64     case var20 of 
+b64       nil => nil
+b64     | _ => 
+b64       let val v369 = decon_:: var20; val v370 = #0 v369; val v371 = #1 v369
+b64       in  :: (#1 v370, funcall map[sat r963] v371)attop r963
+b64       end
+                                                             in  jmp map[attop r893] v425
+                                                             end, 
+                                                            v418
+                                                           >
+                                               end; 
+                                             region r1123:5; 
+                                             val v417 = 
+                                               let val v338 = nil
+                                               in   fn atbot r1123 v339 => 
+                                                    let region r1081:inf, r1083:3
+                                                    in  funcall foldl[atbot r1081] <fn atbot r1083 a => jmp @[attop r121] <#1 a, #0 a>, v338, v339>
+                                                    end
+                                               end
+                                         in  funcall |>[] <v417, v416>
+                                         end, 
+                                         v146
+                                        )attop r121
+                                    end
+                              in  funcall handl[attop r113,attop r111,attop r107,attop r105,attop r103,attop r109,attop r115,attop r4] 
+                                          <v173, v170, ownMac, ownIPaddr, v409, m>
+                              end
+                            | _ => 
+                              let val _ = 
+                                  let region r1181:0 in $printStringML("\nIn listen: Protocol not supported.\n"atbot r1181) end
+                              in  m
+                              end
+                        end
+                      | _ => m
+                in  funcall recListen[attop r121,attop r115,attop r113,attop r111,attop r107,attop r105,attop r103,attop r109] 
+                            <new_m, bindings>
+                end handle 
+                (fn atbot r1245 v175 => 
+                 let val _ = let region r1215:0 in $printStringML("Encountered an error in handling!\n"atbot r1215) end
+                 in  jmp recListen[attop r121,attop r115,attop r113,attop r111,attop r107,attop r105,attop r103,attop r109] 
+                         <m, bindings>
+                 end
+                )
+           end; 
+       fun listen attop r1 [r1271:inf, r1265:inf] (bindings) = 
+           let region r1279:inf, r1281:inf, r1283:inf, r1285:inf, r1287:inf, r1289:inf; 
+               val v345 = funcall emptyFragContainer[atbot r1289] <>
+           in  funcall recListen
+                        [sat r1271,sat r1265,atbot r1289,atbot r1287,atbot r1285,atbot r1283,atbot r1281,atbot r1279] 
+                       <v345, bindings>
+           end
+   in  {|
+       ownMac: _, 
+       ownIPaddr: _, 
+       log: (_,r6), 
+       logPrint: (_,r1), 
+       logOn: (_,r1), 
+       logOff: (_,r1), 
+       recListen: (_,r1), 
+       listen: (_,r1)
+       |}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/MLB/RI/main.sml.code1.s]
+[compiling body of functor Network end]
+
+Program After Application Conversion: 
+   let fun takeSafe 
+           :all r2335,'a0.<int, ('a0, [r2335]) list>->('a0, [r2335]) list 
+           attop r1 
+           [r2335:inf] 
+           [] 
+           (v1011, v1012) = 
+           let val len:int = 
+                 let region r2337:0; 
+                     fun acc :all r2341,'aA.<('aA, [r2341]) list, int>->int atbot r2337 [] [r2341:inf] (var11, var12) = 
+                         case var11 of 
+                           nil => var12
+                         | _ => 
+                           let val v261:('aA*('aA, [r2341]) list,r2341) = decon_:: var11; 
+                               val v263:('aA, [r2341]) list = #1 v261; 
+                               val v1002:int = var12 + 1
+                           in  jmp acc[] [] [r2341] <v263, v1002>
+                           end
+                 in  funcall acc[] ['a0] [r2335] <v1012, 0>
+                 end
+           in  case v1011 < len of 
+                 true => 
+                 let region r2351:1; 
+                     fun h 
+                         :all r2359,r2357,'aC.<('aC, [r2357]) list, int>->('aC, [r2359]) list 
+                         atbot r2351 
+                         [r2359:inf] 
+                         [r2357:inf] 
+                         (var9, var10) = 
+                         case var10 of 
+                           0 => nil
+                         | _ => 
+                           (case var9 of 
+                              nil => raise Subscript
+                            | _ => 
+                              let val v231:('aC*('aC, [r2357]) list,r2357) = decon_:: var9; 
+                                  val v232:'aC = #0 v231; 
+                                  val v233:('aC, [r2357]) list = #1 v231
+                              in  :: 
+                                  (v232, 
+                                   let val v1004:int = var10 - 1 in funcall h[sat r2359] [] [r2359,r2357] <v233, v1004> end
+                                  )attop r2359
+                              end
+                           )
+                 in  case v1011 < 0 of 
+                     true => raise Subscript | _ => funcall h[sat r2335] ['a0] [r2335,r2335] <v1012, v1011>
+                 end
+               | _ => v1012
+           end; 
+       fun copyList 
+           :all r2399,r2397,r2395,r2393.((string,r2393), [r2395]) list->((string,r2397), [r2399]) list 
+           attop r1 
+           [r2399:inf, r2397:inf] 
+           [r2395:inf, r2393:inf] 
+           (var1) = 
+           case var1 of 
+             nil => nil
+           | _ => 
+             let val v873:((string,r2393)*((string,r2393), [r2395]) list,r2395) = decon_:: var1; 
+                 val v874:(string,r2393) = #0 v873; 
+                 val v875:((string,r2393), [r2395]) list = #1 v873
+             in  :: 
+                 (let region r2425:0 in concatStringML(attop r2397, v874, ""atbot r2425):(string,r2397) end, 
+                  funcall copyList[sat r2399,attop r2397] [] [r2399,r2397,r2395,r2393] v875
+                 )attop r2399
+             end; 
+       fun handler 
+           :all 
+               r2463,r2453,r2451,r2449,r2447.
+               <(string,r2447), (((string,r2449), [r2451]) list ref,r2453)>->(string,r2463) 
+           attop r1 
+           [r2463:inf, r2451:inf, r2449:inf] 
+           [r2453:inf, r2447:inf] 
+           (data, sList) = 
+           case let region r2455:0
+                in  data = (* domain of = is: (string,r2447)*(string,r2455) *)"exit"atbot r2455
+                end
+           of 
+             true => 
+             let val _ = let region r2459:0 in $printStringML("Exiting server...\n"atbot r2459):unit end
+             in  "Server cannot be stopped gracefully yet\n"sat r2463
+             end
+           | _ => 
+             let val _ = 
+                   let region r2467:inf
+                   in  $printStringML(
+                         let region r2475:inf, r2477:0
+                         in  concatStringML(
+                               atbot r2467, 
+                               let region r2489:0 in concatStringML(atbot r2475, "Added: "atbot r2489, data):(string,r2475) end, 
+                               "\n"atbot r2477
+                             ):(string,r2467)
+                         end
+                       ):unit
+                   end; 
+                 val _ = 
+                   (sList := 
+                    :: 
+                    (let region r2509:0 in concatStringML(attop r2449, data, "\n"atbot r2509):(string,r2449) end, 
+                     !sList
+                    )attop r2451
+                   ); 
+                 val _ = 
+                   (sList := 
+                    let val v1018:((string,r2449), [r2451]) list = !sList
+                    in  funcall takeSafe[attop r2451] [(string,r2449)] [r2451] <2, v1018>
+                    end
+                   ); 
+                 region r2525:inf; 
+                 val revList:((string,r2449), [r2525]) list = 
+                 funcall rev[atbot r2525] [(string,r2449)] [r2525,r2451] (!sList); 
+                 val _ = 
+                   let region r2529:inf
+                   in  $printStringML(
+                         let region r2537:0, r2539:inf
+                         in  concatStringML(
+                               atbot r2529, 
+                               "Current list:\n"atbot r2537, 
+                               funcall concatWith[atbot r2539] [] [r2539,r2525,r2449] <"> "attop r2449, revList>
+                             ):(string,r2529)
+                         end
+                       ):unit
+                   end
+             in  funcall concatWith[sat r2463] [] [r2463,r2525,r2449] <"> "attop r2449, revList>
+             end; 
+       fun service 
+           :all `r1_2569,`r3_2565,`r2_2567,r2607,r2605,r2579.<>->((string,r2579)->(string,r2605),r2607) 
+           attop r1 
+           [`r1_2569:1, `r3_2565:0, `r2_2567:0, r2607:7, r2605:0] 
+           [r2579:inf] 
+           () = 
+           let val sList:(((string,`r2_2567), [`r3_2565]) list ref,`r1_2569) = ref sat `r1_2569 nil
+           in   fn attop r2607 data:(string,r2579) => 
+                let region r2585:inf, r2587:inf; 
+                    val temp:((string,r2585), [r2587]) list = 
+                    funcall copyList[atbot r2587,atbot r2585] [] [r2587,r2585,`r3_2565,`r2_2567] (!sList); 
+                    val a:((string,`r2_2567), [`r3_2565]) list = !sList; 
+                    val _ = (forceResetting [[attop `r2_2567,attop `r3_2565]]a); 
+                    val _ = 
+                    (sList := funcall copyList[attop `r3_2565,attop `r2_2567] [] [`r3_2565,`r2_2567,r2587,r2585] temp)
+                in  funcall handler[attop r2605,attop `r3_2565,attop `r2_2567] [] [r2605,`r1_2569,`r3_2565,`r2_2567,r2579] 
+                            <data, sList>
+                end
+           end; 
+       fun run :all .<>->unit attop r1 [] [] () = 
+           let val _ = 
+               let region r2615:0 in $printStringML("Starting UDP server on port 8080...\n"atbot r2615):unit end; 
+               region `r1_2619:1, `r2_2621:inf, `r3_2623:inf; 
+               region r2625:inf, r2627:7, r2629:inf, r2631:inf, r2633:2, r2635:inf
+           in  funcall listen[atbot r2629,atbot r2625] [unit] [r2635,r2633,r2631,r2629,r2627,r2625] 
+                       [(UDP, 
+                         [(8080, 
+                           funcall service
+                                    [atbot `r1_2619,atbot `r3_2623,atbot `r2_2621,atbot r2627,atbot r2625] 
+                                    [] 
+                                    [`r1_2619,`r3_2623,`r2_2621,r2627,r2625,r2625] 
+                                   <>
+                          )atbot r2629
+                         ] 
+                         attop r2631
+                        )atbot r2633
+                       ] 
+                       attop r2635
+           end; 
+       val _ = funcall run[] [] [] <>
+   in  {|
+       takeSafe: (all r2335,'a0.<int, ('a0, [r2335]) list>->('a0, [r2335]) list,r1), 
+       copyList: (
+            all r2399,r2397,r2395,r2393.((string,r2393), [r2395]) list->((string,r2397), [r2399]) list,
+            r1
+       ), 
+       handler: (
+            all 
+               r2463,r2453,r2451,r2449,r2447.
+               <(string,r2447), (((string,r2449), [r2451]) list ref,r2453)>->(string,r2463),
+            r1
+       ), 
+       service: (
+            all `r1_2569,`r3_2565,`r2_2567,r2607,r2605,r2579.<>->((string,r2579)->(string,r2605),r2607),
+            r1
+       ), 
+       run: (all .<>->unit,r1)
+       |}
+   end
+[wrote X64 code file:	/home/mikkel/repos/speciale/unikernel-regions/examples/chat/MLB/RI/main.sml.s]
+ *** Warnings ***
+forceResetting(a): 
+   You have requested resetting the regions that appear free 
+   in the type scheme with place of 'a', i.e., in
+   ((string,`r2_2567), [`r3_2565]) list
+   I have done as you requested, but I cannot guarantee that it is safe.
+   Here are my objections (one for each region variable concerned):
+   (1)'`r2_2567': this region variable is bound outside the present function
+   (2)'`r3_2565': this region variable is bound outside the present function
+[wrote X64 code file:	MLB/RI/base-link_objects.s]
+[wrote executable file:	chat.ic]
