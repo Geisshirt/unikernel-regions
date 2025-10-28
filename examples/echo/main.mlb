@@ -1,4 +1,5 @@
 $(SML_LIB)/basis/basis.mlb
 ../../src/utilslib/utilslib.mlb
-../../src/networklib/networklib.mlb
+(* ../../src/networklib/networklib.mlb *)
+../../src/net.mlb
 main.sml

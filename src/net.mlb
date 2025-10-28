@@ -1,6 +1,6 @@
 local $(SML_LIB)/basis/basis.mlb
-ipv4lib/ipv4Handlelib.mlb
-networklib/networklib.mlb
+  ipv4lib/IPV4HANDLE/ipv4Handlelib.mlb
+  networklib/networklib.mlb
 in 
   net.sml
 end
