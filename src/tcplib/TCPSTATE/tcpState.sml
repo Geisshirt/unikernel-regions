@@ -31,8 +31,5 @@ structure TcpState : TCP_STATE = struct
 
     (* Update removes the old entry and adds the new one. *)
     fun update (conn : connection) : unit =
-        table :=
-            conn :: List.filter
-                (fn (c : connection) => not (compareIDs (#id c, #id conn)))
-                (!table)
+        table := conn :: List.filter (fn (c : connection) => not (compareIDs (#id c, #id conn))) (!table)
 end

@@ -33,7 +33,7 @@ structure TcpHandle :> TCP_HANDLE = struct
               tcpPayload 
             then print "Verified!\n"
             else print "Not verified!\n" *)
-            (* case (connection, #flags tcpHeader) of 
+            case (connection, #flags tcpHeader) of 
                 (NONE, [TcpCodec.SYN]) => 
                     (* Add the connection and send SYN/ACK message. *)
                     () 
@@ -46,6 +46,6 @@ structure TcpHandle :> TCP_HANDLE = struct
                     (* Update and send ACK*)
                     ()
 
-              | _ => logMsg TCP "State combination not yet implemented." *)
+              | _ => logMsg TCP "State combination not yet implemented."
         end
 end
