@@ -3,7 +3,7 @@
 SYSNAME=$(shell uname -s)
 CC=gcc
 CFLAGS=-g -O2
-INSTALL=/usr/bin/install -c
+INSTALL=install -c
 INSTALLDATA=${INSTALL} -m 644
 INSTALLPROGRAM=${INSTALL}
 ARGOBOTS_ROOT=

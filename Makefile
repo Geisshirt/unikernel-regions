@@ -41,16 +41,16 @@ tests: unix tests/*test
 	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
 	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
 
-ICFLAGS=--reml -Pcee -maximum_inline_size 0 
-
 service:
-	mlkit $(FLAGS) -no_gc -o service.exe  $(shell pwd)/examples/service/main.mlb
+	mlkit $(FLAGS) -no_gc --reml -o service.exe  $(shell pwd)/examples/service/main.mlb
+
+ICFLAGS=--reml -Pcee -maximum_inline_size 0 
 
 service.ic:
 	mlkit $(FLAGS) -no_gc $(ICFLAGS) -o service.ic $(shell pwd)/examples/service/main.mlb
 
 %.ic: $(t)
-	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
+	gcc -I UnixRuntimeMini/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
 	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc $(ICFLAGS) -o $*.ic -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
 
 %.prof: $(t)
