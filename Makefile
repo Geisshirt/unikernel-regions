@@ -49,6 +49,9 @@ ICFLAGS=--reml -Pcee -maximum_inline_size 0
 service.ic:
 	mlkit $(FLAGS) -no_gc $(ICFLAGS) -o service.ic $(shell pwd)/examples/service/main.mlb
 
+service.prof:
+	mlkit $(FLAGS) -no_gc --reml -prof -o service.prof $(shell pwd)/examples/service/main.mlb
+
 %.ic: $(t)
 	gcc -I UnixRuntimeMini/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
 	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc $(ICFLAGS) -o $*.ic -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb

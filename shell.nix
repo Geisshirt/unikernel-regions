@@ -32,15 +32,6 @@ let
 	  # MLKit intentionally has some of these in its test suite.
 	  # Since the test suite is available in `$out/share/mlkit/test`, we must disable this check.
 	  dontCheckForBrokenSymlinks = true;
-
-	  # checkPhase = ''
-	  # 	runHook preCheck
-	  # 	echo ==== Running MLKit test suite: test ====
-	  # 	make -C test_dev test
-	  # 	echo ==== Running MLKit test suite: test_prof ====
-	  # 	make -C test_dev test_prof
-	  # 	runHook postCheck
-	  # '';
 	};
 in
 	pkgs.stdenv.mkDerivation {

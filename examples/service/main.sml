@@ -65,14 +65,7 @@ fun resp `r (data: string`r) : unit =
 (* chat subservice *)
 (* appends data to state and returns a response *)
 (* \/ r,r',r'',r'''. (string`r' list`r, string`r'') -> (string`r''', string`r' list`r) *)
-(* fun chat `[r1 r2 r3 r4] (state: string`r1 list`r2) (data: string`r3) : string`r4 * string`r1 list`r2 = *)
-(* 	let *)
-(* 	  val newState : string`r1 list `r2 = data ^ "\n" :: state *)
-(* 	  val response : string`r4 = "Chat received: " ^ data ^ "\n" *)
-(* 	in *)
-(* 	  (response, newState) *)
-(* 	end *)
-fun chat `[r1 r2 r4] (state : string`r1 list`r2) (data: string) : string`r4 * string`r1 list`r2 =
+fun chat `[r1 r2 r3 r4] (state : string`r1 list`r2) (data: string`r3) : string`r4 * string`r1 list`r2 =
 	let with r5 r6
 	  val temp : string`r5 list`r6 = data ^ "" :: copyList state
 	  val _ = forceResetting (state)
@@ -112,7 +105,7 @@ fun service `[r1 r2] (inStream : instream) (state : string`r1 list`r2) : unit =
 		)
 	  | Chat => (
 		  let
-			val (response : string`r4, state') = chat `[r1 r2 r4] state data
+			val (response : string`r4, state') = chat `[r1 r2 r3 r4] state data
 		  in
 			resp (response : string`r4);
 			service `[r1 r2] inStream state'
