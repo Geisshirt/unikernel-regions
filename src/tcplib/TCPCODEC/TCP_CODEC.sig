@@ -23,17 +23,29 @@ signature TCP_CODEC = sig
     val toString : header -> string
     val verifyChecksum :
         {
-            total_length : int, 
             protocol : IPv4Codec.protocol, 
             source_addr : int list, 
             dest_addr : int list
         } -> 
         header -> 
-        string -> 
+        int ->
+        string ->
         bool
 
     val decode : string -> header * string
-    val encode : header -> string -> string
+    val encode : {
+            protocol : IPv4Codec.protocol, 
+            source_addr : int list, 
+            dest_addr : int list
+        } -> {
+            source_port : int,
+            dest_port : int,
+            sequence_number : int,
+            ack_number : int,
+            doffset : int,
+            flags : flag list,
+            window : int
+        } -> string -> string
 end
 
 (*

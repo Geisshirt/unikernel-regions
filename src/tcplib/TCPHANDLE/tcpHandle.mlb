@@ -1,7 +1,7 @@
 local 
     $(SML_LIB)/basis/basis.mlb
     ../../utilslib/utilslib.mlb
-    (* ../../ipv4lib/ipv4lib.mlb *)
+    ../../ipv4lib/IPV4SEND/ipv4Sendlib.mlb
     ../../ipv4lib/IPV4CODEC/ipv4Codeclib.mlb
     ../TCPCODEC/tcpCodec.mlb
     ../TCPSTATE/tcpState.mlb

@@ -15,20 +15,38 @@ structure TcpCodec : TCP_CODEC = struct
         checksum: int,
         urgent_pointer: int
         (* options *)
-    } 
+    }
 
-    fun intToFlags i = 
-        let fun andbi n m = Word8.andb (Word8.fromInt n, Word8.fromInt m) |> Word8.toInt in
-            (if andbi i 0x80 <> 0 then [CWR] else []) @
-            (if andbi i 0x40 <> 0 then [ECE] else []) @ 
-            (if andbi i 0x20 <> 0 then [URG] else []) @ 
-            (if andbi i 0x10 <> 0 then [ACK] else []) @
-            (if andbi i 0x08 <> 0 then [PSH] else []) @
-            (if andbi i 0x04 <> 0 then [RST] else []) @
-            (if andbi i 0x02 <> 0 then [SYN] else []) @
-            (if andbi i 0x01 <> 0 then [FIN] else [])
-        end 
-        
+    fun orbi n m = Word8.orb (Word8.fromInt n, Word8.fromInt m) |> Word8.toInt 
+
+    fun andbi n m = Word8.andb (Word8.fromInt n, Word8.fromInt m) |> Word8.toInt
+
+    fun intToFlags i = (
+        (if andbi i 0x01 <> 0 then [FIN] else []) @
+        (if andbi i 0x02 <> 0 then [SYN] else []) @
+        (if andbi i 0x04 <> 0 then [RST] else []) @
+        (if andbi i 0x08 <> 0 then [PSH] else []) @
+        (if andbi i 0x10 <> 0 then [ACK] else []) @
+        (if andbi i 0x20 <> 0 then [URG] else []) @ 
+        (if andbi i 0x40 <> 0 then [ECE] else []) @ 
+        (if andbi i 0x80 <> 0 then [CWR] else [])
+    )
+
+     fun flagsToInt (flags : flag list) : int = 
+        let fun flagToInt flag = 
+            case flag of
+                FIN => 0x01
+              | SYN => 0x02
+              | RST => 0x04
+              | PSH => 0x08
+              | ACK => 0x10
+              | URG => 0x20
+              | ECE => 0x40
+              | CWR => 0x80
+        in 
+            List.foldl (fn (x, y) => orbi x y) 0 (List.map flagToInt flags)
+        end
+
     fun flagToString flag =
         case flag of 
           FIN => "FIN"
@@ -49,8 +67,8 @@ structure TcpCodec : TCP_CODEC = struct
             | _  => String.concatWith " | " flagList
         end
 
-    fun encode (Header { source_port, dest_port, sequence_number, 
-                         ack_number, DOffset, Rsrvd, control_bits, flags = _,
+    fun encode' (Header { source_port, dest_port, sequence_number, 
+                         ack_number, DOffset, Rsrvd = _, control_bits, flags = _,
                          window, checksum, urgent_pointer
     }) data =
         (intToRawbyteString source_port 2) ^
@@ -63,10 +81,8 @@ structure TcpCodec : TCP_CODEC = struct
         (intToRawbyteString checksum 2) ^
         (intToRawbyteString urgent_pointer 2) ^
         data
-
-    fun verifyChecksum
-        {
-            total_length,
+    
+    fun computeChecksum {
             protocol,
             source_addr,
             dest_addr
@@ -84,16 +100,16 @@ structure TcpCodec : TCP_CODEC = struct
             checksum,
             urgent_pointer
         }) 
-        payload =
+        tcpLength
+        payload = 
         let
-            val tcpLength = total_length - 20
             val checksumHeader = 
                 byteListToString source_addr ^
                 byteListToString dest_addr ^ 
                 intToRawbyteString 0 1 ^ (* Just zeros *)
                 intToRawbyteString (IPv4Codec.protToInt protocol) 1 ^
                 intToRawbyteString tcpLength 2 ^ 
-                encode (Header {
+                encode' (Header {
                     source_port = source_port,
                     dest_port = dest_port,
                     sequence_number = sequence_number,
@@ -111,11 +127,21 @@ structure TcpCodec : TCP_CODEC = struct
                 checksumHeader |> toByteList |> toHextets |> makeChecksum
             
         in 
-            print ("Checksum vs Computed: " ^ Int.toString checksum ^ " vs " ^ Int.toString computedChecksum);
-            checksum = computedChecksum 
+           computedChecksum 
         end 
 
-
+    fun verifyChecksum {protocol, source_addr, dest_addr} (Header tcpHeader) tcpLength payload =
+        let val computedChecksum = computeChecksum {
+            protocol = protocol,
+            source_addr = source_addr,
+            dest_addr = dest_addr
+        } (Header tcpHeader) tcpLength payload
+        in
+            "\nOriginal: " ^ (Int.toString (#checksum tcpHeader)) ^ "\n" |> print;
+            "\nComputed: " ^ (Int.toString computedChecksum) ^ "\n" |> print;
+            (#checksum tcpHeader) = computedChecksum
+        end
+        
     fun toString (Header {
         source_port: int,
         dest_port: int,
@@ -141,6 +167,49 @@ structure TcpCodec : TCP_CODEC = struct
         "Window: " ^ Int.toString window ^ "\n" ^
         "Checksum: " ^ Int.toString checksum ^ "\n" ^
         "Urgent pointer: " ^ Int.toString urgent_pointer ^ "\n"
+
+    fun encode {protocol, source_addr, dest_addr} {
+            source_port,
+            dest_port,
+            sequence_number,
+            ack_number,
+            doffset,
+            flags : flag list,
+            window
+        } payload = 
+        let val header = (Header {
+                source_port = source_port,
+                dest_port = dest_port,
+                sequence_number = sequence_number,
+                ack_number = ack_number,
+                DOffset = doffset,
+                Rsrvd = 0,
+                control_bits = flags |> flagsToInt,
+                flags = flags,
+                window = window,
+                checksum = 0,
+                urgent_pointer = 0 (* Should be changed *)
+            })
+        
+            val checksum = 
+                    computeChecksum {
+                        protocol = protocol, 
+                        source_addr = source_addr, 
+                        dest_addr = dest_addr} header (20 + String.size payload) payload
+        in  encode' (Header {
+                source_port = source_port,
+                dest_port = dest_port,
+                sequence_number = sequence_number,
+                ack_number = ack_number,
+                DOffset = doffset,
+                Rsrvd = 0,
+                control_bits = flags |> flagsToInt,
+                flags = flags,
+                window = window,
+                checksum = checksum,
+                urgent_pointer = 0 (* Should be changed *)
+            }) payload
+        end 
 
     fun decode s = (Header {
         source_port = String.substring(s, 0, 2) |> convertRawBytes,
