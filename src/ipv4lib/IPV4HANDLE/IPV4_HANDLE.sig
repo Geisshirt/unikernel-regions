@@ -1,5 +1,5 @@
 signature IPV4_HANDLE = sig
-    type fragContainer
+    type context
 
     type port = int
 
@@ -10,13 +10,12 @@ signature IPV4_HANDLE = sig
       TCP : bindingList
     }
 
-    val emptyFragContainer : unit -> fragContainer
+    val initContext : unit -> context
 
-    val handl   : {fragContainer : fragContainer,
-                   protBindings : pbindings, 
+    val handl   : {protBindings : pbindings, 
                    ownIPaddr : int list,
                    ownMac : int list, 
                    dstMac : int list, 
-                   ipv4Packet : string} -> fragContainer
+                   ipv4Packet : string} -> context -> context
 
 end

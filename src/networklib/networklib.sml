@@ -1,6 +1,6 @@
-open Logging
-
 functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
+    open Logging
+
     type port = int
     type callback = string -> string
 
@@ -17,13 +17,13 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
 
     fun logOff () = log := false
 
-    fun recListen m bindings = 
+    fun recListen context bindings = 
         let 
             val rawTap = Netif.receive () 
             val ethFrame = String.extract (rawTap, 0, NONE)
             val (ethHeader, ethPayload) = ethFrame |> EthCodec.decode 
             val EthCodec.Header {et, dstMac, srcMac} = ethHeader
-            val new_m = 
+            val new_context = 
                 if dstMac = ownMac orelse dstMac = [255, 255, 255, 255, 255, 255] then (
                     EthCodec.toString ethHeader |> logPrint;
                     (case et of 
@@ -34,12 +34,11 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
                             dstMac = srcMac,
                             arpPacket = ethPayload
                         };
-                        m
+                        context
                     )
                     (* List.filter (fn (prot, _) => prot = TCP) bindings |> map (fn (_, l) => l) *)
                     | IPv4 => 
                         IPv4.handl {
-                            fragContainer = m,
                             protBindings = IPv4.PBindings {
                                 UDP = List.filter (fn (prot, _) => prot = UDP) bindings |> map (fn (_, l) => l) |> foldl (op @) [],
                                 TCP = List.filter (fn (prot, _) => prot = TCP) bindings |> map (fn (_, l) => l) |> foldl (op @) []
@@ -48,17 +47,17 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
                             ownMac = ownMac,
                             dstMac = srcMac,
                             ipv4Packet = ethPayload
-                        }
-                    | _ => (print "\nIn listen: Protocol not supported.\n"; m)
+                        } context
+                    | _ => (print "\nIn listen: Protocol not supported.\n"; context)
                     )
-                ) else m
+                ) else context
         in 
-            recListen new_m bindings
-        end handle _ => (print "Encountered an error in handling!\n"; recListen m bindings)
-
+            recListen new_context bindings
+        end 
+       (* handle _ => (print "Encountered an error in handling!\n"; recListen context bindings)  *)
 
     fun listen bindings = 
-        recListen (IPv4.emptyFragContainer()) bindings
+        recListen (IPv4.initContext ()) bindings
 
 end
 

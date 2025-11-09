@@ -21,6 +21,7 @@ fun rawBytesString (b: int list) = b |> foldl (fn (x, acc) => if acc = "" then (
 
 fun byteListToString b = (b |> map Char.chr |> implode)
 
+(* Check with char? *)
 fun intToRawbyteString i0 nb = 
     let fun h_intToRawbyteString i 1 acc = Char.chr i :: acc |> implode
           | h_intToRawbyteString i nb acc = 
