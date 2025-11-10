@@ -2,7 +2,7 @@ signature TCP_STATE = sig
 
     type tcp_states
 
-    datatype tcp_state = CLOSED | LISTEN | ESTABLISHED | SYN_REC | SYN_SENT
+    datatype tcp_state = CLOSED | LISTEN | ESTABLISHED | SYN_REC | SYN_SENT | CLOSE_WAIT | LAST_ACK
 
     type connection_id = {
         source_addr: int list, 
@@ -24,6 +24,8 @@ signature TCP_STATE = sig
     val add : connection -> tcp_states -> tcp_states
 
     val update : connection -> tcp_states -> tcp_states
+
+    val remove : connection_id -> tcp_states -> tcp_states
 
     val print_states : tcp_states -> unit
 

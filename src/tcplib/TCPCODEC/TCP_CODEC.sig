@@ -4,7 +4,7 @@
 
 signature TCP_CODEC = sig
     datatype flag = FIN | SYN | RST | PSH | ACK | URG | ECE | CWR
-
+    
     datatype header = Header of {
         source_port: int,
         dest_port: int,
@@ -21,9 +21,9 @@ signature TCP_CODEC = sig
     } 
 
     val toString : header -> string
+
     val verifyChecksum :
         {
-            protocol : IPv4Codec.protocol, 
             source_addr : int list, 
             dest_addr : int list
         } -> 
@@ -32,9 +32,13 @@ signature TCP_CODEC = sig
         string ->
         bool
 
+    val hasFlagsSet: flag list -> flag list -> bool
+
+    val flagsToString : flag list -> string
+
     val decode : string -> header * string
+    
     val encode : {
-            protocol : IPv4Codec.protocol, 
             source_addr : int list, 
             dest_addr : int list
         } -> {

@@ -47,6 +47,13 @@ structure TcpCodec : TCP_CODEC = struct
             List.foldl (fn (x, y) => orbi x y) 0 (List.map flagToInt flags)
         end
 
+    fun hasFlagsSet flagList checkFlagList =
+        let val setI = flagsToInt flagList
+            val checkI = flagsToInt checkFlagList
+        in
+            checkI = andbi setI checkI
+        end 
+
     fun flagToString flag =
         case flag of 
           FIN => "FIN"
@@ -83,7 +90,6 @@ structure TcpCodec : TCP_CODEC = struct
         data
     
     fun computeChecksum {
-            protocol,
             source_addr,
             dest_addr
         }
@@ -107,7 +113,7 @@ structure TcpCodec : TCP_CODEC = struct
                 byteListToString source_addr ^
                 byteListToString dest_addr ^ 
                 intToRawbyteString 0 1 ^ (* Just zeros *)
-                intToRawbyteString (IPv4Codec.protToInt protocol) 1 ^
+                intToRawbyteString (IPv4Codec.protToInt Protocols.TCP) 1 ^
                 intToRawbyteString tcpLength 2 ^ 
                 encode' (Header {
                     source_port = source_port,
@@ -130,9 +136,8 @@ structure TcpCodec : TCP_CODEC = struct
            computedChecksum 
         end 
 
-    fun verifyChecksum {protocol, source_addr, dest_addr} (Header tcpHeader) tcpLength payload =
+    fun verifyChecksum {source_addr, dest_addr} (Header tcpHeader) tcpLength payload =
         let val computedChecksum = computeChecksum {
-            protocol = protocol,
             source_addr = source_addr,
             dest_addr = dest_addr
         } (Header tcpHeader) tcpLength payload
@@ -168,7 +173,7 @@ structure TcpCodec : TCP_CODEC = struct
         "Checksum: " ^ Int.toString checksum ^ "\n" ^
         "Urgent pointer: " ^ Int.toString urgent_pointer ^ "\n"
 
-    fun encode {protocol, source_addr, dest_addr} {
+    fun encode {source_addr, dest_addr} {
             source_port,
             dest_port,
             sequence_number,
@@ -193,7 +198,6 @@ structure TcpCodec : TCP_CODEC = struct
         
             val checksum = 
                     computeChecksum {
-                        protocol = protocol, 
                         source_addr = source_addr, 
                         dest_addr = dest_addr} header (20 + String.size payload) payload
         in  encode' (Header {

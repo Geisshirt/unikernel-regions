@@ -1,5 +1,5 @@
 structure TcpState : TCP_STATE = struct
-    datatype tcp_state = CLOSED | LISTEN | ESTABLISHED | SYN_REC | SYN_SENT
+    datatype tcp_state = CLOSED | LISTEN | ESTABLISHED | SYN_REC | SYN_SENT | CLOSE_WAIT | LAST_ACK
 
     type connection_id = {
         source_addr : int list,
@@ -28,10 +28,12 @@ structure TcpState : TCP_STATE = struct
 
     fun add (conn : connection) (states : tcp_states) : tcp_states =
         conn :: states
-
-    (* Update removes the old entry and adds the new one. *)
+         
     fun update (CON conn : connection) (states : tcp_states) : tcp_states = 
         List.map (fn (CON c : connection) => if compareIDs (#id c, #id conn) then CON conn else CON c) states
+
+    fun remove (cid : connection_id) (states : tcp_states) : tcp_states = 
+        List.filter (fn (CON c : connection) => not (compareIDs (#id c, cid))) states
 
     fun print_states (states : tcp_states) : unit = 
         List.app (fn (CON c : connection) =>
