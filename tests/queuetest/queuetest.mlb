@@ -1,0 +1,7 @@
+local 
+    $(SML_LIB)/basis/basis.mlb
+    ../../src/utilslib/utilslib.mlb
+    ../testutils/testutils.mlb
+in 
+    queuetest.sml
+end 
