@@ -1,0 +1,46 @@
+signature QUEUE = sig
+    type 'a queue
+    val empty   : unit -> 'a queue
+    val isEmpty : 'a queue -> bool
+    val enqueue : 'a * 'a queue -> 'a queue
+    val dequeue : 'a queue -> ('a * 'a queue) option
+    val peek    : 'a queue -> 'a option
+end
+
+structure Queue = struct
+    type 'a queue = 'a list * 'a list
+
+    fun empty () : 'a queue = ([], [])
+
+    fun isEmpty (q : 'a queue) : bool  =
+        case q of
+            ([], []) => true
+        |   _        => false
+
+    fun enqueue (x, (f, b)) : 'a queue = 
+        (f, x :: b)
+
+    fun dequeue ((f, b) : 'a queue) : ('a * 'a queue) option = 
+        case f of
+            x :: xs => SOME (x, (xs, b))
+        |   []      => case List.rev b of
+                           []      => NONE
+                       |   y :: ys => SOME (y, (ys, []))
+
+    fun peek ((f, b) : 'a queue) : 'a option =
+        case f of
+            x :: _ => SOME x
+          | [] =>
+              (case List.rev b of
+                   [] => NONE
+                 | y :: _ => SOME y)
+
+end
+
+(* 
+    Queue implemented with two lists, (front * back), to achieve constant amortized enqueue and dequeue.
+
+    front: holds the elements the dequeue order i.e. oldest first.
+    back: holds the elements the queued order i.e. newest first.
+*)
+
