@@ -2,22 +2,56 @@ signature TCP_STATE = sig
 
     type tcp_states
 
-    datatype tcp_state = CLOSED | LISTEN | ESTABLISHED | SYN_REC | SYN_SENT | CLOSE_WAIT | LAST_ACK
+    datatype tcp_state =  ESTABLISHED | SYN_REC | CLOSE_WAIT | LAST_ACK
 
     type connection_id = {
-        source_addr: int list, 
-        source_port: int, 
-        dest_port: int
+        source_addr : int list, 
+        source_port : int, 
+        dest_port   : int
+    }
+
+    datatype send_seqvar = SSV of {
+        una : int,  (* Send unacknowledged *)
+        nxt : int,  (* Send next *)
+        wnd : int,  (* Send window *)
+        up  : int,  (* Send urgent pointer *)
+        wl1 : int,  (* Segment sequence number used for last window update *)
+        wl2 : int,  (* Segment acknowledgement number used for last window update *)
+        iss : int   (* Initial sequence numbers *)
+    }
+
+    datatype receive_seqvar = RSV of {
+        nxt : int, (* Receive next *)
+        wnd : int, (* Receive window *)
+        up  : int, (* Receive urgent pointer *)
+        irs : int  (* Initial receive sequence number *)
     }
 
     datatype connection = CON of {
-        id               : connection_id,
-        state            : tcp_state,
-        sequence_number  : int,
-        ack_number       : int
+        id             : connection_id,
+        state          : tcp_state,
+        send_seqvar    : send_seqvar,
+        receive_seqvar : receive_seqvar
     }
 
+    val getRSV: connection -> { nxt : int, wnd : int, up  : int, irs : int}
+
+    val getSSV: 
+        connection 
+        -> 
+        {
+            una : int,
+            nxt : int,
+            wnd : int,
+            up  : int,
+            wl1 : int,
+            wl2 : int,
+            iss : int 
+        }
+
     val empty_states : unit -> tcp_states
+
+    val new_iss : unit -> int
 
     val lookup : connection_id -> tcp_states -> connection option
 
@@ -28,6 +62,4 @@ signature TCP_STATE = sig
     val remove : connection_id -> tcp_states -> tcp_states
 
     val print_states : tcp_states -> unit
-
-    (* Remove?? *)
 end

@@ -1,5 +1,5 @@
 structure TcpState : TCP_STATE = struct
-    datatype tcp_state = CLOSED | LISTEN | ESTABLISHED | SYN_REC | SYN_SENT | CLOSE_WAIT | LAST_ACK
+    datatype tcp_state = ESTABLISHED | SYN_REC | CLOSE_WAIT | LAST_ACK
 
     type connection_id = {
         source_addr : int list,
@@ -7,16 +7,41 @@ structure TcpState : TCP_STATE = struct
         dest_port   : int
     }
 
-    datatype connection = CON of {
-        id               : connection_id,
-        state            : tcp_state,
-        sequence_number  : int,
-        ack_number       : int
+    datatype send_seqvar = SSV of {
+        una : int,
+        nxt : int,
+        wnd : int,
+        up  : int,
+        wl1 : int,
+        wl2 : int,
+        iss : int 
     }
+
+    datatype receive_seqvar = RSV of {
+        nxt : int,
+        wnd : int,
+        up  : int,
+        irs : int 
+    }
+
+    datatype connection = CON of {
+        id             : connection_id,
+        state          : tcp_state,
+        send_seqvar    : send_seqvar,
+        receive_seqvar : receive_seqvar
+    }
+
+    fun getSSV (CON {id = _, state = _, send_seqvar, receive_seqvar = _}) =
+        let val SSV ssv = send_seqvar in ssv end
+
+    fun getRSV (CON {id = _, state = _, send_seqvar = _, receive_seqvar}) =
+        let val RSV rsv = receive_seqvar in rsv end
 
     type tcp_states = connection list
 
     fun empty_states () = [] 
+
+    fun new_iss () = 42
 
     fun compareIDs (cid1 : connection_id, cid2 : connection_id) : bool =
         #source_addr cid1 = #source_addr cid2 andalso

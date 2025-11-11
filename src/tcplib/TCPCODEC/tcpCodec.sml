@@ -47,11 +47,10 @@ structure TcpCodec : TCP_CODEC = struct
             List.foldl (fn (x, y) => orbi x y) 0 (List.map flagToInt flags)
         end
 
-    fun hasFlagsSet flagList checkFlagList =
-        let val setI = flagsToInt flagList
-            val checkI = flagsToInt checkFlagList
+    fun hasFlagsSet cbits checkFlagList =
+        let val checkI = flagsToInt checkFlagList
         in
-            checkI = andbi setI checkI
+            checkI = andbi cbits checkI
         end 
 
     fun flagToString flag =

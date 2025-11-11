@@ -32,7 +32,7 @@ signature TCP_CODEC = sig
         string ->
         bool
 
-    val hasFlagsSet: flag list -> flag list -> bool
+    val hasFlagsSet: int -> flag list -> bool
 
     val flagsToString : flag list -> string
 
