@@ -1,23 +1,26 @@
 signature QUEUE = sig
     type 'a queue
     val empty   : unit -> 'a queue
+    val fromList : 'a list -> 'a queue
     val isEmpty : 'a queue -> bool
     val enqueue : 'a * 'a queue -> 'a queue
     val dequeue : 'a queue -> ('a * 'a queue) option
-    val peek    : 'a queue -> 'a option
+    val peek    : 'a queue -> ('a * 'a queue) option
 end
 
-structure Queue = struct
+structure Queue :> QUEUE = struct
     type 'a queue = 'a list * 'a list
 
     fun empty () : 'a queue = ([], [])
+
+    fun fromList list = (list, [])
 
     fun isEmpty (q : 'a queue) : bool  =
         case q of
             ([], []) => true
         |   _        => false
 
-    fun enqueue (x, (f, b)) : 'a queue = 
+    fun enqueue (x : 'a, (f, b) : 'a queue) : 'a queue = 
         (f, x :: b)
 
     fun dequeue ((f, b) : 'a queue) : ('a * 'a queue) option = 
@@ -27,13 +30,12 @@ structure Queue = struct
                            []      => NONE
                        |   y :: ys => SOME (y, (ys, []))
 
-    fun peek ((f, b) : 'a queue) : 'a option =
+    fun peek ((f, b) : 'a queue) : ('a * 'a queue) option =
         case f of
-            x :: _ => SOME x
-          | [] =>
-              (case List.rev b of
-                   [] => NONE
-                 | y :: _ => SOME y)
+            x :: _ => SOME (x, (f, b))
+        |   []     => (case List.rev b of
+                           []     => NONE
+                      |    y :: ys => SOME (y, (y :: ys, [])))
 
 end
 
