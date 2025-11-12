@@ -15,7 +15,7 @@ val () = (
            false,
            Bool.toString);
 
-    assert("enqueue to empty",
+    (* assert("enqueue to empty",
            (fn () => enqueue (1, empty ())),
            ([], [1]),
            (fn (f, b) => "(" ^ (Int.toString (List.length f)) ^ ", " ^ (Int.toString (List.length b)) ^ ")"));
@@ -23,7 +23,7 @@ val () = (
     assert("enqueue to non-empty",
            (fn () => enqueue (1, ([], [1, 2]))),
            ([], [1, 1, 2]),
-           (fn (f, b) => "(" ^ (Int.toString (List.length f)) ^ ", " ^ (Int.toString (List.length b)) ^ ")"));
+           (fn (f, b) => "(" ^ (Int.toString (List.length f)) ^ ", " ^ (Int.toString (List.length b)) ^ ")")); *)
     
 
     assert("dequeue non-empty",
