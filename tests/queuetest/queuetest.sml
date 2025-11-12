@@ -16,7 +16,7 @@ val () = (
            Bool.toString);
 
     assert("enqueue to empty",
-           (fn () => enqueue (1, ([], []))),
+           (fn () => enqueue (1, empty ())),
            ([], [1]),
            (fn (f, b) => "(" ^ (Int.toString (List.length f)) ^ ", " ^ (Int.toString (List.length b)) ^ ")"));
 
@@ -25,6 +25,7 @@ val () = (
            ([], [1, 1, 2]),
            (fn (f, b) => "(" ^ (Int.toString (List.length f)) ^ ", " ^ (Int.toString (List.length b)) ^ ")"));
     
+
     assert("dequeue non-empty",
            (fn () =>
                 let
@@ -32,26 +33,20 @@ val () = (
                 in
                     case dequeue q of
                         SOME (x, _) => x
-                      | NONE => 1
+                    |   NONE        => 1
                 end),
            1,
            Int.toString);
 
     assert("dequeue empty",
-        (fn () => dequeue (empty ())),
-        NONE,
-        (fn opt => 
-                case opt of
-                    NONE   => "NONE"
-                |   SOME _ => "SOME"));
+        (fn () => empty () |> dequeue |> isSome),
+        false,
+        Bool.toString);
 
     assert("peek empty",
-        (fn () => peek (empty ())),
-        NONE,
-        (fn opt => 
-                case opt of
-                    NONE   => "NONE"
-                |   SOME _ => "SOME"));
+        (fn () => peek (empty ()) |> isSome),
+        false,
+        Bool.toString);
 
     assert("peek non-empty",
         (fn () => 
@@ -59,8 +54,8 @@ val () = (
                 val q = enqueue (3, enqueue (2, enqueue (1, empty ())))
             in
                 case peek q of
-                    SOME x => x
-                    | NONE => 1
+                    SOME (x, _) => x
+                |   NONE        => 0
             end),
         1,
         Int.toString);
