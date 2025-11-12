@@ -31,8 +31,15 @@ signature TCP_STATE = sig
         id             : connection_id,
         state          : tcp_state,
         send_seqvar    : send_seqvar,
-        receive_seqvar : receive_seqvar
+        receive_seqvar : receive_seqvar,
+        retran_queue   : {last_ack : int, payload : string} Queue.queue
     }
+
+    val retran_enqueue : {last_ack : int, payload : string} -> connection -> connection
+
+    val retran_dequeue : connection -> ({last_ack : int, payload : string} * connection) option
+
+    val retran_dropacked : int -> connection -> connection
 
     val getRSV: connection -> { nxt : int, wnd : int, up  : int, irs : int}
 

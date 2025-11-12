@@ -1,3 +1,5 @@
+open Queue
+
 structure TcpState : TCP_STATE = struct
     datatype tcp_state = ESTABLISHED | SYN_REC | CLOSE_WAIT | LAST_ACK
 
@@ -28,13 +30,58 @@ structure TcpState : TCP_STATE = struct
         id             : connection_id,
         state          : tcp_state,
         send_seqvar    : send_seqvar,
-        receive_seqvar : receive_seqvar
+        receive_seqvar : receive_seqvar,
+        retran_queue   : {last_ack : int, payload : string} queue
     }
 
-    fun getSSV (CON {id = _, state = _, send_seqvar, receive_seqvar = _}) =
+    fun retran_enqueue {last_ack, payload} (CON {id, state, send_seqvar, receive_seqvar, retran_queue}) =
+        let
+            val entry = {last_ack = last_ack, payload = payload}
+            val new_q = enqueue (entry, retran_queue)
+        in
+            CON {
+                id = id,
+                state = state,
+                send_seqvar = send_seqvar,
+                receive_seqvar = receive_seqvar,
+                retran_queue = new_q
+            }  
+        end
+
+    fun retran_dequeue (CON {id, state, send_seqvar, receive_seqvar, retran_queue}) = 
+        case dequeue retran_queue of 
+            SOME (e, q) => 
+                SOME (e, 
+                    CON {
+                        id = id,
+                        state = state,
+                        send_seqvar = send_seqvar,
+                        receive_seqvar = receive_seqvar,
+                        retran_queue = q
+                    })
+        |   NONE => NONE  
+
+    fun retran_dropacked ack (CON {id, state, send_seqvar, receive_seqvar, retran_queue}) =
+        let fun drop q = 
+                case dequeue q of 
+                    SOME ({last_ack, payload = _}, new_q) => 
+                        if last_ack <= ack then drop new_q
+                        else q
+                |   NONE => empty () 
+        in 
+            CON {
+               id = id,
+               state = state,
+               send_seqvar = send_seqvar,
+               receive_seqvar = receive_seqvar,
+               retran_queue = drop retran_queue
+            }
+        end 
+
+    fun getSSV (CON {id = _, state = _, send_seqvar, receive_seqvar = _, retran_queue = _}) =
         let val SSV ssv = send_seqvar in ssv end
 
-    fun getRSV (CON {id = _, state = _, send_seqvar = _, receive_seqvar}) =
+    fun getRSV (CON {id = _, state = _, send_seqvar = _, receive_seqvar, retran_queue = _}) =
         let val RSV rsv = receive_seqvar in rsv end
 
     type tcp_states = connection list
@@ -67,11 +114,11 @@ structure TcpState : TCP_STATE = struct
                 val sPort = Int.toString (#source_port (#id c)) 
                 val dPort = Int.toString (#dest_port (#id c))
                 val stateStr = (case #state c of
-                                    CLOSED => "CLOSED"
-                                    | LISTEN => "LISTEN"
-                                    | ESTABLISHED => "ESTABLISHED"
-                                    | SYN_REC => "SYN RECEIVED"
-                                    | SYN_SENT => "SYN SENT")
+                                          CLOSED      => "CLOSED"
+                                        | LISTEN      => "LISTEN"
+                                        | ESTABLISHED => "ESTABLISHED"
+                                        | SYN_REC     => "SYN RECEIVED"
+                                        | SYN_SENT    => "SYN SENT")
                 val out = "From: " ^ sAdd ^ ":" ^ sPort ^ 
                     "\nTo: " ^ dPort ^
                     "\nState: " ^ stateStr ^ "\n\n"
