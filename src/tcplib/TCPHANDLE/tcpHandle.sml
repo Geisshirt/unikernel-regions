@@ -62,14 +62,29 @@ structure TcpHandle :> TCP_HANDLE = struct
               end
             val cbits = #control_bits tcpHeader
             fun check_sequence_number {sequence_number : int, segment_len : int} (RSV rsv) =
-                if segment_len = 0 andalso (#wnd rsv) = 0 then sequence_number = (#nxt rsv)
-                else if segment_len = 0 andalso (#wnd rsv) > 0 then 
+                if segment_len = 0 andalso (#wnd rsv) = 0 then (
+                    print "FST CASE\n";
+                    sequence_number = (#nxt rsv)
+                )
+                else if segment_len = 0 andalso (#wnd rsv) > 0 then (
+                    print "SND CASE\n";
                     (#nxt rsv) <= sequence_number andalso sequence_number < (#nxt rsv + #wnd rsv) 
-                else if segment_len > 0 andalso (#wnd rsv) = 0 then false
-                else
+                )
+                else if segment_len > 0 andalso (#wnd rsv) = 0 then (
+                    print "THIRD CASE\n";
+                    false
+                )
+                else (
+                    "FOURTH CASE: " 
+                    ^ ("(#nxt rsv) <= sequence_number - " ^ Bool.toString ((#nxt rsv) <= sequence_number) ^ "\n") 
+                    ^ ("sequence_number < (#nxt rsv + #wnd rsv) - " ^ Bool.toString (sequence_number < (#nxt rsv + #wnd rsv)) ^ "\n") 
+                    ^ ("(#nxt rsv) <= sequence_number + segment_len-1 - " ^ Bool.toString ((#nxt rsv) <= sequence_number + segment_len-1) ^ "\n") 
+                    ^ ("sequence_number + segment_len-1 < (#nxt rsv + #wnd rsv) - " ^ Bool.toString (sequence_number + segment_len-1 < (#nxt rsv + #wnd rsv)) ^ "\n") 
+                    |> print;
                     (#nxt rsv) <= sequence_number andalso sequence_number < (#nxt rsv + #wnd rsv)
                     orelse
                     (#nxt rsv) <= sequence_number + segment_len-1 andalso sequence_number + segment_len-1 < (#nxt rsv + #wnd rsv)
+                )
 
         in  
             log TCP (TcpCodec.Header tcpHeader |> TcpCodec.toString) (SOME tcpPayload);
@@ -130,6 +145,7 @@ structure TcpHandle :> TCP_HANDLE = struct
                         (* urgent pointer not implemented *)
                         (* PSH flag is ignored - not implemented *)
                         (* We do not have segment buffer *)
+                        (* retransmission when FIN *)
                         if not (valid ()) then (
                             "NOT VALID" ^ "\n" |> print;
                             if TcpCodec.hasFlagsSet cbits [TcpCodec.RST] then context
@@ -162,7 +178,13 @@ structure TcpHandle :> TCP_HANDLE = struct
                                                         wl2 = #ack_number tcpHeader,
                                                         iss = #iss ssv
                                                     },
-                                                    receive_seqvar = RSV rsv,
+                                                    receive_seqvar = RSV {
+                                                        nxt = #nxt rsv,
+                                                        wnd = #window tcpHeader,
+                                                        up = 0,
+                                                        irs = #irs rsv
+
+                                                    },
                                                     retran_queue = (#retran_queue con)
                                                 }  
                                                 in TcpState.update newConn context
@@ -214,7 +236,7 @@ structure TcpHandle :> TCP_HANDLE = struct
                                                         )
                                                 val newConn = CON {
                                                     id = connection_id,
-                                                    state = ESTABLISHED,
+                                                    state = if TcpCodec.hasFlagsSet cbits [TcpCodec.FIN] then CLOSE_WAIT else ESTABLISHED,
                                                     send_seqvar = SSV {
                                                         una = newUna,
                                                         nxt = newSNxt,
@@ -282,7 +304,7 @@ structure TcpHandle :> TCP_HANDLE = struct
                                                     else (#wnd ssv, #wl1 ssv, #wl2 ssv)
                                             val newConn = CON {
                                                 id = connection_id,
-                                                state = ESTABLISHED,
+                                                state = if (#retran_queue con) |> isEmpty then LAST_ACK else CLOSE_WAIT,
                                                 send_seqvar = SSV {
                                                     una = newUna,
                                                     nxt = #nxt ssv,
