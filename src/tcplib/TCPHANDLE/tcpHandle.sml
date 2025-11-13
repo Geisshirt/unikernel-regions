@@ -48,7 +48,7 @@ structure TcpHandle :> TCP_HANDLE = struct
                             ack_number = ack_number,
                             doffset = 20 div 4, (* 32-bit words *)
                             flags = flags,
-                            window = #window tcpHeader
+                            window = 65535 mod (2 ** 32)
                         } payload
               in IPv4Send.send {
                         ownMac = ownMac,
@@ -138,6 +138,7 @@ structure TcpHandle :> TCP_HANDLE = struct
                         val ssv = getSSV (CON con)
                         val rsv = getRSV (CON con)
                     in
+                        "sequence: " ^ Int.toString (#sequence_number tcpHeader - #irs rsv) ^ ", ack: " ^ Int.toString (#ack_number tcpHeader - #iss ssv) ^ "\n" |> print;
                         (* RCV.WND can only be zero for ACK, URG and RST *)
                         (* todo: RFC 5961 *)
                         (* todo: RFC 5961, section 5 *)
@@ -147,7 +148,7 @@ structure TcpHandle :> TCP_HANDLE = struct
                         (* We do not have segment buffer *)
                         (* retransmission when FIN *)
                         if not (valid ()) then (
-                            "NOT VALID" ^ "\n" |> print;
+                            "NOT VALID\n" |> print;
                             if TcpCodec.hasFlagsSet cbits [TcpCodec.RST] then context
                             else 
                                 (simpleSend {sequence_number = #nxt ssv, 
@@ -158,7 +159,7 @@ structure TcpHandle :> TCP_HANDLE = struct
                         else 
                             case (#state con) of 
                                 SYN_REC => (
-                                    "SYN_REC" ^ "\n" |> print;
+                                    "SYN_REC\n" |> print;
                                     if TcpCodec.hasFlagsSet cbits [TcpCodec.RST] then 
                                        TcpState.remove connection_id context 
                                     else if TcpCodec.hasFlagsSet cbits [TcpCodec.SYN] then 
@@ -228,13 +229,13 @@ structure TcpHandle :> TCP_HANDLE = struct
                                                          (
                                                             print "Advanced!\n";
                                                             (* check if payload is too large! *)
-                                                            #nxt rsv + String.size tcpPayload
+                                                            #nxt rsv +$ String.size tcpPayload
                                                         )
                                                         else (
                                                             print "Did not advance!\n";
                                                             #nxt rsv
                                                         )
-                                                val newConn = CON {
+                                                val newCon = ((CON {
                                                     id = connection_id,
                                                     state = if TcpCodec.hasFlagsSet cbits [TcpCodec.FIN] then CLOSE_WAIT else ESTABLISHED,
                                                     send_seqvar = SSV {
@@ -253,8 +254,9 @@ structure TcpHandle :> TCP_HANDLE = struct
                                                         irs = #irs rsv
                                                     },
                                                     retran_queue = (#retran_queue con)
-                                                }
-                                                val newContext = TcpState.update (TcpState.retran_dropacked (#ack_number tcpHeader) newConn) context
+                                                }) |> (TcpState.retran_dropacked (#ack_number tcpHeader)))
+                                                val newContext = TcpState.update newCon context
+                                                val rq = let val CON c = newCon in #retran_queue c end
                                             in 
                                                 if (#ack_number tcpHeader > #nxt ssv) then (* What ack to send? *)
                                                    (print "Send duplicate ACK\n";
@@ -266,23 +268,36 @@ structure TcpHandle :> TCP_HANDLE = struct
                                                     context) 
                                                 else (
                                                     print "Send back payload\n";
-                                                    if #sequence_number tcpHeader = #nxt rsv then 
+                                                    if #sequence_number tcpHeader = #nxt rsv andalso String.size tcpPayload > 0 then 
                                                         (simpleSend 
                                                         {
                                                             sequence_number = (#nxt o getSSV) (CON con), 
-                                                            ack_number =  (#nxt o getRSV) newConn, 
+                                                            ack_number =  (#nxt o getRSV) newCon, 
                                                             flags = [TcpCodec.ACK]
                                                         } 
                                                         computedPayload;
+                                                        (
+                                                            print "Retransmit!\n";
+                                                            Queue.toList (#retran_queue con) 
+                                                            |> List.app (fn {last_ack, payload} => (
+                                                                simpleSend 
+                                                                {
+                                                                    sequence_number = last_ack - String.size payload, 
+                                                                    ack_number =  (#nxt o getRSV) (CON con), 
+                                                                    flags = [TcpCodec.ACK]
+                                                                } 
+                                                                payload
+                                                            ))
+                                                        );
                                                         (* retransmission queue! *)
-                                                        newContext)
+                                                        TcpState.update (TcpState.retran_enqueue {last_ack = newSNxt, payload = computedPayload} newCon) newContext)
                                                     else newContext
                                                 )
                                             end
                                     else context
                                 )
                             |   CLOSE_WAIT => (
-                                    "CLOSE_WAIT" ^ "\n" |> print;
+                                    "CLOSE_WAIT\n" |> print;
                                     if TcpCodec.hasFlagsSet cbits [TcpCodec.RST] then 
                                         (notify RESET;
                                         TcpState.remove connection_id context)
