@@ -31,10 +31,33 @@ structure TcpState : TCP_STATE = struct
         state          : tcp_state,
         send_seqvar    : send_seqvar,
         receive_seqvar : receive_seqvar,
-        retran_queue   : {last_ack : int, payload : string} queue
+        retran_queue   : {last_ack : int, payload : string} queue,
+        dup_count      : int
     }
 
-    fun retran_enqueue {last_ack, payload} (CON {id, state, send_seqvar, receive_seqvar, retran_queue}) =
+    fun dup_inc (CON {id, state, send_seqvar, receive_seqvar, retran_queue, dup_count}) = (
+        CON {
+            id = id,
+            state = state,
+            send_seqvar = send_seqvar,
+            receive_seqvar = receive_seqvar,
+            retran_queue = retran_queue,
+            dup_count = dup_count + 1
+        }  
+    ) 
+
+    fun dup_reset (CON {id, state, send_seqvar, receive_seqvar, retran_queue, dup_count = _}) = (
+        CON {
+            id = id,
+            state = state,
+            send_seqvar = send_seqvar,
+            receive_seqvar = receive_seqvar,
+            retran_queue = retran_queue,
+            dup_count = 0
+        }  
+    )
+
+    fun retran_enqueue {last_ack, payload} (CON {id, state, send_seqvar, receive_seqvar, retran_queue, dup_count}) =
         let
             val entry = {last_ack = last_ack, payload = payload}
             val new_q = enqueue (entry, retran_queue)
@@ -44,11 +67,12 @@ structure TcpState : TCP_STATE = struct
                 state = state,
                 send_seqvar = send_seqvar,
                 receive_seqvar = receive_seqvar,
-                retran_queue = new_q
+                retran_queue = new_q,
+                dup_count = dup_count
             }  
         end
 
-    fun retran_dequeue (CON {id, state, send_seqvar, receive_seqvar, retran_queue}) = 
+    fun retran_dequeue (CON {id, state, send_seqvar, receive_seqvar, retran_queue, dup_count}) = 
         case dequeue retran_queue of 
             SOME (e, q) => 
                 SOME (e, 
@@ -57,11 +81,12 @@ structure TcpState : TCP_STATE = struct
                         state = state,
                         send_seqvar = send_seqvar,
                         receive_seqvar = receive_seqvar,
-                        retran_queue = q
+                        retran_queue = q,
+                        dup_count = dup_count
                     })
         |   NONE => NONE  
 
-    fun retran_dropacked ack (CON {id, state, send_seqvar, receive_seqvar, retran_queue}) =
+    fun retran_dropacked ack (CON {id, state, send_seqvar, receive_seqvar, retran_queue, dup_count}) =
         let fun drop q = 
                 case dequeue q of 
                     SOME ({last_ack, payload = _}, new_q) => 
@@ -74,21 +99,22 @@ structure TcpState : TCP_STATE = struct
                state = state,
                send_seqvar = send_seqvar,
                receive_seqvar = receive_seqvar,
-               retran_queue = drop retran_queue
+               retran_queue = drop retran_queue,
+               dup_count = dup_count
             }
         end 
 
-    fun getSSV (CON {id = _, state = _, send_seqvar, receive_seqvar = _, retran_queue = _}) =
+    fun getSSV (CON {id = _, state = _, send_seqvar, receive_seqvar = _, retran_queue = _, dup_count = _}) =
         let val SSV ssv = send_seqvar in ssv end
 
-    fun getRSV (CON {id = _, state = _, send_seqvar = _, receive_seqvar, retran_queue = _}) =
+    fun getRSV (CON {id = _, state = _, send_seqvar = _, receive_seqvar, retran_queue = _, dup_count = _}) =
         let val RSV rsv = receive_seqvar in rsv end
 
     type tcp_states = connection list
 
     fun empty_states () = [] 
 
-    fun new_iss () = 42
+    fun new_iss () = 0
 
     fun compareIDs (cid1 : connection_id, cid2 : connection_id) : bool =
         #source_addr cid1 = #source_addr cid2 andalso
