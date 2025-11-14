@@ -20,6 +20,7 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
     fun recListen context bindings = 
         let 
             val rawTap = Netif.receive () 
+            (* TODO: Why are we doing this pointless extract? *)
             val ethFrame = String.extract (rawTap, 0, NONE)
             val (ethHeader, ethPayload) = ethFrame |> EthCodec.decode 
             val EthCodec.Header {et, dstMac, srcMac} = ethHeader

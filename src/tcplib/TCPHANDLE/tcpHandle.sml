@@ -1,6 +1,8 @@
 (* 
     TODO:
         1. Establish and close wait states basically do the same, make functions.
+        2. Implement proper ISN
+        3. Window size
  *)
 
 
@@ -14,6 +16,8 @@ structure TcpHandle :> TCP_HANDLE = struct
     infix 6 +$
 
     datatype notification = RESET
+
+    val mss = 536
 
     type port = int
 
@@ -40,7 +44,10 @@ structure TcpHandle :> TCP_HANDLE = struct
                 dest_port   = #dest_port tcpHeader
             }
             fun simpleSend {sequence_number : int, ack_number : int, flags : TcpCodec.flag list} payload =
-              let val tcpPayload = TcpCodec.encode {
+                
+                let val segment = String.size payload > mss
+                    val payload' = if segment then String.substring (payload, 0, 536) else payload
+                    val tcpPayload = TcpCodec.encode {
                             source_addr = ownIPaddr,
                             dest_addr = dstIPaddr
                         } {
@@ -51,8 +58,8 @@ structure TcpHandle :> TCP_HANDLE = struct
                             doffset = 20 div 4, (* 32-bit words *)
                             flags = flags,
                             window = 65535 mod (2 ** 32)
-                        } payload
-              in IPv4Send.send {
+                        } payload'
+                in IPv4Send.send {
                         ownMac = ownMac,
                         ownIPaddr = ownIPaddr,
                         dstMac = dstMac,
@@ -60,8 +67,11 @@ structure TcpHandle :> TCP_HANDLE = struct
                         identification = (#identification ipv4Header), 
                         protocol = TCP, 
                         payload = tcpPayload
-                    }
-              end
+                    };
+                    if segment then (
+                        simpleSend {sequence_number = sequence_number+536, ack_number = ack_number, flags = flags} (String.extract (payload, 536, NONE))
+                    ) else ()
+                end
             val cbits = #control_bits tcpHeader
             fun check_sequence_number {sequence_number : int, segment_len : int} (RSV rsv) =
                 if segment_len = 0 andalso (#wnd rsv) = 0 then (
@@ -329,14 +339,20 @@ structure TcpHandle :> TCP_HANDLE = struct
                                                     flags = [TcpCodec.ACK]} 
                                                     "" 
                                                 else ();
+                                                if #retran_queue con |> isEmpty then 
+                                                   simpleSend {
+                                                    sequence_number = #nxt ssv, 
+                                                    ack_number = #nxt rsv+1, 
+                                                    flags = [TcpCodec.ACK, TcpCodec.FIN]} 
+                                                    "" 
+                                                else ();
                                                 if #ack_number tcpHeader = newUna andalso String.size tcpPayload = 0 then (
                                                         if #dup_count con = 2 then (
                                                             case Queue.peek rq of 
                                                                 NONE =>  TcpState.update newCon context 
                                                                 (* TODO: Fix queue reordering *)
                                                             |   SOME ({last_ack, payload}, _) => (
-                                                                    simpleSend 
-                                                                    {
+                                                                    simpleSend {
                                                                         sequence_number = last_ack - String.size payload, 
                                                                         ack_number =  (#nxt o getRSV) (CON con), 
                                                                         flags = [TcpCodec.ACK]
@@ -345,12 +361,9 @@ structure TcpHandle :> TCP_HANDLE = struct
                                                                     TcpState.update (TcpState.dup_reset newCon) context
                                                                 )
                                                         )
-
-                                                        else 
-                                                            TcpState.update (TcpState.dup_inc newCon) context
-                                                    )
-                                                else  
-                                                    TcpState.update newCon context
+                                                        else TcpState.update (TcpState.dup_inc newCon) context
+                                                )
+                                                else TcpState.update newCon context
                                             end
                                     else context
                                 )
