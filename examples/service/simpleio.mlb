@@ -1,3 +1,2 @@
 $(SML_LIB)/basis/basis.mlb
-	simpleio.sml
-main.sml
+simpleio.sml
