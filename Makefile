@@ -99,4 +99,6 @@ clean:
 	-rm -r *.exe
 	-rm -r *.ic
 	-rm -r *.prof
+	-rm -r *.ps
+	-rm -r *.rp
 	-rm -r tests/*.exe

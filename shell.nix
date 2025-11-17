@@ -13,8 +13,8 @@ let
 	  src = pkgs.fetchFromGitHub {
 		owner = "melsman";
 		repo = "mlkit";
-		rev = "4858b8b68ac1a97377f419889410f91ea738d5be";
-		sha256 = "1d2s0cxrbivqfv7av73cypq7m26sh20v63qxdikq61yyzq0qbb3a";
+		rev = "08844e1fea32f96eb41e813c7b008a5db6f7e755";
+		sha256 = "0dk50f5x89j4vabhxqmk3a3hh4mvcwd1yda5bqrl30kgwzqx7wjw";
 	  };
 	  
 	  nativeBuildInputs = [
