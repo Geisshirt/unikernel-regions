@@ -53,3 +53,6 @@ jobs:
           
       - name: Run integration tests
         run: ./tests/transportlayer.sh
+
+      - name: Run stress test
+        run: ./tests/stressBench.sh
