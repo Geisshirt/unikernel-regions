@@ -10,14 +10,16 @@ make echo-ex-app
 nohup ./echo.exe 2>&1 &
 echo $! > PID.txt
 
+sleep 1
+
 # Spawn each request thread.
 for ((i=1; i<=request; i++)); do
-    cat tests/numbers_short.txt | nc -N 10.0.0.2 8081 > "tests/out_short_${i}.txt" 2>/dev/null &
-    pid=$!
-    PIDS+=("$pid")
+    (
+        cat tests/numbers_short.txt | nc -Nw1 10.0.0.2 8081 > "tests/out_short_${i}.txt" 2>&1
+    ) & 
 done
 
-sleep 2
+sleep 1
 
 # Compare each output file with the reference.
 for ((i=1; i<=request; i++)); do
