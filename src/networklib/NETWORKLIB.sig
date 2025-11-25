@@ -8,7 +8,7 @@ signature NETWORK = sig
     type callback = string -> string
     val logOn : unit -> unit
     val logOff : unit -> unit  
-    val listen : (protocol * ((port * callback) list)) list -> unit
+    val listen : Service.service -> unit
 end
 
 (*

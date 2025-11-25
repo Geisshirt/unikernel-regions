@@ -17,7 +17,7 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
 
     fun logOff () = log := false
 
-    fun recListen context bindings = 
+    fun recListen context service = 
         let 
             val rawTap = Netif.receive () 
             (* TODO: Why are we doing this pointless extract? *)
@@ -40,10 +40,7 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
                     (* List.filter (fn (prot, _) => prot = TCP) bindings |> map (fn (_, l) => l) *)
                     | IPv4 => 
                         IPv4.handl {
-                            protBindings = IPv4.PBindings {
-                                UDP = List.filter (fn (prot, _) => prot = UDP) bindings |> map (fn (_, l) => l) |> foldl (op @) [],
-                                TCP = List.filter (fn (prot, _) => prot = TCP) bindings |> map (fn (_, l) => l) |> foldl (op @) []
-                            },
+                            service = service,
                             ownIPaddr = ownIPaddr,
                             ownMac = ownMac,
                             dstMac = srcMac,
@@ -53,13 +50,11 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
                     )
                 ) else context
         in 
-            recListen new_context bindings
+            recListen new_context service
         end 
        (* handle _ => (print "Encountered an error in handling!\n"; recListen context bindings)  *)
 
-    fun listen bindings = 
-        recListen (IPv4.initContext ()) bindings
+    fun listen service = 
+        recListen (IPv4.initContext ()) service
 
 end
-
-structure IPv4L = IPv4Handle(FragAssemblerList)
