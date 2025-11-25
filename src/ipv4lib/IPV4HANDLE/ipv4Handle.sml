@@ -1,41 +1,34 @@
-functor IPv4Handle(FragAssembler : FRAG_ASSEMBLER) :> IPV4_HANDLE = struct
+functor IPv4Handle(structure FragAssembler : FRAG_ASSEMBLER
+                   structure TransportLayer : TRANSPORT_LAYER) :> IPV4_HANDLE = struct
     open Logging
 
     datatype context = Context of {
         fragContainer : FragAssembler.fragContainer,
-        tcpContext : Tcp.context
+        tlContext : TransportLayer.context
     }
 
     type context = context
 
     type port = int
 
-    type bindingList = (port * (string -> string)) list
-
-    datatype pbindings = PBindings of {
-      UDP : bindingList, 
-      TCP : bindingList
-    }
-
     val mtu = 1500
 
     fun initContext () = Context {
         fragContainer = FragAssembler.empty(),
-        tcpContext = Tcp.initContext()
+        tlContext = TransportLayer.initContext()
     }
 
     fun mkPktID (IPv4Codec.Header ipv4Hdr) = 
         rawBytesString (#source_addr ipv4Hdr) ^
         Int.toString (#identification ipv4Hdr) ^
-        IPv4Codec.protToString (#protocol ipv4Hdr)
+        TransportLayer.protToString (#protocol ipv4Hdr)
 
-    fun handl {protBindings,
+    fun handl {service,
                ownIPaddr,
                ownMac,
                dstMac,
                ipv4Packet } (Context context) =
-        let val PBindings protBindings = protBindings
-            val (IPv4Codec.Header ipv4Header, ipv4Pay) = IPv4Codec.decode ipv4Packet
+        let val (IPv4Codec.Header ipv4Header, ipv4Pay) = IPv4Codec.decode ipv4Packet
             val (payloadOpt, new_m0) = 
                     if (#fragment_offset ipv4Header) = 0 andalso (#flags ipv4Header) = 2 
                     then (SOME ipv4Pay, #fragContainer context)
@@ -52,43 +45,25 @@ functor IPv4Handle(FragAssembler : FRAG_ASSEMBLER) :> IPV4_HANDLE = struct
                                     SOME (payload, new_m2) => (SOME payload, new_m2)
                                 |   NONE => (NONE, new_m1)
                             end
-            val newContext = { fragContainer = new_m0, tcpContext = (#tcpContext context) }
+            val newContext = { fragContainer = new_m0, tlContext = (#tlContext context) }
         in  if #dest_addr ipv4Header = ownIPaddr then (
                 log IPv4 (IPv4Codec.toString (IPv4Codec.Header ipv4Header)) NONE;
                 case payloadOpt of 
-                    SOME payload => (
-                        case (#protocol ipv4Header) of 
-                          UDP => 
-                                (Udp.handl {
-                                    bindings = #UDP protBindings,
+                    SOME payload => 
+                        let val new_tlcontext = TransportLayer.handl (#protocol ipv4Header) (TransportLayer.INFO {
+                                    service = service,
                                     ownMac = ownMac, 
                                     dstMac = dstMac,
                                     ownIPaddr = ownIPaddr,
                                     dstIPaddr = #source_addr ipv4Header,
                                     ipv4Header = IPv4Codec.Header ipv4Header,
-                                    udpPayload = payload
-                                };
-                                Context newContext)
-                          | TCP => 
-                                let val newTcpContext = Tcp.handl {
-                                            bindings = #TCP protBindings,
-                                            ownMac = ownMac, 
-                                            dstMac = dstMac,
-                                            ownIPaddr = ownIPaddr,
-                                            dstIPaddr = #source_addr ipv4Header,
-                                            ipv4Header = IPv4Codec.Header ipv4Header,
-                                            tcpPayload = payload
-                                        } (#tcpContext context)
-                                in  Context {
+                                    payload = payload
+                                }) (#tlContext context)
+                        in Context {
                                         fragContainer = new_m0,
-                                        tcpContext = newTcpContext
+                                        tlContext = new_tlcontext
                                     }
-                                end
-                        | _ => (
-                            logMsg IPv4 "IPv4 Handler: Protocol is not supported.\n";
-                            Context newContext
-                        )
-                    )
+                        end
                 |   NONE => Context newContext
             ) 
             else Context newContext

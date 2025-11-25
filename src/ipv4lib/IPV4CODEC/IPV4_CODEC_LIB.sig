@@ -3,7 +3,7 @@
 *)
 
 signature IPV4_CODEC = sig 
-    type protocol
+    type tl_protocol = int
 
     datatype header = Header of {
         version : int,
@@ -15,15 +15,15 @@ signature IPV4_CODEC = sig
         flags : int,
         fragment_offset : int,
         time_to_live : int,
-        protocol : protocol,
+        protocol : tl_protocol,
         header_checksum : int,
         source_addr : int list,
         dest_addr : int list
     }
 
-    val intToProt : int -> protocol
+    (* val intToProt : int -> protocol
     val protToInt : protocol -> int
-    val protToString : protocol -> string 
+    val protToString : protocol -> string  *)
 
     val isFragmented : header -> bool
 

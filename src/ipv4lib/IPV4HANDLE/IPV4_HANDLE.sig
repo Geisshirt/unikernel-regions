@@ -1,18 +1,9 @@
 signature IPV4_HANDLE = sig
     type context
 
-    type port = int
-
-    type bindingList = (port * (string -> string)) list
-
-    datatype pbindings = PBindings of {
-      UDP : bindingList, 
-      TCP : bindingList
-    }
-
     val initContext : unit -> context
 
-    val handl   : {protBindings : pbindings, 
+    val handl   : {service : Service.service, 
                    ownIPaddr : int list,
                    ownMac : int list, 
                    dstMac : int list, 

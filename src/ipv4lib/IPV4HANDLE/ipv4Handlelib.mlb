@@ -1,10 +1,10 @@
 local 
     $(SML_LIB)/basis/basis.mlb
     ../../utilslib/utilslib.mlb
-    ../../tcplib/tcplib.mlb
-    ../../udplib/udplib.mlb
+    ../../service/service.mlb
     ../IPV4CODEC/ipv4Codeclib.mlb
     ../IPV4_FRAG_ASSEMBLER/fragAssembler.mlb
+    ../../transportlayer/transport_layer.mlb
 in
     IPV4_HANDLE.sig
     ipv4Handle.sml
