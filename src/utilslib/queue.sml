@@ -3,6 +3,7 @@ signature QUEUE = sig
     val empty    : unit -> 'a queue
     val fromList : 'a list -> 'a queue
     val toList   : 'a queue -> 'a list
+    val length   : 'a queue -> int
     val isEmpty  : 'a queue -> bool
     val enqueue  : 'a * 'a queue -> 'a queue
     val dequeue  : 'a queue -> ('a * 'a queue) option
@@ -17,6 +18,9 @@ structure Queue :> QUEUE = struct
     fun fromList list = (list, [])
 
     fun toList ((front, back) : 'a queue) = front @ List.rev back
+
+    fun length ((f, b): 'a queue) : int =
+        List.length f + List.length b
 
     fun isEmpty (q : 'a queue) : bool  =
         case q of
