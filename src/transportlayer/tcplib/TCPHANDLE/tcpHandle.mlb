@@ -1,0 +1,12 @@
+local 
+    $(SML_LIB)/basis/basis.mlb
+    ../../../utilslib/utilslib.mlb
+    ../../transport_layer.mlb
+    ../TCPCODEC/tcpCodec.mlb
+    ../TCPSTATE/tcpState.mlb
+    ../../../service/service.mlb
+    ../../../ipv4lib/IPV4CODEC/ipv4Codeclib.mlb
+    ../../../ipv4lib/IPV4SEND/ipv4Sendlib.mlb
+in 
+    tcpHandle.sml
+end 
