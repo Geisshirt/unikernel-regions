@@ -71,11 +71,8 @@ run-uk:
 
 clean:
 	-rm *.a
-	-rm -rf src/*lib/MLB MLB
-	-rm -rf src/MLB
-	-rm -rf src/*lib/*/MLB
-	-rm -rf tests/*/MLB
-	-rm -rf examples/*/MLB
+	-rm -rf MLB
+	-find src examples tests -type d -name "MLB" -exec rm -rf {} +  # remove all MLB/ directories.
 	-rm -rf unikraft/build/*.o
 	-rm -rf unikraft/wordir/build/*.o
 	-rm -r *.exe
