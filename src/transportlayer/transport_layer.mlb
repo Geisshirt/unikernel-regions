@@ -3,5 +3,6 @@
     ../service/service.mlb
 in
     TRANSPORT_LAYER.sig
+    TRANSPORT_LAYER_HANDLER.sig
     transport_layer.sml
 end
