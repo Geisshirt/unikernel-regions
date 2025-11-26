@@ -18,6 +18,7 @@ signature TCP_STATE = sig
         up  : int,  (* Send urgent pointer *)
         wl1 : int,  (* Segment sequence number used for last window update *)
         wl2 : int,  (* Segment acknowledgement number used for last window update *)
+        mss : int,
         iss : int   (* Initial sequence numbers *)
     }
 
@@ -32,6 +33,7 @@ signature TCP_STATE = sig
         id             : connection_id,
         state          : tcp_state,
         send_seqvar    : send_seqvar,
+        send_queue     : string Queue.queue,
         receive_seqvar : receive_seqvar,
         receive_queue  : string Queue.queue,
         retran_queue   : {last_ack : int, payload : string} Queue.queue,
@@ -50,6 +52,12 @@ signature TCP_STATE = sig
     val dup_reset : connection -> connection
 
     val retran_enqueue : {last_ack : int, payload : string} -> connection -> connection
+
+    val send_enqueue_many : string -> connection -> connection
+
+    val send_dequeue : connection -> (string * connection) option
+
+    val send_is_empty : connection -> bool
 
     val rec_enqueue : string -> connection -> connection
 
@@ -71,6 +79,7 @@ signature TCP_STATE = sig
             up  : int,
             wl1 : int,
             wl2 : int,
+            mss : int,
             iss : int 
         }
 

@@ -42,6 +42,7 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
     fun handl ({service, ownMac, dstMac, ownIPaddr, dstIPaddr, ipv4Header, payload}) context =
         let val (TcpCodec.Header tcpHeader, tcpPayload) = payload |> TcpCodec.decode
             val IPv4Codec.Header ipv4Header = ipv4Header
+            val send_mss = 536
             val connection = 
                   lookup {
                     source_addr = #source_addr ipv4Header,
@@ -54,6 +55,7 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                 source_port = #source_port tcpHeader,
                 dest_port   = #dest_port tcpHeader
             }
+
             fun sendAck {sequence_number : int, ack_number : int, flags : TcpCodec.flag list} =
                 let val tcpPayload = TcpCodec.encode {
                             source_addr = ownIPaddr,
@@ -65,7 +67,7 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                             ack_number = ack_number,
                             doffset = 20 div 4, (* 32-bit words *)
                             flags = flags,
-                            window = 65535 mod (2 ** 32)
+                            window = 65535 (* mod (2 ** 32) *)
                         } ""
                 in  IPv4Send.send {
                         ownMac = ownMac,
@@ -77,11 +79,14 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                         payload = tcpPayload
                     }
                 end
-            fun sendSegment {sequence_number : int, ack_number : int, flags : TcpCodec.flag list} payload con =
-                let val pSize = String.size payload
-                    val segment = pSize > mss
-                    val payload' = if segment then String.substring (payload, 0, 536) else payload
-                    val tcpPayload = TcpCodec.encode {
+(* {
+    sequence_number = (#nxt o getSSV) (CON newCon),
+    ack_number = (#nxt o getRSV) (CON newCon), 
+    flags = [TcpCodec.ACK]
+} *)
+            
+            fun sendSegment {sequence_number : int, ack_number : int, flags : TcpCodec.flag list} payload =
+                let val tcpPayload = TcpCodec.encode {
                             source_addr = ownIPaddr,
                             dest_addr = dstIPaddr
                         } {
@@ -91,10 +96,10 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                             ack_number = ack_number,
                             doffset = 20 div 4, (* 32-bit words *)
                             flags = flags,
-                            window = 65535 mod (2 ** 32)
-                        } payload'
-                    val sendSize = if segment then 536 else pSize
-                in  IPv4Send.send {
+                            window = 65535
+                        } payload
+                in  print "Sending segment!\n";
+                    IPv4Send.send {
                         ownMac = ownMac,
                         ownIPaddr = ownIPaddr,
                         dstMac = dstMac,
@@ -103,12 +108,36 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                         protocol = protocol_int, 
                         payload = tcpPayload
                     };
-                    (retran_enqueue {last_ack = sequence_number+sendSize, payload = payload'} con |> 
-                    (if segment then (
-                        sendSegment {sequence_number = sequence_number+536, ack_number = ack_number, flags = flags} 
-                                     (String.extract (payload, 536, NONE))       
-                    ) else fn c => c))
+                    print "Sent segment!\n"
                 end
+            
+            fun sendQueuedSegments con = 
+                let val ssv = getSSV con
+                    val rsv = getRSV con
+                in  if #mss ssv <= #una ssv +$ (#wnd ssv - #nxt ssv) then 
+                        (print "Send queued segment!\n"; case send_dequeue con of 
+                            SOME (payload, con) => 
+                                let val sequence_number = #nxt ssv
+                                    val ack_number = #nxt rsv
+                                in 
+                                    sendSegment {sequence_number = sequence_number, ack_number = ack_number, flags = [TcpCodec.ACK]} payload;
+                                    (retran_enqueue {last_ack = sequence_number +$ String.size payload, payload = payload} con |> 
+                                    update_sseqvar (fn SSV ssv' => SSV {
+                                                                        una = #una ssv',
+                                                                        nxt = #nxt ssv' +$ String.size payload,
+                                                                        wnd = #wnd ssv',
+                                                                        up  = #up ssv',
+                                                                        wl1 = #wl1 ssv',
+                                                                        wl2 = #wl2 ssv',
+                                                                        mss = #mss ssv',
+                                                                        iss = #iss ssv'
+                                                                    }) |> 
+                                    sendQueuedSegments)
+                                end 
+                        |   NONE => (print "No more queued!\n"; con))
+                    else (print "Don't send!\n"; con)
+                end
+
             val cbits = #control_bits tcpHeader
             fun check_sequence_number {sequence_number : int, segment_len : int} (RSV rsv) =
                 if segment_len = 0 andalso (#wnd rsv) = 0 then (
@@ -151,8 +180,10 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                     up  = 0,
                                     wl1 = 0,
                                     wl2 = 0,
+                                    mss = send_mss,
                                     iss = iss
                                 },
+                                send_queue = Queue.empty (),
                                 receive_seqvar = RSV {
                                     nxt = (#sequence_number tcpHeader) +$ 1,
                                     wnd = 1,
@@ -219,8 +250,10 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                         up  = #up ssv,
                                                         wl1 = #sequence_number tcpHeader,
                                                         wl2 = #ack_number tcpHeader,
+                                                        mss = send_mss,
                                                         iss = #iss ssv
                                                     },
+                                                    send_queue = Queue.empty (),
                                                     receive_seqvar = RSV {
                                                         nxt = #nxt rsv,
                                                         wnd = #window tcpHeader,
@@ -267,6 +300,7 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                 up  = #up ssv',
                                                 wl1 = #wl1 ssv',
                                                 wl2 = #wl2 ssv',
+                                                mss = #mss ssv',
                                                 iss = #iss ssv'
                                             }) (CON con) |>
                                             (fn CON newCon =>
@@ -286,6 +320,7 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                         up  = #up ssv',
                                                         wl1 = #sequence_number tcpHeader,
                                                         wl2 = #ack_number tcpHeader,
+                                                        mss = #mss ssv',
                                                         iss = #iss ssv'
                                                     } 
                                                 else SSV ssv'
@@ -312,13 +347,14 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                         sequence_number = #nxt ssv, 
                                                         ack_number = #nxt rsv, 
                                                         flags = [TcpCodec.ACK]}) (CON newCon)
-                                                else if open_state = CLOSE_WAIT andalso Queue.isEmpty (#retran_queue newCon) then 
-                                                    (effect (sendAck {
+                                                else if open_state = CLOSE_WAIT andalso Queue.isEmpty (#retran_queue newCon) andalso Queue.isEmpty (#send_queue newCon) then 
+                                                    (print "Done!\n";
+                                                     effect (sendAck {
                                                         sequence_number = #nxt ssv, 
                                                         ack_number = #nxt rsv, 
                                                         flags = [TcpCodec.ACK, TcpCodec.FIN]}) (CON newCon) |> 
-                                                    update_state (fn _ => LAST_ACK))
-                                                else if open_state = CLOSE_WAIT andalso not (Queue.isEmpty (#retran_queue newCon)) then 
+                                                     update_state (fn _ => LAST_ACK))
+                                                (* else if open_state = CLOSE_WAIT andalso not (Queue.isEmpty (#retran_queue newCon)) then 
                                                     (
                                                         case Queue.peek (#retran_queue newCon) of 
                                                             NONE => (CON newCon)
@@ -332,7 +368,7 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                                 payload 
                                                                 (CON newCon)
                                                             )
-                                                    )    
+                                                    )     *)
                                                 else if open_state = ESTABLISHED andalso
                                                     #sequence_number tcpHeader = #nxt rsv andalso ((String.size tcpPayload > 0) orelse (TcpCodec.hasFlagsSet cbits [TcpCodec.FIN])) andalso
                                                     (#service_type con = STREAM orelse (#service_type con = FULL andalso #state newCon = CLOSE_WAIT)) then
@@ -341,29 +377,17 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                                     FULL   => rec_collect (CON newCon |> rec_enqueue tcpPayload)
                                                                 |   STREAM => (tcpPayload, CON newCon))
                                                         in 
-                                                            (case service (#dest_port tcpHeader, TCPService, REQUEST requestPayload) of 
+                                                            (   print "Sending back!"
+                                                                ; case service (#dest_port tcpHeader, TCPService, REQUEST requestPayload) of 
                                                                 REPLY payload => 
-                                                                    ((sendSegment 
-                                                                        {
-                                                                            sequence_number = (#nxt o getSSV) (CON newCon),
-                                                                            ack_number = (#nxt o getRSV) (CON newCon), 
-                                                                            flags = [TcpCodec.ACK]
-                                                                        }
+                                                                    (* TODO do not use sendsegment*)
+                                                                    ((send_enqueue_many 
                                                                         payload
-                                                                        (CON newCon)) |> 
-                                                                    update_sseqvar (fn SSV ssv' => SSV {
-                                                                        una = #una ssv',
-                                                                        nxt = #nxt ssv' + String.size payload,
-                                                                        wnd = #wnd ssv',
-                                                                        up  = #up ssv',
-                                                                        wl1 = #wl1 ssv',
-                                                                        wl2 = #wl2 ssv',
-                                                                        iss = #iss ssv'
-                                                                    }))
+                                                                        (CON newCon)))
                                                             |   _ => CON newCon)
                                                         end
                                                 else if #ack_number tcpHeader = (#una o getSSV) (CON newCon) andalso String.size tcpPayload = 0 then
-                                                    (if #dup_count newCon = 2 then (
+                                                    (if #dup_count newCon = 3 then (
                                                         case Queue.peek (#retran_queue newCon) of 
                                                             NONE => (CON newCon)
                                                         |   SOME ({last_ack, payload}, _) => (
@@ -373,11 +397,9 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                                     ack_number =  (#nxt o getRSV) (CON con), 
                                                                     flags = [TcpCodec.ACK]
                                                                 } 
-                                                                payload 
-                                                                (CON newCon) |>
-                                                                dup_reset
-                                                            )
-                                                        )
+                                                                payload;
+                                                                dup_reset (CON newCon)
+                                                        ))
                                                     else 
                                                         dup_inc (CON newCon))
                                                 else if open_state = ESTABLISHED andalso #sequence_number tcpHeader = #nxt rsv andalso String.size tcpPayload > 0 andalso #service_type con = FULL then
@@ -389,83 +411,9 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                 else CON newCon
                                             )
                                         )
-                                        in TcpState.update newCon context
+                                        in  TcpState.update (sendQueuedSegments newCon) context
                                         end
                                 )
-                            (* |   CLOSE_WAIT =>
-                                    context *)
-                                    (* if TcpCodec.hasFlagsSet cbits [TcpCodec.RST] then 
-                                        TcpState.remove connection_id context
-                                    else if TcpCodec.hasFlagsSet cbits [TcpCodec.SYN] then 
-                                        TcpState.remove connection_id context   
-                                    else if TcpCodec.hasFlagsSet cbits [TcpCodec.ACK] then
-                                        let 
-                                            val newUna =  
-                                                    if  #una ssv < #ack_number tcpHeader andalso 
-                                                        #ack_number tcpHeader <= #nxt ssv 
-                                                    then #ack_number tcpHeader 
-                                                    else #una ssv
-                                            val (newWnd, newWl1, newWl2) = 
-                                                    if #wl1 ssv < #sequence_number tcpHeader orelse 
-                                                        #wl1 ssv = #sequence_number tcpHeader andalso 
-                                                        #wl2 ssv <= #ack_number tcpHeader
-                                                    then (#window tcpHeader, #sequence_number tcpHeader, #ack_number tcpHeader)
-                                                    else (#wnd ssv, #wl1 ssv, #wl2 ssv)
-                                            val newCon = (CON {
-                                                id = connection_id,
-                                                state = if (#retran_queue con) |> Queue.isEmpty then LAST_ACK else CLOSE_WAIT,
-                                                send_seqvar = SSV {
-                                                    una = newUna,
-                                                    nxt = #nxt ssv,
-                                                    wnd = newWnd,
-                                                    up  = #up ssv,
-                                                    wl1 = newWl1,
-                                                    wl2 = newWl2,
-                                                    iss = #iss ssv
-                                                },
-                                                receive_seqvar = RSV rsv,
-                                                receive_queue = (#receive_queue con),
-                                                retran_queue = (#retran_queue con),
-                                                dup_count = if newUna <> #una ssv then 0 else #dup_count con } |> TcpState.retran_dropacked (#ack_number tcpHeader),
-                                                service_type = #service_type con
-                                            )
-                                            val rq = let val CON c = newCon in #retran_queue c end
-                                            in 
-                                                if (#ack_number tcpHeader > #nxt ssv) then (* What ack to send? *)
-                                                   simpleSend {
-                                                    sequence_number = #nxt ssv, 
-                                                    ack_number = #nxt rsv, 
-                                                    flags = [TcpCodec.ACK]} 
-                                                    "" 
-                                                else ();
-                                                if #retran_queue con |> Queue.isEmpty then 
-                                                   simpleSend {
-                                                    sequence_number = #nxt ssv, 
-                                                    ack_number = #nxt rsv+1, 
-                                                    flags = [TcpCodec.ACK, TcpCodec.FIN]} 
-                                                    "" 
-                                                else ();
-                                                if #ack_number tcpHeader = newUna andalso String.size tcpPayload = 0 then (
-                                                        if #dup_count con = 2 then (
-                                                            case Queue.peek rq of 
-                                                                NONE =>  TcpState.update newCon context 
-                                                                (* TODO: Fix queue reordering *)
-                                                            |   SOME ({last_ack, payload}, _) => (
-                                                                    simpleSend {
-                                                                        sequence_number = last_ack - String.size payload, 
-                                                                        ack_number =  (#nxt o getRSV) (CON con), 
-                                                                        flags = [TcpCodec.ACK]
-                                                                    } 
-                                                                    payload;
-                                                                    TcpState.update (TcpState.dup_reset newCon) context
-                                                                )
-                                                        )
-                                                        else TcpState.update (TcpState.dup_inc newCon) context
-                                                )
-                                                else TcpState.update newCon context
-                                            end
-                                    else context
-                                *)
                     end
         end
 end
