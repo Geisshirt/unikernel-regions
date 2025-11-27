@@ -61,85 +61,86 @@ fun req `r (inStream : instream) : subservice * string`r =
 fun resp `r (data: string`r) : unit =
 	print ("Response sent to client: " ^ data)
 
-fun run () = (
-  print "Starting mock server\n";
+local
+  (* chat subservice *)
+  (* appends data to state and returns a response *)
+  (* \/ r,r',r'',r'''. (string`r' list`r, string`r'') -> (string`r''', string`r' list`r) *)
+  fun chat `[rs1 rs2] (state : string`rs1 list`rs2, data: string) : string * string`rs1 list`rs2 =
+	  let
+		val temp = data ^ "" :: copyList state
+		val _ = resetRegions state
+		val response = "Chat received: " ^ data
+		val newState = copyList (takeSafe (temp, 100))
+	  in
+		(response, newState)
+	  end
 
-  let 
-	(* initializations *)
-	val inStream : instream = openIn "mock_requests.txt"
-    val state = nil
+  (* history subservice *)
+  (* returns the last 2 chat messages from state *)
+  (* \/ r,r',r'',r'''. (string`r' list`r) -> string`r''' *)
+  fun history (state: state) : string =
+	  let
+		val recentHistory = takeSafe (state, 2)
+		val revList = List.rev recentHistory
+		val response : string = String.concatWith "> " (revList)
+	  in
+		response
+	  end
 
-	(* chat subservice *)
-	(* appends data to state and returns a response *)
-	(* \/ r,r',r'',r'''. (string`r' list`r, string`r'') -> (string`r''', string`r' list`r) *)
-	fun chat (state : state) (data: string) : string * state =
+  (* service function *)
+  (* responsible for handling requests and running corresponding subroutines *)
+  (* Carries state between requests and operates in a loop *)
+  (* \/ r,r'.(string,r) -> (string,r') *)
+  fun service (inStream : instream) (state : state) : unit =
+	  let
+		val state' =
+		  let with r3 r4
+			val (subservice, data : string`r3) = req (inStream) : subservice * string`r3
+		  in
+			case subservice of
+			  Exit => (
+				print "Exiting service loop...\n";
+				raise Fail "Service exited"
+		)
+	| Nothing => (
+		print "No valid subservice requested. Continuing...\n";
+		state
+	  )
+	| Chat => (
 		let
-		  val temp = data ^ "" :: copyList state
-		  val _ = resetRegions state
-		  val response = "Chat received: " ^ data
-		  val newState = copyList (takeSafe (temp, 100))
+		  val (response : string`r4, state') = chat (state, data)
 		in
-		  (response, newState)
+		  resp (response : string`r4);
+		  state'
 		end
-
-	(* history subservice *)
-	(* returns the last 2 chat messages from state *)
-	(* \/ r,r',r'',r'''. (string`r' list`r) -> string`r''' *)
-	fun history (state: state) : string =
+	  )
+	| History => (
 		let
-		  val recentHistory = takeSafe (state, 2)
-		  val revList = List.rev recentHistory
-		  val response : string = String.concatWith "> " (revList)
+		  val response : string`r4 = history state
 		in
-		  response
+		  resp (response : string`r4);
+		  state
 		end
+	  )
+		  end
+	  in
+		service inStream state'
+	  end
+in
+  fun run () = (
+	print "Starting mock server\n";
 
-	(* service function *)
-	(* responsible for handling requests and running corresponding subroutines *)
-	(* Carries state between requests and operates in a loop *)
-	(* \/ r,r'.(string,r) -> (string,r') *)
-	fun service (inStream : instream) (state : state) : unit =
-		let
-		  val state' =
-			let with r3 r4
-			  val (subservice, data : string`r3) = req (inStream) : subservice * string`r3
-			in
-			  case subservice of
-				Exit => (
-				  print "Exiting service loop...\n";
-				  raise Fail "Service exited"
-				)
-			  | Nothing => (
-				  print "No valid subservice requested. Continuing...\n";
-				  state
-				)
-			  | Chat => (
-				  let
-					val (response : string`r4, state') = chat state data
-				  in
-					resp (response : string`r4);
-					state'
-				  end
-				)
-			  | History => (
-				  let
-					val response : string`r4 = history state
-				  in
-					resp (response : string`r4);
-					state
-				  end
-				)
-			end
-		in
-		  service inStream state'
-		end
-
-  in
-	service inStream state handle Fail msg => (
+	let with rs1 rs2
+	  (* initializations *)
+	  val inStream : instream = openIn "mock_requests.txt"
+      val state = nil : string`rs1 list`rs2
+	in
+	  service inStream state handle Fail msg => (
 		closeIn inStream;
 		print ("Service loop exited with: " ^ msg ^"\n")
-	  )
-  end
-)
+	)
+	end
+  )
+end
 
 val _ = run () 

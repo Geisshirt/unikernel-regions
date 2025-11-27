@@ -1,4 +1,4 @@
-(* A simple I/O library for SML/NJ using ffi *)
+(* A simple I/O library *)
 
 structure SimpleIO = struct
 	type instream = {ic: int, name: string}

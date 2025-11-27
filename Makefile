@@ -47,7 +47,7 @@ service:
 ICFLAGS=--reml -Pcee -maximum_inline_size 0 
 
 service.ic:
-	mlkit $(FLAGS) -no_gc $(ICFLAGS) -o service.ic $(shell pwd)/examples/service/main.mlb
+	mlkit $(FLAGS) -no_gc -no_delete_target_files $(ICFLAGS) -o service.ic $(shell pwd)/examples/service/main.mlb
 
 service.prof:
 	mlkit $(FLAGS) -no_gc --reml -prof -o service.prof $(shell pwd)/examples/service/main.mlb
