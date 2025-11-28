@@ -394,10 +394,17 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                                 sendSegment 
                                                                 {
                                                                     sequence_number = last_ack - String.size payload, 
-                                                                    ack_number =  (#nxt o getRSV) (CON con), 
+                                                                    ack_number = (#nxt o getRSV) (CON newCon), 
+                                                                    flags = [TcpCodec.ACK]
+                                                                }
+                                                                (String.extract(payload, 0, SOME (268)));
+                                                                sendSegment 
+                                                                {
+                                                                    sequence_number = last_ack - String.size payload + 268, 
+                                                                    ack_number = (#nxt o getRSV) (CON newCon), 
                                                                     flags = [TcpCodec.ACK]
                                                                 } 
-                                                                payload;
+                                                                (String.extract(payload, 268, NONE));
                                                                 dup_reset (CON newCon)
                                                         ))
                                                     else 
