@@ -35,7 +35,7 @@ structure TcpState : TCP_STATE = struct
         send_seqvar    : send_seqvar,
         send_queue     : string queue,
         receive_seqvar : receive_seqvar,
-        receive_queue  : string queue,
+        receive_queue  : string,
         retran_queue   : {last_ack : int, payload : string} queue,
         dup_count      : int,
         service_type   : service_type
@@ -178,7 +178,7 @@ structure TcpState : TCP_STATE = struct
 
     fun rec_enqueue payload (CON {id, state, send_seqvar, send_queue, receive_seqvar,receive_queue, retran_queue, dup_count, service_type}) =
         let
-            val new_q = enqueue (payload, receive_queue)
+            val new_q = receive_queue ^ payload
         in
             CON {
                 id = id,
@@ -194,13 +194,13 @@ structure TcpState : TCP_STATE = struct
         end
 
     fun rec_collect (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type}) = 
-        (Queue.toList receive_queue |> List.rev |> foldl (op ^) "", CON {
+        (receive_queue, CON {
             id = id,
             state = state,
             send_seqvar = send_seqvar,
             send_queue = send_queue,
             receive_seqvar = receive_seqvar,
-            receive_queue = empty (),
+            receive_queue = "",
             retran_queue = retran_queue,
             dup_count = dup_count,
             service_type = service_type

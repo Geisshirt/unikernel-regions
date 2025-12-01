@@ -35,7 +35,7 @@ signature TCP_STATE = sig
         send_seqvar    : send_seqvar,
         send_queue     : string Queue.queue,
         receive_seqvar : receive_seqvar,
-        receive_queue  : string Queue.queue,
+        receive_queue  : string,
         retran_queue   : {last_ack : int, payload : string} Queue.queue,
         dup_count      : int,
         service_type   : service_type
