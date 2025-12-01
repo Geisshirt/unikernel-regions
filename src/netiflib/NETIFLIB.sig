@@ -4,6 +4,7 @@
 
 
 signature NETIF = sig 
+    val init : unit -> unit
     val receive : unit -> string 
     val send : int list -> unit
 end 

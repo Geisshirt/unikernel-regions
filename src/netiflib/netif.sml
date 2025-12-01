@@ -1,4 +1,6 @@
-structure Netif : NETIF = struct 
+structure Netif : NETIF = struct
+  fun init() = ()
+
   fun receive() : string =
     prim ("Receive", ())
 

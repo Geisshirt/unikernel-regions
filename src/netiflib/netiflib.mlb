@@ -1,5 +1,7 @@
 local 
     $(SML_LIB)/basis/basis.mlb
+    ../utilslib/utilslib.mlb
 in
-    NETIFLIB.sig netiflib.sml
+    NETIFLIB.sig
+    netif$(PROF).sml
 end 

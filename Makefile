@@ -36,13 +36,26 @@ tests/%test: FORCE
 FORCE: ;
 
 tests: unix tests/*test
+# SML_LIB=~/mlkit/src/Runtime mlkit $(FLAGS) -no_gc -prof -o $SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
+# %.exe: $(t)
+# 	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
+# 	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
 
 %.exe: $(t)
-	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
-	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
+	gcc -I ~/Desktop/mlkit/src/Runtime -o libnetiflib.a -c src/netiflib/netif-tuntap.c
+	PROF="" mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
 
-%Prof: FORCE
-	SML_LIB=~/mlkit/src/Runtime mlkit -no_gc -prof -Pcee -o $*Prof.exe $*Prof/main.mlb > out.txt
+%-prof-gen: $(t)
+	gcc -I ~/Desktop/mlkit/src/Runtime -o libnetiflib.a -c src/netiflib/netif-tuntap.c	
+	PROF="Gen" mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
+
+%-prof-run: $(t)	
+	PROF="Run" mlkit $(FLAGS) -no_gc -prof -Pcee -o $*.exe $(shell pwd)/examples/$*/main.mlb > prof_out
+# 	 mlkit -no_gc -prof -Pcee -o $*Prof.exe $*Prof/main.mlb > prof_out.txt
+
+prof-pdf:
+	rp2ps -region -name 'Network app' -sampleMax 2654
+	ps2pdf region.ps region.pdf
 
 .PRECIOUS: %.exe
 %-ex-app: %.exe
