@@ -227,7 +227,6 @@ structure TcpState : TCP_STATE = struct
         let fun drop q = 
                 case dequeue q of 
                     SOME ({last_ack, payload = _}, new_q) => (
-                        print ("last_ack: " ^ (Int.toString last_ack) ^ ", ack: " ^ (Int.toString ack) ^ "\n");
                         if last_ack <= ack then drop new_q
                         else q
                     )

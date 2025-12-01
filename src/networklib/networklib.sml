@@ -17,10 +17,13 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
 
     fun logOff () = log := false
 
+
     fun recListen context service = 
         let 
-            val rawTap = Netif.receive () 
+            val rawTap = Netif.receive ()
+
             (* TODO: Why are we doing this pointless extract? *)
+            
             val ethFrame = String.extract (rawTap, 0, NONE)
             val (ethHeader, ethPayload) = ethFrame |> EthCodec.decode 
             val EthCodec.Header {et, dstMac, srcMac} = ethHeader
@@ -54,7 +57,9 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
         end 
        (* handle _ => (print "Encountered an error in handling!\n"; recListen context bindings)  *)
 
-    fun listen service = 
+    fun listen service = (
+        Netif.init();
         recListen (IPv4.initContext ()) service
+    )
 
 end

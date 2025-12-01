@@ -98,8 +98,7 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                             flags = flags,
                             window = 65535
                         } payload
-                in  print "Sending segment!\n";
-                    IPv4Send.send {
+                in  IPv4Send.send {
                         ownMac = ownMac,
                         ownIPaddr = ownIPaddr,
                         dstMac = dstMac,
@@ -107,15 +106,14 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                         identification = (#identification ipv4Header), 
                         protocol = protocol_int, 
                         payload = tcpPayload
-                    };
-                    print "Sent segment!\n"
+                    }
                 end
             
             fun sendQueuedSegments con = 
                 let val ssv = getSSV con
                     val rsv = getRSV con
                 in  if #mss ssv <= #una ssv +$ (#wnd ssv - #nxt ssv) then 
-                        (print "Send queued segment!\n"; case send_dequeue con of 
+                        (case send_dequeue con of 
                             SOME (payload, con) => 
                                 let val sequence_number = #nxt ssv
                                     val ack_number = #nxt rsv
@@ -134,8 +132,8 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                                     }) |> 
                                     sendQueuedSegments)
                                 end 
-                        |   NONE => (print "No more queued!\n"; con))
-                    else (print "Don't send!\n"; con)
+                        |   NONE => (con))
+                    else con
                 end
 
             val cbits = #control_bits tcpHeader
@@ -339,7 +337,7 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                 if TcpCodec.hasFlagsSet cbits [TcpCodec.FIN] then ((Int.toString (#sequence_number tcpHeader)) ^ " " ^ (Int.toString (#nxt rsv))|> print; CLOSE_WAIT) else s
                                             ) |>
                                             (fn CON newCon => 
-                                                (if open_state = CLOSE_WAIT then ("IN WAIT! " ^ (Int.toString (Queue.length (#retran_queue newCon))) ^ "\n" |> print) else (); CON newCon)
+                                                (CON newCon)
                                             ) |> 
                                             (fn CON newCon => 
                                                 if (#ack_number tcpHeader > #nxt ssv) then
@@ -348,8 +346,7 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                         ack_number = #nxt rsv, 
                                                         flags = [TcpCodec.ACK]}) (CON newCon)
                                                 else if open_state = CLOSE_WAIT andalso Queue.isEmpty (#retran_queue newCon) andalso Queue.isEmpty (#send_queue newCon) then 
-                                                    (print "Done!\n";
-                                                     effect (sendAck {
+                                                    (effect (sendAck {
                                                         sequence_number = #nxt ssv, 
                                                         ack_number = #nxt rsv, 
                                                         flags = [TcpCodec.ACK, TcpCodec.FIN]}) (CON newCon) |> 
@@ -373,15 +370,18 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                     #sequence_number tcpHeader = #nxt rsv andalso ((String.size tcpPayload > 0) orelse (TcpCodec.hasFlagsSet cbits [TcpCodec.FIN])) andalso
                                                     (#service_type con = STREAM orelse (#service_type con = FULL andalso #state newCon = CLOSE_WAIT)) then
                                                         let val (requestPayload, CON newCon) = 
-                                                                (case #service_type con of 
+                                                                (print "Collecting...\n";
+                                                                case #service_type con of 
                                                                     FULL   => rec_collect (CON newCon |> rec_enqueue tcpPayload)
-                                                                |   STREAM => (tcpPayload, CON newCon))
+                                                                |   STREAM => (tcpPayload, CON newCon)
+                                                                )
                                                         in 
-                                                            (   print "Sending back!"
-                                                                ; case service (#dest_port tcpHeader, TCPService, REQUEST requestPayload) of 
+                                                            (print "Running service...\n";
+                                                                case service (#dest_port tcpHeader, TCPService, REQUEST requestPayload) of 
                                                                 REPLY payload => 
                                                                     (* TODO do not use sendsegment*)
-                                                                    ((send_enqueue_many 
+                                                                    (print "Queing in send...\n";
+                                                                    (send_enqueue_many 
                                                                         payload
                                                                         (CON newCon)))
                                                             |   _ => CON newCon)
@@ -418,7 +418,10 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                 else CON newCon
                                             )
                                         )
-                                        in  TcpState.update (sendQueuedSegments newCon) context
+                                        in  let val newCon' = (print "Sending queued segments...\n"; sendQueuedSegments newCon) in
+                                                print "Done! update state!\n";
+                                                TcpState.update (newCon) context
+                                            end 
                                         end
                                 )
                     end
