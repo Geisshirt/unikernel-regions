@@ -54,7 +54,7 @@ tests: unix tests/*test
 # 	 mlkit -no_gc -prof -Pcee -o $*Prof.exe $*Prof/main.mlb > prof_out.txt
 
 prof-pdf:
-	rp2ps -region -name 'Network app' -sampleMax 2654
+	rp2ps -region -name 'Network app' -sampleMax 100000
 	ps2pdf region.ps region.pdf
 
 .PRECIOUS: %.exe

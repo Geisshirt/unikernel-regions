@@ -6,6 +6,9 @@ structure Netif :> NETIF = struct
 
   fun init () = ()
 
+  fun count 0 = ()
+    | count n = count (n-1)
+
   fun receive() : string =
     let fun getLen s = 
           case TextIO.input1 inputFile of 
@@ -13,8 +16,11 @@ structure Netif :> NETIF = struct
           | SOME c => getLen (s ^ (Char.toString c))
           | NONE => 0
     in 
-      if TextIO.endOfStream inputFile then 
-        OS.Process.exit OS.Process.success
+      if TextIO.endOfStream inputFile then
+        ( 
+          (* count 2000000000; *)
+          OS.Process.exit OS.Process.success
+        )
       else 
         let val len = getLen ""
             val input = TextIO.inputN (inputFile, len)
