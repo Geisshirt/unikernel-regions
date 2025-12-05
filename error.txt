@@ -1,0 +1,194 @@
+(cd UnixRuntimeMini; make)
+make[1]: Entering directory '/home/svante/Documents/KU/unikernel-regions/UnixRuntimeMini'
+SML_LIB=. mlkit -no_gc -c basis/basis.mlb
+make[1]: Leaving directory '/home/svante/Documents/KU/unikernel-regions/UnixRuntimeMini'
+PROF="Run" mlkit  --reml -no_gc -prof -o echo.exe /home/svante/Documents/KU/unikernel-regions/examples/echo/main.mlb
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/utilslib/protocols.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/utilslib/MLB/RI_PROF/protocols.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../ipv4lib/IPV4HANDLE/../../service/Service.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../ipv4lib/IPV4HANDLE/../../service/MLB/RI_PROF/Service.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/utilslib/logging.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/utilslib/MLB/RI_PROF/logging.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/utilslib/utilslib.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/utilslib/MLB/RI_PROF/utilslib.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/utilslib/queue.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/utilslib/MLB/RI_PROF/queue.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../arplib/../ethlib/../netiflib/NETIFLIB.sig]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../ipv4lib/IPV4_FRAG_ASSEMBLER/FRAG_ASSEMBLER.sig]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../ipv4lib/IPV4HANDLE/../IPV4CODEC/IPV4_CODEC_LIB.sig]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/tcplib/TCPHANDLE/../TCPSTATE/TCP_STATE.sig]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../arplib/../ethlib/../netiflib/netifRun.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../arplib/../ethlib/../netiflib/MLB/RI_PROF/netifRun.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../ipv4lib/IPV4_FRAG_ASSEMBLER/fragAssemblerList.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../ipv4lib/IPV4_FRAG_ASSEMBLER/MLB/RI_PROF/fragAssemblerList.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../ipv4lib/IPV4HANDLE/../IPV4CODEC/ipv4Codeclib.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../ipv4lib/IPV4HANDLE/../IPV4CODEC/MLB/RI_PROF/ipv4Codeclib.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/tcplib/TCPHANDLE/../TCPSTATE/tcpState.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/tcplib/TCPHANDLE/../TCPSTATE/MLB/RI_PROF/tcpState.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../arplib/../ethlib/ETH_CODEC_LIB.sig]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../ipv4lib/IPV4HANDLE/../../transportlayer/TRANSPORT_LAYER.sig]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/tcplib/TCPHANDLE/../TCPCODEC/TCP_CODEC.sig]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../arplib/../ethlib/ethCodeclib.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../arplib/../ethlib/MLB/RI_PROF/ethCodeclib.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../ipv4lib/IPV4HANDLE/../../transportlayer/TRANSPORT_LAYER_HANDLER.sig]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/tcplib/TCPHANDLE/../TCPCODEC/tcpCodec.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/tcplib/TCPHANDLE/../TCPCODEC/MLB/RI_PROF/tcpCodec.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../arplib/../ethlib/ETHLIB.sig]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../ipv4lib/IPV4HANDLE/../../transportlayer/transport_layer.sml]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../arplib/../ethlib/ethlib.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../arplib/../ethlib/MLB/RI_PROF/ethlib.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../ipv4lib/IPV4HANDLE/IPV4_HANDLE.sig]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../arplib/ARP_CODEC_LIB.sig]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/udplib/../../ipv4lib/IPV4SEND/IPV4_SEND.sig]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../ipv4lib/IPV4HANDLE/ipv4Handle.sml]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../arplib/arpCodeclib.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../arplib/MLB/RI_PROF/arpCodeclib.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/udplib/../../ipv4lib/IPV4SEND/ipv4Send.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/udplib/../../ipv4lib/IPV4SEND/MLB/RI_PROF/ipv4Send.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../arplib/ARPLIB.sig]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/udplib/UDP_CODEC_LIB.sig]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/tcplib/TCPHANDLE/tcpHandle.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/tcplib/TCPHANDLE/MLB/RI_PROF/tcpHandle.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../arplib/arplib.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/../arplib/MLB/RI_PROF/arplib.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/udplib/udpCodeclib.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/udplib/MLB/RI_PROF/udpCodeclib.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/NETWORKLIB.sig]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/udplib/udplib.sml]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/transportlayer/udplib/MLB/RI_PROF/udplib.sml.s]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/../../src/networklib/networklib.sml]
+[reading source file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/main.sml]
+[compiling body of functor TransportLayerSingle (from source transport_layer.mlb->transport_layer.sml) begin]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/MLB/RI_PROF/main.sml.code1.s]
+[compiling body of functor TransportLayerSingle end]
+[compiling body of functor TransportLayerSingle (from source transport_layer.mlb->transport_layer.sml) begin]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/MLB/RI_PROF/main.sml.code2.s]
+[compiling body of functor TransportLayerSingle end]
+[compiling body of functor TransportLayerComb (from source transport_layer.mlb->transport_layer.sml) begin]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/MLB/RI_PROF/main.sml.code5.s]
+[compiling body of functor TransportLayerComb end]
+[compiling body of functor IPv4Handle (from source ipv4Handlelib.mlb->ipv4Handle.sml) begin]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/MLB/RI_PROF/main.sml.code8.s]
+[compiling body of functor IPv4Handle end]
+[compiling body of functor Network (from source networklib.mlb->networklib.sml) begin]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/MLB/RI_PROF/main.sml.code9.s]
+[compiling body of functor Network end]
+[wrote X64 code file:	/home/svante/Documents/KU/unikernel-regions/examples/echo/MLB/RI_PROF/main.sml.s]
+ *** Warnings ***
+resetRegions(new_context): 
+   You have suggested resetting the regions that appear free 
+   in the type scheme with place of 'new_context', i.e., in
+   [r347013, r4, r347017, r347019] context
+   (1)                                                    
+        'r347013': there is a conflict with the locally
+        live variable
+        new_context :[r347013, r4, r347017, r347019] context
+        from which the following region variables can be reached 
+        in the region flow graph:
+             {r347013,r3,r4,r347017,r7,r347019,r1}
+        Amongst these, 'r347013' can also be reached from 'r347013'.
+        Thus I have given 'r347013' storage mode "attop".
+   (2)I cannot reset 'r4', for it is bound outside the present function.
+   (3)                                                    
+        'r347017': there is a conflict with the locally
+        live variable
+        new_context :[r347013, r4, r347017, r347019] context
+        from which the following region variables can be reached 
+        in the region flow graph:
+             {r347013,r3,r4,r347017,r7,r347019,r1}
+        Amongst these, 'r347017' can also be reached from 'r347017'.
+        Thus I have given 'r347017' storage mode "attop".
+   (4)                                                    
+        'r347019': there is a conflict with the locally
+        live variable
+        new_context :[r347013, r4, r347017, r347019] context
+        from which the following region variables can be reached 
+        in the region flow graph:
+             {r347013,r3,r4,r347017,r7,r347019,r1}
+        Amongst these, 'r347019' can also be reached from 'r347019'.
+        Thus I have given 'r347019' storage mode "attop".
+resetRegions(new_context): 
+   You have suggested resetting the regions that appear free 
+   in the type scheme with place of 'new_context', i.e., in
+   [r347161, r4, r347165, r347167] context
+   (1)                                                    
+        'r347161': there is a conflict with the locally
+        live variable
+        listen' :
+             (all 
+                 r347175,r347171,r347167,r347165,r347161,'a0.
+                  <[r347161, r4, r347165, r347167] context, 
+                   ((int*ServiceProtocol*[r347161] HandlerRequest,r347171)->[r347161] ServiceReply,r347175)
+                  >
+                  ->
+                  'a0,
+              r1
+             )
+        from which the following region variables can be reached 
+        in the region flow graph:
+             {r1,r4,r6,r7,r3,r5,r2}
+        Amongst these, 'r3' can also be reached from 'r347161'.
+        Thus I have given 'r347161' storage mode "attop".
+   (2)I cannot reset 'r4', for it is bound outside the present function.
+   (3)                                                    
+        'r347165': there is a conflict with the locally
+        live variable
+        listen' :
+             (all 
+                 r347175,r347171,r347167,r347165,r347161,'a0.
+                  <[r347161, r4, r347165, r347167] context, 
+                   ((int*ServiceProtocol*[r347161] HandlerRequest,r347171)->[r347161] ServiceReply,r347175)
+                  >
+                  ->
+                  'a0,
+              r1
+             )
+        from which the following region variables can be reached 
+        in the region flow graph:
+             {r1,r4,r6,r7,r3,r5,r2}
+        Amongst these, 'r7' can also be reached from 'r347165'.
+        Thus I have given 'r347165' storage mode "attop".
+   (4)                                                    
+        'r347167': there is a conflict with the locally
+        live variable
+        listen' :
+             (all 
+                 r347175,r347171,r347167,r347165,r347161,'a0.
+                  <[r347161, r4, r347165, r347167] context, 
+                   ((int*ServiceProtocol*[r347161] HandlerRequest,r347171)->[r347161] ServiceReply,r347175)
+                  >
+                  ->
+                  'a0,
+              r1
+             )
+        from which the following region variables can be reached 
+        in the region flow graph:
+             {r1,r4,r6,r7,r3,r5,r2}
+        Amongst these, 'r1' can also be reached from 'r347167'.
+        Thus I have given 'r347167' storage mode "attop".
+resetRegions(new_context): 
+   You have suggested resetting the regions that appear free 
+   in the type scheme with place of 'new_context', i.e., in
+   [r347317, r4, r347347, r347349] context
+   (1)I cannot reset 'r347317', for it is bound outside the present function.
+   (2)I cannot reset 'r4', for it is bound outside the present function.
+   (3)                                                    
+        'r347347': there is a conflict with the locally
+        live variable
+        new_context :[r347317, r4, r347347, r347349] context
+        from which the following region variables can be reached 
+        in the region flow graph:
+             {r347317,r3,r4,r347347,r347329,r347349,r347331}
+        Amongst these, 'r347347' can also be reached from 'r347347'.
+        Thus I have given 'r347347' storage mode "attop".
+   (4)                                                    
+        'r347349': there is a conflict with the locally
+        live variable
+        new_context :[r347317, r4, r347347, r347349] context
+        from which the following region variables can be reached 
+        in the region flow graph:
+             {r347317,r3,r4,r347347,r347329,r347349,r347331}
+        Amongst these, 'r347349' can also be reached from 'r347349'.
+        Thus I have given 'r347349' storage mode "attop".
+[wrote X64 code file:	MLB/RI_PROF/base-link_objects.s]
+[wrote executable file:	echo.exe]
