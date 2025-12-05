@@ -49,8 +49,9 @@ tests: unix tests/*test
 	gcc -I ~/Desktop/mlkit/src/Runtime -o libnetiflib.a -c src/netiflib/netif-tuntap.c	
 	PROF="Gen" mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
 
-%-prof-run: $(t)	
-	PROF="Run" mlkit $(FLAGS) -no_gc -prof -Pcee -o $*.exe $(shell pwd)/examples/$*/main.mlb > prof_out
+%-prof-run: $(t)
+# 		PROF="Run" mlkit $(FLAGS) --reml -no_gc -prof -Pcee  -o $*.exe $(shell pwd)/examples/$*/main.mlb 
+	PROF="Run" mlkit $(FLAGS) --reml -no_gc -prof -o $*.exe $(shell pwd)/examples/$*/main.mlb
 # 	 mlkit -no_gc -prof -Pcee -o $*Prof.exe $*Prof/main.mlb > prof_out.txt
 
 prof-pdf:
