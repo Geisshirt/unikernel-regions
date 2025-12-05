@@ -14,7 +14,11 @@ functor TransportLayerSingle(tlh : TRANSPORT_LAYER_HANDLER) :> TRANSPORT_LAYER =
     payload : string
   }
 
-  fun initContext () = tlh.initContext ()
+  fun copyContext `[r1 r2] (c: context`r1) : context`r2 = tlh.copyContext c
+
+  fun initContext `r () : context`r = tlh.initContext ()
+
+  fun resetContext (c : context) = resetRegions c
 
   fun protToString prot = if prot = tlh.protocol_int then tlh.protocol_string else "Unknown"
 
@@ -40,7 +44,14 @@ functor TransportLayerComb(structure tl : TRANSPORT_LAYER
     payload : string
   }
 
-  fun initContext () = (tlh.initContext (), tl.initContext ())
+  fun copyContext `[r1 r2] (c : context`r1) : context`r2 = (tlh.copyContext (#1 c), tl.copyContext (#2 c))
+
+  fun initContext `r () : context`r = (tlh.initContext (), tl.initContext ())
+
+  fun resetContext ((hc, c) : context) = (
+    resetRegions hc;
+    tl.resetContext c
+  )
 
   fun protToString prot = if prot = tlh.protocol_int then tlh.protocol_string else tl.protToString prot
 

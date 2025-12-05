@@ -6,8 +6,8 @@
 signature NETWORK = sig
     type port = int
     type callback = string -> string
-    val logOn : unit -> unit
-    val logOff : unit -> unit  
+    (* val logOn : unit -> unit
+    val logOff : unit -> unit   *)
     val listen : Service.service -> unit
 end
 

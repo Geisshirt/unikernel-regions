@@ -3,6 +3,10 @@ signature IPV4_HANDLE = sig
 
     val initContext : unit -> context
 
+    val copyContext : context`r -> context`r'
+
+    val resetContext : context`r -> unit
+
     val handl   : {service : Service.service, 
                    ownIPaddr : int list,
                    ownMac : int list, 

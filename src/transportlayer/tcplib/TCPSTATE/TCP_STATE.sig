@@ -51,6 +51,8 @@ signature TCP_STATE = sig
 
     val dup_reset : connection -> connection
 
+    val reset : tcp_states -> unit
+
     val retran_enqueue : {last_ack : int, payload : string} -> connection -> connection
 
     val send_enqueue_many : string -> connection -> connection
@@ -87,8 +89,10 @@ signature TCP_STATE = sig
 
     val new_iss : unit -> int
 
-    val lookup : connection_id -> tcp_states -> connection option
+    val copy : tcp_states`r -> tcp_states`r'
 
+    val lookup : connection_id -> tcp_states -> connection option
+    
     val add : connection -> tcp_states -> tcp_states
 
     val update : connection -> tcp_states -> tcp_states

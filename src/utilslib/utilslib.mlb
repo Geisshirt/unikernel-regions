@@ -3,6 +3,6 @@ local
 in
     protocols.sml
     logging.sml
-    queue.sml
     utilslib.sml
+    queue.sml
 end

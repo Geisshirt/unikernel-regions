@@ -39,6 +39,8 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
 
     fun initContext () = TcpState.empty_states ()
 
+    fun copyContext `[r1 r2] (context : h_context`r1) : h_context`r2 = TcpState.copy context
+
     fun handl ({service, ownMac, dstMac, ownIPaddr, dstIPaddr, ipv4Header, payload}) context =
         let val (TcpCodec.Header tcpHeader, tcpPayload) = payload |> TcpCodec.decode
             val IPv4Codec.Header ipv4Header = ipv4Header

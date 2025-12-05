@@ -8,6 +8,7 @@ signature UTILSLIB =
         (* val |> : 'a -> ('a -> 'b) -> 'b *)
         (* val ** : int -> int -> int *)
         val findi  : ('a -> bool) -> 'a list -> (int * 'a) option
+        val copyList : string list -> string list
     end
 
 (*

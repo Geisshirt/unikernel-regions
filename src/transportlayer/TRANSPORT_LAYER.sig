@@ -16,7 +16,11 @@ signature TRANSPORT_LAYER = sig
     payload : string
   }
 
-  val initContext : unit -> context
+  val copyContext : context`r -> context`r'
+
+  val initContext : unit -> context`r
+
+  val resetContext : context -> unit
 
   val handl : protocol -> info -> context -> context
 

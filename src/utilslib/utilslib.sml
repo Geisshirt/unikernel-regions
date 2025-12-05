@@ -152,3 +152,7 @@ fun printRawBytes s =
     |> toByteList
     |> map (fn x => (Int.toString x) ^ " ")
     |> app print 
+
+fun copyList _ [] = []
+  | copyList copyfun (x::xr) = (copyfun x) :: copyList copyfun xr
+  

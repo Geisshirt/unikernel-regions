@@ -18,6 +18,19 @@ functor IPv4Handle(structure FragAssembler : FRAG_ASSEMBLER
         tlContext = TransportLayer.initContext()
     }
 
+    fun resetContext (Context {
+        fragContainer,
+        tlContext
+    }) = (
+        (* FragAssembler.reset fragContainer *)
+        TransportLayer.resetContext tlContext
+    )
+
+    fun copyContext (Context c) = Context {
+        fragContainer = FragAssembler.copy (#fragContainer c),
+        tlContext = TransportLayer.copyContext (#tlContext c)
+    }
+
     fun mkPktID (IPv4Codec.Header ipv4Hdr) = 
         rawBytesString (#source_addr ipv4Hdr) ^
         Int.toString (#identification ipv4Hdr) ^

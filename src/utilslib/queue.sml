@@ -1,13 +1,14 @@
 signature QUEUE = sig
     type 'a queue
-    val empty    : unit -> 'a queue
-    val fromList : 'a list -> 'a queue
-    val toList   : 'a queue -> 'a list
-    val length   : 'a queue -> int
-    val isEmpty  : 'a queue -> bool
-    val enqueue  : 'a * 'a queue -> 'a queue
-    val dequeue  : 'a queue -> ('a * 'a queue) option
-    val peek     : 'a queue -> ('a * 'a queue) option
+    val empty     : unit -> 'a queue
+    val fromList  : 'a list -> 'a queue
+    val toList    : 'a queue -> 'a list
+    val copyQueue : ('a -> 'a) -> 'a queue`r -> 'a queue`r'
+    val length    : 'a queue -> int
+    val isEmpty   : 'a queue -> bool
+    val enqueue   : 'a * 'a queue -> 'a queue
+    val dequeue   : 'a queue -> ('a * 'a queue) option
+    val peek      : 'a queue -> ('a * 'a queue) option
 end
 
 structure Queue :> QUEUE = struct
@@ -18,6 +19,9 @@ structure Queue :> QUEUE = struct
     fun fromList list = (list, [])
 
     fun toList ((front, back) : 'a queue) = front @ List.rev back
+
+    fun copyQueue `[r1 r2] copyFun ((front, back) : 'a queue`r1) : 'a queue`r2 = 
+        (copyList copyFun front, copyList copyFun back)
 
     fun length ((f, b): 'a queue) : int =
         List.length f + List.length b

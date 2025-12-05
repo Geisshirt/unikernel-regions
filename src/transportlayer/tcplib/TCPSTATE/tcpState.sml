@@ -41,6 +41,8 @@ structure TcpState : TCP_STATE = struct
         service_type   : service_type
     }
 
+    type tcp_states = connection list
+
     fun effect effectfun con = (effectfun; con)
 
     fun update_state statefun (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type}) = (
@@ -98,6 +100,8 @@ structure TcpState : TCP_STATE = struct
             service_type = service_type
         }  
     ) 
+
+    fun reset `r (state : tcp_states`r) = resetRegions state
 
     fun dup_reset (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count = _, service_type}) = (
         CON {
@@ -251,9 +255,7 @@ structure TcpState : TCP_STATE = struct
     fun getRSV (CON {id = _, state = _, send_seqvar = _, send_queue = _, receive_seqvar, receive_queue = _, retran_queue = _, dup_count = _, service_type = _}) =
         let val RSV rsv = receive_seqvar in rsv end
 
-    type tcp_states = connection list
-
-    fun empty_states () = [] 
+    fun empty_states `[r1 r2 r3 r4 r5] () : connection`[r2 r3 r4 r5] list`[r1] = [] 
 
     fun new_iss () = 0
 
@@ -262,6 +264,40 @@ structure TcpState : TCP_STATE = struct
         #source_port cid1 = #source_port cid2 andalso
         #dest_port cid1   = #dest_port cid2
 
+    (* fun copyConnection (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type} : connection) : connection = 
+        (
+            CON {
+               id = id,
+               state = state,
+               send_seqvar = send_seqvar,
+               send_queue = Queue.copyQueue (fn s => s ^ "") send_queue,
+               receive_seqvar = receive_seqvar,
+               receive_queue = receive_queue ^ "",
+               retran_queue = Queue.copyQueue (fn {last_ack, payload} => {last_ack = last_ack, payload = payload ^ ""}) retran_queue,
+               dup_count = dup_count,
+               service_type = service_type
+            }
+        ) *)
+
+
+    fun copyConnection `[r1 r2 r3 r4 t1 t2 t3 t4] (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type} : connection`[r1 r2 r3 r4]) : connection`[t1 t2 t3 t4] = 
+        (
+            CON {
+               id = id,
+               state = state,
+               send_seqvar = send_seqvar,
+               send_queue = Queue.copyQueue (fn s => s ^ "") send_queue,
+               receive_seqvar = receive_seqvar,
+               receive_queue = receive_queue ^ "",
+               retran_queue = Queue.copyQueue (fn {last_ack, payload} => {last_ack = last_ack, payload = payload ^ ""}) retran_queue,
+               dup_count = dup_count,
+               service_type = service_type
+            }
+        )
+
+    fun copy `[r1 r2] (states : tcp_states`r1) : tcp_states`r2 =
+        copyList copyConnection states
+    
     fun lookup (cid : connection_id) states : connection option =
         List.find (fn (CON c : connection) => compareIDs (#id c, cid)) states
 
@@ -281,11 +317,10 @@ structure TcpState : TCP_STATE = struct
                 val sPort = Int.toString (#source_port (#id c)) 
                 val dPort = Int.toString (#dest_port (#id c))
                 val stateStr = (case #state c of
-                                          CLOSED      => "CLOSED"
-                                        | LISTEN      => "LISTEN"
-                                        | ESTABLISHED => "ESTABLISHED"
-                                        | SYN_REC     => "SYN RECEIVED"
-                                        | SYN_SENT    => "SYN SENT")
+                                    ESTABLISHED => "ESTABLISHED"
+                                    | SYN_REC     => "SYN RECEIVED"
+                                    | LAST_ACK    => "LAST ACK"
+                                    | CLOSE_WAIT => "CLOSE WAIT")
                 val out = "From: " ^ sAdd ^ ":" ^ sPort ^ 
                     "\nTo: " ^ dPort ^
                     "\nState: " ^ stateStr ^ "\n\n"

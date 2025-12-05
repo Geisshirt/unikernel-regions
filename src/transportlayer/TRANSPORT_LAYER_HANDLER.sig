@@ -11,7 +11,9 @@ signature TRANSPORT_LAYER_HANDLER = sig
     payload : string
   }
 
-  val initContext : unit -> h_context
+  val copyContext : h_context`r -> h_context`r'
+
+  val initContext : unit -> h_context`r
 
   val protocol_int : int
 

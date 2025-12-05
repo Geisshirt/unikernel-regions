@@ -16,6 +16,10 @@ signature FRAG_ASSEMBLER = sig
 
   val assemble : id -> fragContainer -> (payload * fragContainer) option
 
+  val copy : fragContainer`r -> fragContainer`r'
+
+  val reset : fragContainer -> unit
+
   (* Either do clean up on user side or in map *)
 
   val empty : unit -> fragContainer

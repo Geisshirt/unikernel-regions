@@ -19,8 +19,18 @@ struct
           SOME (_, _, l) => SOME l
         | NONE => NONE *)
 
-  (* What happens with double replacement ? *)
+  fun reset (fc : fragContainer) = resetRegions fc
 
+  (* What happens with double replacement ? *)
+  fun copy fc = copyList (
+    fn (id, nxtOff, fl) => (id, nxtOff, copyList (
+      fn (Fragment {offset, length, isLast, fragPayload}) => Fragment {
+        offset = offset,
+        length = length,
+        isLast = isLast,
+        fragPayload = fragPayload ^ ""
+      }
+    ) fl)) fc 
 
   fun add id (Fragment frag) (m : fragContainer) : fragContainer = 
     let val offset = (#offset frag)

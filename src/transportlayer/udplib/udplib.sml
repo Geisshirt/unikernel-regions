@@ -24,6 +24,8 @@ structure UdpHandler :> TRANSPORT_LAYER_HANDLER = struct
 
     fun initContext () = ()
 
+    fun copyContext () = ()
+
     fun handl ({service, ownMac, dstMac, ownIPaddr, dstIPaddr, ipv4Header, payload}) () =
         let val (UdpCodec.Header udpHeader, udpPayload) = payload |> UdpCodec.decode
             val IPv4Codec.Header ipv4Header = ipv4Header
