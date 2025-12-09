@@ -9,6 +9,8 @@ end
 structure Logging :> LOGGING = struct
     open Protocols
 
+    fun print (s:string) : unit = prim("printStringML", s)
+
     val loggingEnabled = ref false
     val currentLevel   = ref 1
     val activeProtocols : protocol list ref = ref []

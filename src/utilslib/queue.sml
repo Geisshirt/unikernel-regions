@@ -20,7 +20,7 @@ structure Queue :> QUEUE = struct
 
     fun toList ((front, back) : 'a queue) = front @ List.rev back
 
-    fun copyQueue `[r1 r2] copyFun ((front, back) : 'a queue`r1) : 'a queue`r2 = 
+    fun copyQueue copyFun ((front, back) : 'a queue) : 'a queue =
         (copyList copyFun front, copyList copyFun back)
 
     fun length ((f, b): 'a queue) : int =
@@ -31,10 +31,10 @@ structure Queue :> QUEUE = struct
             ([], []) => true
         |   _        => false
 
-    fun enqueue (x : 'a, (f, b) : 'a queue) : 'a queue = 
+    fun enqueue (x : 'a, (f, b) : 'a queue) : 'a queue =
         (f, x :: b)
 
-    fun dequeue ((f, b) : 'a queue) : ('a * 'a queue) option = 
+    fun dequeue ((f, b) : 'a queue) : ('a * 'a queue) option =
         case f of
             x :: xs => SOME (x, (xs, b))
         |   []      => case List.rev b of
@@ -50,7 +50,7 @@ structure Queue :> QUEUE = struct
 
 end
 
-(* 
+(*
     Queue implemented with two lists, (front * back), to achieve constant amortized enqueue and dequeue.
 
     front: holds the elements the dequeue order i.e. oldest first.

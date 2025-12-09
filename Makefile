@@ -46,12 +46,12 @@ tests: unix tests/*test
 	PROF="" mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
 
 %-prof-gen: $(t)
-	gcc -I ~/Desktop/mlkit/src/Runtime -o libnetiflib.a -c src/netiflib/netif-tuntap.c	
+	gcc -I ~/Desktop/mlkit/src/Runtime -o libnetiflib.a -c src/netiflib/netif-tuntap.c
 	PROF="Gen" mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
 
 %-prof-run: $(t)
-# 		PROF="Run" mlkit $(FLAGS) --reml -no_gc -prof -Pcee  -o $*.exe $(shell pwd)/examples/$*/main.mlb 
-	PROF="Run" mlkit $(FLAGS) --reml -no_gc -prof -o $*.exe $(shell pwd)/examples/$*/main.mlb
+# 		PROF="Run" mlkit $(FLAGS) --reml -no_gc -prof -Pcee  -o $*.exe $(shell pwd)/examples/$*/main.mlb
+	PROF="Run" mlkit $(FLAGS) --reml -no_gc -prof -Pcee -Ptypes --maximum_inline_size 1000 --maximum_specialise_size 1000 --print_rho_types -o $*.exe $(shell pwd)/examples/$*/main.mlb > prof_out
 # 	 mlkit -no_gc -prof -Pcee -o $*Prof.exe $*Prof/main.mlb > prof_out.txt
 
 prof-pdf:
