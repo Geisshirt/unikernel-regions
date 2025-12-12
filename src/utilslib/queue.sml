@@ -1,5 +1,5 @@
 signature QUEUE = sig
-    type 'a queue
+    type 'a queue = 'a list * 'a list
     val empty     : unit -> 'a queue
     val fromList  : 'a list -> 'a queue
     val toList    : 'a queue -> 'a list

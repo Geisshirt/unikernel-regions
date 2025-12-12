@@ -1,6 +1,5 @@
 signature TCP_HANDLE = sig
     datatype info = INFO of {
-        service    : Service.service,
         ownMac     : int list,
         dstMac     : int list,
         ownIPaddr  : int list,

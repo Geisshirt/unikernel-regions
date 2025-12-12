@@ -298,12 +298,14 @@ structure TcpState : TCP_STATE = struct
     } *)
 
     fun copyConnection (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type} : connection) : connection =
-        let fun copyID ({
+        let fun copyListI [] = []
+              | copyListI (x::xr) = x :: copyListI xr
+            fun copyID ({
                 source_addr,
                 source_port,
                 dest_port
             }) = {
-                source_addr = copyList (fn x => x) source_addr,
+                source_addr = copyListI source_addr,
                 source_port = source_port,
                 dest_port = dest_port
             }
@@ -337,15 +339,23 @@ structure TcpState : TCP_STATE = struct
                 up = up,
                 irs = irs
             }
+            fun copyListS [] = []
+              | copyListS (x::xr) = x ^ "" :: copyListS xr
+            fun copyQueueS ((front, back)) =
+                    (copyListS front, copyListS back)
+            fun copyListR [] = []
+              | copyListR ({last_ack, payload}::xr) = {last_ack = last_ack, payload = payload ^ ""} :: copyListR xr
+            fun copyQueueR ((front, back)) =
+                    (copyListR front, copyListR back)
         in (
             CON {
                id = copyID id,
                state = state,
                send_seqvar = copySSV send_seqvar,
-               send_queue = Queue.copyQueue (fn s => s ^ "") send_queue,
+               send_queue = copyQueueS send_queue,
                receive_seqvar = copyRSV receive_seqvar,
                receive_queue = receive_queue ^ "",
-               retran_queue = Queue.copyQueue (fn {last_ack, payload} => {last_ack = last_ack, payload = payload ^ ""}) retran_queue,
+               retran_queue = copyQueueR retran_queue,
                dup_count = dup_count,
                service_type = service_type
             }

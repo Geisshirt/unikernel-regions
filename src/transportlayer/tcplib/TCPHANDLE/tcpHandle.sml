@@ -5,7 +5,7 @@
         3. Window size
  *)
 
-structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
+functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = struct
     open Logging
     open Protocols
     open TcpState
@@ -20,7 +20,6 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
     datatype notification = RESET
 
     type info = {
-        service    : Service.service,
         ownMac     : int list,
         dstMac     : int list,
         ownIPaddr  : int list,
@@ -41,7 +40,7 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
 
     fun copyContext `[r1 r2] (context : h_context`r1) : h_context`r2 = TcpState.copy context
 
-    fun handl ({service, ownMac, dstMac, ownIPaddr, dstIPaddr, ipv4Header, payload}) context =
+    fun handl ({ownMac, dstMac, ownIPaddr, dstIPaddr, ipv4Header, payload}) context =
         let val (TcpCodec.Header tcpHeader, tcpPayload) = payload |> TcpCodec.decode
             val IPv4Codec.Header ipv4Header = ipv4Header
             val send_mss = 536
@@ -281,7 +280,14 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                     else if TcpCodec.hasFlagsSet cbits [TcpCodec.SYN] then 
                                         TcpState.remove connection_id context
                                     else if TcpCodec.hasFlagsSet cbits [TcpCodec.ACK] then
-                                        TcpState.remove connection_id context
+                                        (   print "Removing connnection\n"; 
+                                            let val newConnection = TcpState.remove connection_id context in
+                                                List.length context |> Int.toString |> print; 
+                                                "\n" |> print; 
+                                                List.length newConnection |> Int.toString |> print; 
+                                                "\n" |> print;
+                                                newConnection
+                                            end )
                                     else context
                                 )
                             |   open_state => (
@@ -339,7 +345,7 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                 if TcpCodec.hasFlagsSet cbits [TcpCodec.FIN] then ((Int.toString (#sequence_number tcpHeader)) ^ " " ^ (Int.toString (#nxt rsv))|> print; CLOSE_WAIT) else s
                                             ) |>
                                             (fn CON newCon => 
-                                                if (#ack_number tcpHeader > #nxt ssv) then
+                                                (print "Starting connection\n"; if (#ack_number tcpHeader > #nxt ssv) then
                                                     effect (sendAck {
                                                         sequence_number = #nxt ssv, 
                                                         ack_number = #nxt rsv, 
@@ -376,7 +382,7 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                                 |   STREAM => (tcpPayload, CON newCon)
                                                                 )
                                                         in 
-                                                            (print "Running service...\n";
+                                                            let val con = (print "Running service...\n";
                                                                 case service (#dest_port tcpHeader, TCPService, REQUEST requestPayload) of 
                                                                 REPLY payload => 
                                                                     (* TODO do not use sendsegment*)
@@ -385,6 +391,9 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                                         payload
                                                                         (CON newCon)))
                                                             |   _ => CON newCon)
+                                                            in  print "Done2\n";
+                                                                con 
+                                                            end 
                                                         end)
                                                 else if #ack_number tcpHeader = (#una o getSSV) (CON newCon) andalso String.size tcpPayload = 0 then
                                                     (if #dup_count newCon = 3 then (
@@ -397,14 +406,14 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                                     ack_number = (#nxt o getRSV) (CON newCon), 
                                                                     flags = [TcpCodec.ACK]
                                                                 }
-                                                                (String.extract(payload, 0, SOME (268)));
+                                                                (String.extract(payload, 0, SOME (String.size payload div 2)));
                                                                 sendSegment 
                                                                 {
-                                                                    sequence_number = last_ack - String.size payload + 268, 
+                                                                    sequence_number = last_ack - String.size payload + (String.size payload div 2), 
                                                                     ack_number = (#nxt o getRSV) (CON newCon), 
                                                                     flags = [TcpCodec.ACK]
                                                                 } 
-                                                                (String.extract(payload, 268, NONE));
+                                                                (String.extract(payload, (String.size payload div 2), NONE));
                                                                 dup_reset (CON newCon)
                                                         ))
                                                     else 
@@ -415,11 +424,12 @@ structure TcpHandler :> TRANSPORT_LAYER_HANDLER = struct
                                                         ack_number = (#nxt o getRSV) (CON newCon), 
                                                         flags = [TcpCodec.ACK]}) (CON newCon) |>   
                                                     rec_enqueue tcpPayload) 
-                                                else CON newCon
+                                                else CON newCon)
                                             )
                                         )
-                                        in  let val newCon' = (sendQueuedSegments newCon) in
-                                                TcpState.update (newCon') context
+                                        in  let val newCon' = TcpState.update (sendQueuedSegments newCon) context in
+                                                print "Completely done\n";
+                                                newCon'
                                             end 
                                         end
                                 )

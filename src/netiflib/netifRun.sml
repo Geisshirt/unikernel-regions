@@ -18,7 +18,8 @@ structure Netif :> NETIF = struct
     in 
       if TextIO.endOfStream inputFile then
         ( 
-          (* count 2000000000; *)
+          TextIO.closeIn inputFile;
+          count 2000000000;
           OS.Process.exit OS.Process.success
         )
       else 

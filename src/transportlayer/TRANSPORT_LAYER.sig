@@ -7,7 +7,6 @@ signature TRANSPORT_LAYER = sig
   val protToString : protocol -> string
 
   datatype info = INFO of {
-    service    : Service.service,
     ownMac     : int list,
     dstMac     : int list,
     ownIPaddr  : int list,

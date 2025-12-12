@@ -18,14 +18,6 @@ functor IPv4Handle(structure FragAssembler : FRAG_ASSEMBLER
         tlContext = TransportLayer.initContext()
     }
 
-    fun resetContext (Context {
-        fragContainer,
-        tlContext
-    }) = (
-        (* FragAssembler.reset fragContainer *)
-        TransportLayer.resetContext tlContext
-    )
-
     fun copyContext (Context c) = Context {
         fragContainer = FragAssembler.copy (#fragContainer c),
         tlContext = TransportLayer.copyContext (#tlContext c)
@@ -36,8 +28,7 @@ functor IPv4Handle(structure FragAssembler : FRAG_ASSEMBLER
         Int.toString (#identification ipv4Hdr) ^
         TransportLayer.protToString (#protocol ipv4Hdr)
 
-    fun handl {service,
-               ownIPaddr,
+    fun handl {ownIPaddr,
                ownMac,
                dstMac,
                ipv4Packet } (Context context) =
@@ -64,7 +55,6 @@ functor IPv4Handle(structure FragAssembler : FRAG_ASSEMBLER
                 case payloadOpt of 
                     SOME payload => 
                         let val new_tlcontext = TransportLayer.handl (#protocol ipv4Header) (TransportLayer.INFO {
-                                    service = service,
                                     ownMac = ownMac, 
                                     dstMac = dstMac,
                                     ownIPaddr = ownIPaddr,

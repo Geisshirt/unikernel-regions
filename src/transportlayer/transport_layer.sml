@@ -5,7 +5,6 @@ functor TransportLayerSingle(tlh : TRANSPORT_LAYER_HANDLER) :> TRANSPORT_LAYER =
   type protocol = int
 
   datatype info = INFO of {
-    service    : Service.service,
     ownMac     : int list,
     dstMac     : int list,
     ownIPaddr  : int list,
@@ -35,7 +34,6 @@ functor TransportLayerComb(structure tl : TRANSPORT_LAYER
   type protocol = int
 
   datatype info = INFO of {
-    service    : Service.service,
     ownMac     : int list,
     dstMac     : int list,
     ownIPaddr  : int list,

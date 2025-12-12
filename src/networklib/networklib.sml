@@ -17,13 +17,17 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
 
     fun logOff () = log := false *)
 
-    fun recListen (context : IPv4.context) service : IPv4.context =
+    fun recListen (context : IPv4.context) : IPv4.context =
          let val new_context : IPv4.context =
                 let val ethFrame = Netif.receive ()
                     val (ethHeader, ethPayload) = ethFrame |> EthCodec.decode
                     val EthCodec.Header {et, dstMac, srcMac} = ethHeader
+                    fun compare [] [] = true
+                      | compare [] _ = false 
+                      | compare _ [] = false 
+                      | compare (x::xs) (y::ys) = if x <> y then false else compare xs ys
                 in
-                    if dstMac = ownMac () orelse dstMac = [255, 255, 255, 255, 255, 255] then (
+                    if compare dstMac (ownMac ()) orelse compare dstMac [255, 255, 255, 255, 255, 255] then (
                         (* EthCodec.toString ethHeader |> logPrint; *)
                         case et of
                         ARP => (
@@ -38,11 +42,10 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
                         (* List.filter (fn (prot, _) => prot = TCP) bindings |> map (fn (_, l) => l) *)
                         | IPv4 =>
                             IPv4.handl {
-                                service = service,
                                 ownIPaddr = ownIPaddr (),
                                 ownMac = ownMac (),
                                 dstMac = srcMac,
-                                ipv4Packet = ethPayload
+                                ipv4Packet = ethPayload ^ ""
                             } context
                         | _ => (print "\nIn listen: Protocol not supported.\n"; context)
                     ) else context
@@ -52,20 +55,20 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
         end
        (* handle _ => (print "Encountered an error in handling!\n"; recListen context bindings)  *)
     local
-    fun listen' (service, context : IPv4.context)=
-        listen' (service,
+    fun listen' (context : IPv4.context) =
+        listen' ( 
             if !(ref false) then context else (
-                let val temp = IPv4.copyContext (recListen context service)
+                let val temp = IPv4.copyContext (recListen context)
                     val _ = forceResetting context
                 in
                     (IPv4.copyContext temp)
                 end))
     in
-    fun listen service =
+    fun listen () =
         let val context = IPv4.initContext ()
         in
             Netif.init();
-            listen' (service, context);
+            listen' (context);
             ()
         end
     end

@@ -2,7 +2,6 @@ signature TRANSPORT_LAYER_HANDLER = sig
   type h_context
 
   type info = {
-    service    : Service.service,
     ownMac     : int list,
     dstMac     : int list,
     ownIPaddr  : int list,
