@@ -52,10 +52,11 @@ tests: unix tests/*test
 %-prof-run: $(t)
 # 		PROF="Run" mlkit $(FLAGS) --reml -no_gc -prof -Pcee  -o $*.exe $(shell pwd)/examples/$*/main.mlb
 	PROF="Run" mlkit $(FLAGS) --reml -no_gc -prof -Pcee -Ptypes --maximum_inline_size 1000 --maximum_specialise_size 1000 --print_rho_types -o $*.exe $(shell pwd)/examples/$*/main.mlb > prof_out
-# 	 mlkit -no_gc -prof -Pcee -o $*Prof.exe $*Prof/main.mlb > prof_out.txt
+	# PROF="Run" mlkit $(FLAGS) --reml -no_gc -prof -o $*.exe $(shell pwd)/examples/$*/main.mlb
+	#  mlkit -no_gc -prof -Pcee -o $*Prof.exe $*Prof/main.mlb > prof_out.txt
 
 prof-pdf:
-	rp2ps -region -name 'Network app' -sampleMax 100000
+	rp2ps -region -name 'Network app' -sampleMax 100000 -sortBySize
 	ps2pdf region.ps region.pdf
 
 .PRECIOUS: %.exe

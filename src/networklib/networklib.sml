@@ -23,8 +23,8 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
                     val (ethHeader, ethPayload) = ethFrame |> EthCodec.decode
                     val EthCodec.Header {et, dstMac, srcMac} = ethHeader
                     fun compare [] [] = true
-                      | compare [] _ = false 
-                      | compare _ [] = false 
+                      | compare [] _ = false
+                      | compare _ [] = false
                       | compare (x::xs) (y::ys) = if x <> y then false else compare xs ys
                 in
                     if compare dstMac (ownMac ()) orelse compare dstMac [255, 255, 255, 255, 255, 255] then (
@@ -56,10 +56,10 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
        (* handle _ => (print "Encountered an error in handling!\n"; recListen context bindings)  *)
     local
     fun listen' (context : IPv4.context) =
-        listen' ( 
+        listen' (
             if !(ref false) then context else (
                 let val temp = IPv4.copyContext (recListen context)
-                    val _ = forceResetting context
+                    val _ = resetRegions context
                 in
                     (IPv4.copyContext temp)
                 end))
