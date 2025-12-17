@@ -1,5 +1,11 @@
 $(SML_LIB)/basis/basis.mlb
 ../../src/utilslib/utilslib.mlb
 ../../src/networklib/networklib.mlb
+../../src/transportlayer/udplib/udplib.mlb 
+../../src/transportlayer/tcplib/TCPHANDLE/tcpHandle.mlb
+../../src/transportlayer/transport_layer.mlb
+../../src/ipv4lib/IPV4_FRAG_ASSEMBLER/fragAssembler.mlb
+../../src/ipv4lib/IPV4HANDLE/ipv4Handlelib.mlb
+../../src/service/service.mlb
 ../../lib/github.com/diku-dk/sml-sobol/sobol.mlb
 main.sml

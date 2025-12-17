@@ -1,7 +1,4 @@
-structure NetworkDefault = Network(IPv4L)
-
-open NetworkDefault
-open Protocols
+open Service
 
 fun intListToString l =
     let
@@ -50,12 +47,23 @@ fun mergesort [] = []
   | mergesort [x] = [x]
   | mergesort l = split l |> (fn (x, y) => (mergesort x, mergesort y)) |> merge
 
-val _ = (
-        listen [
-            (UDP, [(8080, fn data =>
-                            case data |> stringToIntList of
-                                SOME n => mergesort n |> intListToString
-                                | NONE => "Invalid input")
-                ])
-        ]
-)
+fun tcpService handlerRequest =
+        (case handlerRequest of
+            (8080, SETUP) => SETUP_STREAM
+        |   (8080, REQUEST payload) => REPLY (case payload |> stringToIntList of
+                                                SOME n => mergesort n |> intListToString
+                                              | NONE => "Invalid input")
+        |   _ => IGNORE)
+
+structure TL = 
+    TransportLayerComb(
+        structure tl = TransportLayerSingle(TcpHandler(val service = tcpService))
+        structure tlh = UdpHandler(val service = fn (_, p) => p))
+
+structure Net = Network(IPv4Handle( structure FragAssembler = FragAssemblerList;
+                                    structure TransportLayer = TL))
+
+local
+in
+    val _ = Net.listen ()
+end
