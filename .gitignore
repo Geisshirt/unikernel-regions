@@ -11,3 +11,7 @@ unikraft/workdir
 *.exe
 *.txt
 main
+*.ps
+*.pdf
+*.out
+*.bin
