@@ -2,21 +2,14 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
     open Logging
 
     type port = int
+
     type callback = string -> string
 
     fun ownMac () = [0x7c, 0x75, 0xb2, 0x39, 0xd4, 0x84]
 
     fun ownIPaddr () = [10, 0, 0, 2]
-    (* val ownIPaddr= [172, 44, 0, 2] *)
-
-    (* val log = ref false
-
-    fun logPrint str = if !log then print str else ()
-
-    fun logOn () = log := true
-
-    fun logOff () = log := false *)
-
+    (* fun ownIPaddr () = [172, 44, 0, 2]  *)
+    
     fun recListen (context : IPv4.context) : IPv4.context =
          let val new_context : IPv4.context =
                 let val ethFrame = Netif.receive ()
@@ -67,6 +60,7 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
     fun listen () =
         let val context = IPv4.initContext ()
         in
+            print "Started listening!\n";
             Netif.init();
             listen' (context);
             ()

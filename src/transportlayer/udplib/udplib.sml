@@ -1,11 +1,10 @@
 
-structure UdpHandler :> TRANSPORT_LAYER_HANDLER = struct
+functor UdpHandler(val service : (int * string) -> string):> TRANSPORT_LAYER_HANDLER = struct
     open Logging
     open Protocols
     open Service
 
     type info = {
-        service    : Service.service,
         ownMac     : int list,
         dstMac     : int list,
         ownIPaddr  : int list,
@@ -26,12 +25,12 @@ structure UdpHandler :> TRANSPORT_LAYER_HANDLER = struct
 
     fun copyContext () = ()
 
-    fun handl ({service, ownMac, dstMac, ownIPaddr, dstIPaddr, ipv4Header, payload}) () =
+    fun handl ({ownMac, dstMac, ownIPaddr, dstIPaddr, ipv4Header, payload}) () =
         let val (UdpCodec.Header udpHeader, udpPayload) = payload |> UdpCodec.decode
             val IPv4Codec.Header ipv4Header = ipv4Header
         in  log UDP (UdpCodec.Header udpHeader |> UdpCodec.toString) (SOME udpPayload);
-            case service (#dest_port udpHeader, UDPService, REQUEST udpPayload) of
-                REPLY payload => (
+            case service (#dest_port udpHeader, udpPayload) of
+                payload => (
                     IPv4Send.send {
                         ownMac = ownMac,
                         ownIPaddr = ownIPaddr,

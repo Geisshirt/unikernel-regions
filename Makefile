@@ -1,6 +1,5 @@
-MLKIT_SOURCE_RUNTIME=~/mlkit/src/Runtime
-
-MINIOS_PATH=
+# MLKIT_SOURCE_RUNTIME=~/mlkit/src/Runtime
+# MINIOS_PATH=
 
 SL=$(shell pwd)/UnixRuntimeMini
 UNI=$(shell pwd)/unikraft
@@ -11,10 +10,12 @@ endif
 
 .PHONY: clean echo facfib
 
-FLAGS=
+FLAGS=--reml --maximum_inline_size 1000 --maximum_specialise_size 1000
+
+SERVICE += Network App
 
 ifeq ($(t), uk)
-FLAGS=-objs -no_delete_target_files
+FLAGS+=-objs -no_delete_target_files
 endif
 
 APP_OBJS=
@@ -42,21 +43,22 @@ tests: unix tests/*test
 # 	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
 
 %.exe: $(t)
-	gcc -I ~/Desktop/mlkit/src/Runtime -o libnetiflib.a -c src/netiflib/netif-tuntap.c
+ifeq ($(t), uk)
+	SML_LIB=$(SL) PROF="" mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl" $(shell pwd)/examples/$*/main.mlb
+else
+	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
 	PROF="" mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
+endif
 
 %-prof-gen: $(t)
-	gcc -I ~/Desktop/mlkit/src/Runtime -o libnetiflib.a -c src/netiflib/netif-tuntap.c
+	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
 	PROF="Gen" mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
 
 %-prof-run: $(t)
-# 		PROF="Run" mlkit $(FLAGS) --reml -no_gc -prof -Pcee  -o $*.exe $(shell pwd)/examples/$*/main.mlb
-	PROF="Run" mlkit $(FLAGS) --reml -no_gc -prof -Pcee -Ptypes --maximum_inline_size 1000 --maximum_specialise_size 1000 --print_rho_types -o $*.exe $(shell pwd)/examples/$*/main.mlb > prof_out
-	# PROF="Run" mlkit $(FLAGS) --reml -no_gc -prof -o $*.exe $(shell pwd)/examples/$*/main.mlb
-	#  mlkit -no_gc -prof -Pcee -o $*Prof.exe $*Prof/main.mlb > prof_out.txt
+	PROF="Run" mlkit $(FLAGS) -no_gc -prof -Pcee -Ptypes --print_rho_types -o $*.exe $(shell pwd)/examples/$*/main.mlb > prof_out
 
 prof-pdf:
-	rp2ps -region -name 'Network app' -sampleMax 100000 -sortBySize
+	rp2ps -region -name 'Service: $(SERVICE)' -sampleMax 100000 -sortBySize
 	ps2pdf region.ps region.pdf
 
 .PRECIOUS: %.exe

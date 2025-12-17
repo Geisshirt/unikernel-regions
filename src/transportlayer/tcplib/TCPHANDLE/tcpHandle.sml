@@ -165,7 +165,7 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
                     else if TcpCodec.hasFlagsSet cbits [TcpCodec.SYN] then
                         let val iss = TcpState.new_iss ()
                             val serviceType = 
-                                (case service (#dest_port tcpHeader, TCPService, SETUP) of 
+                                (case service (#dest_port tcpHeader, SETUP) of 
                                     SETUP_STREAM => STREAM
                                 |   SETUP_FULL => FULL
                                 |   _ => FULL)
@@ -279,7 +279,7 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
                                         TcpState.remove connection_id context
                                     else if TcpCodec.hasFlagsSet cbits [TcpCodec.SYN] then 
                                         TcpState.remove connection_id context
-                                    else if TcpCodec.hasFlagsSet cbits [TcpCodec.ACK] then
+                                    else if TcpCodec.hasFlagsSet cbits [TcpCodec.ACK] andalso #sequence_number tcpHeader = #nxt ssv + 1  then
                                         (   print "Removing connnection\n"; 
                                             let val newConnection = TcpState.remove connection_id context in
                                                 List.length context |> Int.toString |> print; 
@@ -356,21 +356,6 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
                                                         ack_number = #nxt rsv, 
                                                         flags = [TcpCodec.ACK, TcpCodec.FIN]}) (CON newCon) |> 
                                                      update_state (fn _ => LAST_ACK))
-                                                (* else if open_state = CLOSE_WAIT andalso not (Queue.isEmpty (#retran_queue newCon)) then 
-                                                    (
-                                                        case Queue.peek (#retran_queue newCon) of 
-                                                            NONE => (CON newCon)
-                                                        |   SOME ({last_ack, payload}, _) => (
-                                                                sendSegment 
-                                                                {
-                                                                    sequence_number = last_ack - String.size payload, 
-                                                                    ack_number =  (#nxt o getRSV) (CON con), 
-                                                                    flags = [TcpCodec.ACK]
-                                                                } 
-                                                                payload 
-                                                                (CON newCon)
-                                                            )
-                                                    )     *)
                                                 else if open_state = ESTABLISHED andalso
                                                     #sequence_number tcpHeader = #nxt rsv andalso ((String.size tcpPayload > 0) orelse (TcpCodec.hasFlagsSet cbits [TcpCodec.FIN])) andalso
                                                     (#service_type con = STREAM orelse (#service_type con = FULL andalso #state newCon = CLOSE_WAIT)) then
@@ -383,7 +368,7 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
                                                                 )
                                                         in 
                                                             let val con = (print "Running service...\n";
-                                                                case service (#dest_port tcpHeader, TCPService, REQUEST requestPayload) of 
+                                                                case service (#dest_port tcpHeader, REQUEST requestPayload) of 
                                                                 REPLY payload => 
                                                                     (* TODO do not use sendsegment*)
                                                                     (print "Queing in send...\n";

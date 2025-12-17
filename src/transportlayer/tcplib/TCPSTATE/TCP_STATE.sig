@@ -89,7 +89,7 @@ signature TCP_STATE = sig
 
     val new_iss : unit -> int
 
-    val copy : tcp_states`r -> tcp_states`r'
+    val copy : tcp_states -> tcp_states
 
     val lookup : connection_id -> tcp_states -> connection option
     

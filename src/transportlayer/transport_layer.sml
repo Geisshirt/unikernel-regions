@@ -42,7 +42,7 @@ functor TransportLayerComb(structure tl : TRANSPORT_LAYER
     payload : string
   }
 
-  fun copyContext `[r1 r2] (c : context`r1) : context`r2 = (tlh.copyContext (#1 c), tl.copyContext (#2 c))
+  fun copyContext (c : context) : context = (tlh.copyContext (#1 c), tl.copyContext (#2 c))
 
   fun initContext `r () : context`r = (tlh.initContext (), tl.initContext ())
 
