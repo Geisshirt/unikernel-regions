@@ -1,6 +1,3 @@
-# MLKIT_SOURCE_RUNTIME=~/mlkit/src/Runtime
-# MINIOS_PATH=
-
 SL=$(shell pwd)/UnixRuntimeMini
 UNI=$(shell pwd)/unikraft
 
@@ -31,23 +28,19 @@ ifeq ($(t), uk)
 endif
 
 tests/%test: FORCE
-	(cd tests; PROF="" mlkit $(FLAGS) -no_gc -o $*test.exe $*test/$*test.mlb)
+	(cd tests; SML_LIB=$(SL) PROF="" mlkit $(FLAGS) -no_gc -o $*test.exe $*test/$*test.mlb)
 	./tests/$*test.exe
 
 FORCE: ;
 
 tests: unix tests/*test
-# SML_LIB=~/mlkit/src/Runtime mlkit $(FLAGS) -no_gc -prof -o $SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
-# %.exe: $(t)
-# 	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
-# 	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
 
 %.exe: $(t)
 ifeq ($(t), uk)
 	SML_LIB=$(SL) PROF="" mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl" $(shell pwd)/examples/$*/main.mlb
 else
 	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
-	PROF="" mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
+	SML_LIB=$(SL) PROF="" mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
 endif
 
 %-prof-gen: $(t)
