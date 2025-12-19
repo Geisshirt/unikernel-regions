@@ -1,5 +1,5 @@
 val header = {
-        et=ARP, 
+        ethType=ARP, 
         dstMac = [133, 134, 135, 136, 137, 138], 
         srcMac = [123, 124, 125, 126, 127, 128]
 }

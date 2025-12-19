@@ -10,9 +10,9 @@ echo $! > PID.txt
 
 # Send the large files.
 sleep 1
-cat tests/numbers_short.txt | nc -u -nw1 10.0.0.2 8080 > tests/out_short.txt
+cat tests/numbers_short.txt | nc -u -nw1 10.0.0.2 8082 > tests/out_short.txt
 sleep 1
-cat tests/numbers_long.txt | nc -N 10.0.0.2 8081 > tests/out_long.txt
+cat tests/numbers_long.txt | nc -N 10.0.0.2 8080 > tests/out_long.txt
 sleep 2
 
 # Close echo
