@@ -10,7 +10,7 @@ val header = {
         flags = 2,
         fragment_offset = 0,
         time_to_live = 64,
-        protocol = UDP,
+        protocol = 0x11, (* UDP *)
         header_checksum = 24985,
         source_addr = [10, 0, 0, 1],
         dest_addr = [10, 0, 0, 2]
@@ -26,7 +26,7 @@ val headerFragmented = {
         flags = 1,
         fragment_offset = 0,
         time_to_live = 64,
-        protocol = UDP,
+        protocol = 0x11, (* UDP *)
         header_checksum = 24985,
         source_addr = [10, 0, 0, 1],
         dest_addr = [10, 0, 0, 2]
@@ -41,7 +41,7 @@ val testRaw =
     intToRawbyteString (#identification header) 2 ^
     intToRawbyteString ((setLBits (#flags header) 3 * (2 ** 8)) + (#fragment_offset header)) 2 ^
     intToRawbyteString (#time_to_live header) 1 ^
-    intToRawbyteString ((#protocol header) |> IPv4Codec.protToInt) 1 ^ 
+    intToRawbyteString (0x11) 1 ^ 
     intToRawbyteString 24985 2 ^
     byteListToString (#source_addr header) ^
     byteListToString (#dest_addr header) ^
@@ -52,7 +52,7 @@ val () = (
     
     printStart ();
 
-    assert ("intToProt ICMP",
+    (* assert ("intToProt ICMP",
         (fn () => IPv4Codec.intToProt 0x01),
         (ICMP),
         (fn x => IPv4Codec.protToString x)
@@ -104,7 +104,7 @@ val () = (
         (fn () => IPv4Codec.protToString UDP),
         ("UDP"),
         (fn s => s)
-    );
+    ); *)
 
     assert ("isFragmented (no)",
         (fn () => IPv4Codec.isFragmented (IPv4Codec.Header header)),
@@ -120,7 +120,7 @@ val () = (
 
     assert ("toString",
         (fn () => IPv4Codec.toString (IPv4Codec.Header header)),
-        ("\n-- IPV4 INFO --\nVersion: 4\nIHL: 5\nDSCP: 0\nECN: 0\nTotal length: 32\nIdentification: 50481\nFlags: 2\nFragment offset: 0\nTime to live: 64\nProtocol: UDP\nHeader checksum: 24985\nSRC-ADDRESS: 10 0 0 1\nDST-ADDRESS: 10 0 0 2\n"),
+        ("\n-- IPV4 INFO --\nVersion: 4\nIHL: 5\nDSCP: 0\nECN: 0\nTotal length: 32\nIdentification: 50481\nFlags: 2\nFragment offset: 0\nTime to live: 64\nProtocol: 17\nHeader checksum: 24985\nSRC-ADDRESS: 10 0 0 1\nDST-ADDRESS: 10 0 0 2\n"),
         (fn s => s)
     );
  
@@ -150,4 +150,3 @@ val () = (
 
     printResult ()
 )
-

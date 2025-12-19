@@ -1,15 +1,12 @@
-(* structure Utils : UTILSLIB = 
-      struct  *)
-
 infix 3 |> fun x |> f = f x
 
 infix 8 ** fun x ** y = Math.pow (Real.fromInt x, Real.fromInt y) |> round 
 
 fun findi f l =
-      let fun findi_ [] _ = NONE
+    let fun findi_ [] _ = NONE
             | findi_ (h::t) i = if f h then SOME (i, h) else findi_ t (i+1)
-      in  findi_ l 0
-      end
+    in  findi_ l 0
+    end
 
 fun toHextets [] = []
     | toHextets [x] = [x]
@@ -21,9 +18,10 @@ fun rawBytesString (b: int list) = b |> foldl (fn (x, acc) => if acc = "" then (
 
 fun byteListToString b = (b |> map Char.chr |> implode)
 
+(* Check with char? *)
 fun intToRawbyteString i0 nb = 
     let fun h_intToRawbyteString i 1 acc = Char.chr i :: acc |> implode
-          | h_intToRawbyteString i nb acc = 
+        | h_intToRawbyteString i nb acc = 
             if nb <= 0 then ""
             else Char.chr (i mod 256) :: acc |> h_intToRawbyteString (i div 256) (nb-1)
     in 
@@ -64,4 +62,7 @@ fun printRawBytes s =
     |> toByteList
     |> map (fn x => (Int.toString x) ^ " ")
     |> app print 
-      (* end  *)
+
+fun copyList _ [] = []
+  | copyList copyfun (x::xr) = (copyfun x) :: copyList copyfun xr
+  

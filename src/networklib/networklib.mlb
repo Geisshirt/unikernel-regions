@@ -6,8 +6,7 @@ local
     ../netiflib/netiflib.mlb
     ../ipv4lib/IPV4_FRAG_ASSEMBLER/fragAssembler.mlb
     ../ipv4lib/IPV4HANDLE/ipv4Handlelib.mlb
-    ../tcplib/tcplib.mlb
-    ../udplib/udplib.mlb
+    ../service/service.mlb
 in 
     NETWORKLIB.sig networklib.sml
 end

@@ -1,0 +1,8 @@
+ local $(SML_LIB)/basis/basis.mlb
+    ../ipv4lib/IPV4CODEC/ipv4Codeclib.mlb
+    ../service/service.mlb
+in
+    TRANSPORT_LAYER.sig
+    TRANSPORT_LAYER_HANDLER.sig
+    transport_layer.sml
+end

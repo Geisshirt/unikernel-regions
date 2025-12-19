@@ -1,22 +1,26 @@
+(*
+    The IPv4_HANDLE structure provides stateful handling of IPv4 packets.
+*)
+
 signature IPV4_HANDLE = sig
-    type fragContainer
+    type context
 
-    type port = int
+    val initContext : unit -> context
 
-    type bindingList = (port * (string -> string)) list
+    val copyContext : context`r -> context`r'
 
-    datatype pbindings = PBindings of {
-      UDP : bindingList, 
-      TCP : bindingList
-    }
-
-    val emptyFragContainer : unit -> fragContainer
-
-    val handl   : {fragContainer : fragContainer,
-                   protBindings : pbindings, 
-                   ownIPaddr : int list,
+    val handl   : {ownIPaddr : int list,
                    ownMac : int list, 
                    dstMac : int list, 
-                   ipv4Packet : string} -> fragContainer
+                   ipv4Packet : string} -> context -> context
 
 end
+
+(* 
+    [initContext] Initializes and returns a fresh IPv4 handling context.
+
+    [copyContext] Creates a copy of the given context.
+
+    [handl] Handles incoming IPv4 packets by decoding and processing it 
+    according to its destination and protocol information.
+*)

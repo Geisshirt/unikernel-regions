@@ -89,9 +89,13 @@ void Send(uintptr_t byte_list) {
     
     int ret;
 
+    printf("SEND ONE PACKET!\n");
+
     do {
 		ret = uk_netdev_tx_one(dev, 0, nb);
 	} while (uk_netdev_status_notready(ret));
+
+    printf("ret: %d\n", ret);
 
     if (unlikely(ret < 0)) {
 		printf("Failed to send");

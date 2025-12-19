@@ -1,7 +1,4 @@
-structure NetworkDefault = Network(IPv4L)
-
-open NetworkDefault
-open Protocols
+open Service
 
 val facTbl = ref (Vector.fromList [])
 
@@ -40,21 +37,27 @@ and fastFibH 0 : IntInf.int * IntInf.int = (IntInf.fromInt 0, IntInf.fromInt 1)
         else (d, c + d)
     end
 
-val _ = (
-    listen [
-        (UDP, [
-                (8080, fn data =>
-                        case IntInf.fromString data of
-                            SOME n => fac n |> IntInf.toString
-                        | NONE => "Invalid input"),
-                (8081, fn data =>
-                        case IntInf.fromString data of
-                            SOME n => fib n |> IntInf.toString
-                        | NONE => "Invalid input"),
-                (8082, fn data =>
-                        case Int.fromString data of
-                            SOME n => fastFib n |> IntInf.toString
-                        | NONE => "Invalid input")
-              ])
-    ]
-)
+fun myService handlerRequest =
+        (case handlerRequest of
+            (8080, SETUP) => SETUP_FULL
+        |   (8080, REQUEST payload) => REPLY (case IntInf.fromString payload of
+                                                            SOME n => fac n |> IntInf.toString
+                                                         |  NONE   => "Invalid input")
+        |   (8081, SETUP) => SETUP_FULL
+        |   (8081, REQUEST payload) => REPLY (case IntInf.fromString payload of
+                                                            SOME n => fib n |> IntInf.toString
+                                                         |  NONE   => "Invalid input")
+        |   (8082, SETUP) => SETUP_FULL
+        |   (8082, REQUEST payload) => REPLY (case Int.fromString payload of
+                                                            SOME n => fastFib n |> IntInf.toString
+                                                         |  NONE   => "Invalid input")
+        |   _ => IGNORE)
+
+structure TL = TransportLayerSingle(TcpHandler(val service = myService))
+structure Net = Network(IPv4Handle( structure FragAssembler = FragAssemblerList;
+                                    structure TransportLayer = TL))
+
+local
+in
+    val _ = Net.listen ()
+end

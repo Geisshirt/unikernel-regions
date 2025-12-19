@@ -3,11 +3,8 @@
 *)
 
 signature ETH_CODEC = sig 
-    (* datatype ethType = ARP | IPv4 | IPv6  *)
-
-
     datatype header = Header of { 
-        et : Protocols.protocol, 
+        ethType : Protocols.protocol, 
         dstMac : int list, 
         srcMac : int list
     }
@@ -22,16 +19,15 @@ signature ETH_CODEC = sig
 end 
 
 (*
-[bytesToEthType] converts a string to an ethType e.g. ARP.
+    [bytesToEthType] converts a string to an ethType e.g. ARP.
 
-[ethTypeToInt] converts an ethType to an integer.
+    [ethTypeToInt] converts an ethType to an integer.
 
-[ethTypeToString] converts an ethType to a string for easy printing.
+    [ethTypeToString] converts an ethType to a string for easy printing.
 
-[toString] combines all the fields of a ethernetframe header to easy printing. 
+    [toString] combines all the fields of a ethernetframe header to easy printing. 
 
-[decode] decodes a string as a ethernetframe header.
+    [decode] decodes a string as a ethernetframe header.
 
-[encode] encode the fields of a ethernetframe header to a string.
-
+    [encode] encode the fields of a ethernetframe header to a string.
 *)

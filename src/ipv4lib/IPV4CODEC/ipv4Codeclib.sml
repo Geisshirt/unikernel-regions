@@ -1,7 +1,7 @@
 open Protocols
 
-structure IPv4Codec : IPV4_CODEC = struct
-    type protocol = protocol
+structure IPv4Codec :> IPV4_CODEC = struct
+    type tl_protocol = int
 
     datatype header = Header of {
         version : int,
@@ -13,13 +13,11 @@ structure IPv4Codec : IPV4_CODEC = struct
         flags : int,
         fragment_offset : int,
         time_to_live : int,
-        protocol : protocol,
+        protocol : tl_protocol,
         header_checksum : int,
         source_addr : int list,
         dest_addr : int list
     }
-
-    
 
     fun ipv4Checksum l =
         let
@@ -33,27 +31,6 @@ structure IPv4Codec : IPV4_CODEC = struct
             |> (fn w => Word.andb (Word.fromInt 0xFFFF, w))
             |> Word.toInt
         end
-
-    fun intToProt i =
-        case i of
-          0x01 => ICMP
-        | 0x06 => TCP
-        | 0x11 => UDP
-        | _    => UNKNOWN
-
-    fun protToInt p =
-        case p of
-          ICMP => 0x01
-        | TCP  => 0x06
-        | UDP  => 0x11
-        | _      => raise Fail "Unknown protocol."
-
-    fun protToString p =
-        case p of
-          ICMP => "ICMP"
-        | TCP  => "TCP"
-        | UDP  => "UDP"
-        | _      => "Unknown protocol"
 
     fun isFragmented (Header r) = (#flags r) = 1
 
@@ -82,7 +59,7 @@ structure IPv4Codec : IPV4_CODEC = struct
                 intToRawbyteString identification 2 ^
                 intToRawbyteString ((setLBits flags 3 * (2 ** 8)) + fragment_offset) 2 ^
                 intToRawbyteString time_to_live 1 ^
-                intToRawbyteString (protToInt protocol) 1 ^
+                intToRawbyteString protocol 1 ^
                 intToRawbyteString 0 2 ^
                 byteListToString source_addr ^
                 byteListToString dest_addr
@@ -106,7 +83,7 @@ structure IPv4Codec : IPV4_CODEC = struct
             flags           = getLBits (String.substring (s, 6, 1) |> convertRawBytes) 3,
             fragment_offset = getRBits (String.substring (s, 6, 2) |> convertRawBytes) 13,
             time_to_live    = String.substring (s, 8, 1) |> convertRawBytes,
-            protocol        = String.substring (s, 9, 1) |> convertRawBytes |> intToProt,
+            protocol        = String.substring (s, 9, 1) |> convertRawBytes,
             header_checksum = String.substring (s, 10, 2) |> convertRawBytes,
             source_addr     = String.substring (s, 12, 4) |> toByteList,
             dest_addr       = String.substring (s, 16, 4) |> toByteList
@@ -137,7 +114,7 @@ structure IPv4Codec : IPV4_CODEC = struct
         "Flags: " ^ Int.toString flags ^ "\n" ^
         "Fragment offset: " ^ Int.toString fragment_offset ^ "\n" ^
         "Time to live: " ^ Int.toString time_to_live ^ "\n" ^
-        "Protocol: " ^ protToString protocol ^ "\n" ^
+        "Protocol: " ^ Int.toString protocol ^ "\n" ^
         "Header checksum: " ^ Int.toString header_checksum ^ "\n" ^
         "SRC-ADDRESS: " ^ rawBytesString source_addr ^ "\n" ^
         "DST-ADDRESS: " ^ rawBytesString dest_addr ^ "\n"
@@ -165,7 +142,7 @@ structure IPv4Codec : IPV4_CODEC = struct
                 intToRawbyteString identification 2 ^
                 intToRawbyteString ((setLBits flags 3 * (2 ** 8)) + fragment_offset) 2 ^
                 intToRawbyteString time_to_live 1 ^
-                intToRawbyteString (protToInt protocol) 1 ^
+                intToRawbyteString protocol 1 ^
                 intToRawbyteString 0 2 ^
                 byteListToString source_addr ^
                 byteListToString dest_addr

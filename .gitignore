@@ -1,13 +1,20 @@
-# Ignore /duniverse folder
 **/duniverse
-
 .vscode/
 lib/
 MLB/
 unikraft/build/*.o 
 unikraft/workdir 
+main
+all.mlb
+service.ic
+prof_out
+run
 *.o
 *.a
 *.exe
 *.txt
-main
+*.ps
+*.pdf
+*.out
+*.bin
+*.rp

@@ -1,9 +1,8 @@
 open Protocols
 structure EthCodec :> ETH_CODEC = struct
   (* datatype ethType = ARP | IPv4 | IPv6  *)
-
   datatype header = Header of { 
-    et : protocol, 
+    ethType : protocol, 
     dstMac : int list, 
     srcMac : int list
   }
@@ -29,24 +28,24 @@ structure EthCodec :> ETH_CODEC = struct
       | IPv6 => 0x86dd
       | _    => 0x0)
 
-  fun toString (Header {et, dstMac, srcMac}) =
+  fun toString (Header {ethType, dstMac, srcMac}) =
       "\n-- ETHERFRAME INFO --\n" ^
-      "Type: " ^ (ethTypeToString et) ^ "\n" ^
+      "Type: " ^ (ethTypeToString ethType) ^ "\n" ^
       "Destination mac-address: [ " ^ (rawBytesString dstMac) ^ " ]\n" ^
       "Source mac-address: [ " ^ (rawBytesString srcMac) ^ " ]\n" 
 
   fun decode s = 
       (case String.substring (s, 12, 2) |> bytesToEthType of 
             SOME p => (Header {
-                et = p, 
+                ethType = p, 
                 dstMac = String.substring (s, 0, 6) |> toByteList, 
                 srcMac = String.substring (s, 6, 6) |> toByteList
               }, String.extract (s, 14, NONE))
           | NONE => raise Fail "Protocol not found.")
 
-  fun encode (Header {et, dstMac, srcMac}) payload = 
+  fun encode (Header {ethType, dstMac, srcMac}) payload = 
     byteListToString dstMac ^ 
     byteListToString srcMac ^
-    (intToRawbyteString (et |> ethTypeToInt) 2) ^ 
+    (intToRawbyteString (ethTypeToInt ethType) 2) ^ 
     payload
 end 

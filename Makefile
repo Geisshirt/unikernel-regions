@@ -1,6 +1,5 @@
-MLKIT_SOURCE_RUNTIME=~/mlkit/src/Runtime
-
-MINIOS_PATH=
+# MLKIT_SOURCE_RUNTIME=~/mlkit/src/Runtime
+# MINIOS_PATH=
 
 SL=$(shell pwd)/UnixRuntimeMini
 UNI=$(shell pwd)/unikraft
@@ -11,10 +10,12 @@ endif
 
 .PHONY: clean echo facfib
 
-FLAGS=
+FLAGS=--reml --maximum_inline_size 1000 --maximum_specialise_size 1000
+
+SERVICE += Network App
 
 ifeq ($(t), uk)
-FLAGS=-objs -no_delete_target_files
+FLAGS+=-objs -no_delete_target_files
 endif
 
 APP_OBJS=
@@ -36,13 +37,29 @@ tests/%test: FORCE
 FORCE: ;
 
 tests: unix tests/*test
+# SML_LIB=~/mlkit/src/Runtime mlkit $(FLAGS) -no_gc -prof -o $SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
+# %.exe: $(t)
+# 	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
+# 	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
 
 %.exe: $(t)
+ifeq ($(t), uk)
+	SML_LIB=$(SL) PROF="" mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl" $(shell pwd)/examples/$*/main.mlb
+else
 	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
-	SML_LIB=$(SL) mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
+	PROF="" mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
+endif
 
-%Prof: FORCE
-	SML_LIB=~/mlkit/src/Runtime mlkit -no_gc -prof -Pcee -o $*Prof.exe $*Prof/main.mlb > out.txt
+%-prof-gen: $(t)
+	gcc -I $(SL)/src/RuntimeMini -o libnetiflib.a -c src/netiflib/netif-tuntap.c
+	PROF="Gen" mlkit $(FLAGS) -no_gc -o $*.exe -libdirs "." -libs "m,c,dl,netiflib" $(shell pwd)/examples/$*/main.mlb
+
+%-prof-run: $(t)
+	PROF="Run" mlkit $(FLAGS) -no_gc -prof -Pcee -Ptypes --print_rho_types -o $*.exe $(shell pwd)/examples/$*/main.mlb > prof_out
+
+prof-pdf:
+	rp2ps -region -name 'Service: $(SERVICE)' -sampleMax 100000 -sortBySize
+	ps2pdf region.ps region.pdf
 
 .PRECIOUS: %.exe
 %-ex-app: %.exe
@@ -71,15 +88,15 @@ run-uk:
 
 clean:
 	-rm *.a
-	-rm -rf src/*lib/MLB MLB
-	-rm -rf src/MLB
-	-rm -rf src/*lib/*/MLB
-	-rm -rf tests/*/MLB
-	-rm -rf examples/*/MLB
+	-rm -rf MLB
+	-find src examples tests -type d -name "MLB" -exec rm -rf {} +  # remove all MLB/ directories.
 	-rm -rf unikraft/build/*.o
 	-rm -rf unikraft/wordir/build/*.o
 	-rm -r *.exe
 	-rm -r tests/*.exe
+	-rm *.ps
+	-rm *.out
+	-rm run
 
 realclean: clean
 	-(cd UnixRuntimeMini; make clean)

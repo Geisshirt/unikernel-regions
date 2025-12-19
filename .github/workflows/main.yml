@@ -52,4 +52,7 @@ jobs:
         run: make tests
           
       - name: Run integration tests
-        run: ./tests/UDPfragmentation.sh
+        run: ./tests/transportlayer.sh
+
+      - name: Run stress test
+        run: ./tests/stressBench.sh
