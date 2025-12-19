@@ -1,3 +1,7 @@
+(* 
+    The UDP structure provides handling of UDP packets.
+*)
+
 signature UDP = sig
     val handl : {
         service : Service.service,
@@ -9,3 +13,8 @@ signature UDP = sig
         udpPayload : string
     } -> unit
 end
+
+(* 
+    [handl] Handles incoming UDP packets, the payload is decoded and 
+    propagated to the appropiate service.
+*)

@@ -53,11 +53,20 @@ signature TCP_CODEC = sig
 end
 
 (*
-[header] contains the fields in a TCP header.
+    [flag] TCP control flags.
 
-[toString] combines all the fields of a TCP header to easy printing. 
+    [header] Contains the fields in a TCP header.
 
-[decode] decodes a string as a TCP header.
+    [toString] Combines all the fields of a TCP header to easy printing. 
 
-[encode] encode the fields of a TCP header to a string.
+    [verifyChecksum] Verifies the checksum field for a given TCP packet.
+
+    [hasFlagsSet] Checks whether the spceified control flags are set in the 
+    given control bits field. 
+
+    [flagsToString] Converts the flags to a human readable string.
+
+    [decode] Decodes a string as a TCP header.
+
+    [encode] Encode the fields of a TCP header to a string.
 *)

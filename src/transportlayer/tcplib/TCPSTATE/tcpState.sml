@@ -1,259 +1,10 @@
 structure TcpState : TCP_STATE = struct
     open Queue
-
-    datatype service_type = STREAM | FULL
-
-    datatype tcp_state = ESTABLISHED | SYN_REC | CLOSE_WAIT | LAST_ACK
-
-    type connection_id = {
-        source_addr : int list,
-        source_port : int,
-        dest_port   : int
-    }
-
-    datatype send_seqvar = SSV of {
-        una : int,
-        nxt : int,
-        wnd : int,
-        up  : int,
-        wl1 : int,
-        wl2 : int,
-        mss : int,
-        iss : int
-    }
-
-    datatype receive_seqvar = RSV of {
-        nxt : int,
-        wnd : int,
-        up  : int,
-        irs : int
-    }
-
-    datatype connection = CON of {
-        id             : connection_id,
-        state          : tcp_state,
-        send_seqvar    : send_seqvar,
-        send_queue     : string queue,
-        receive_seqvar : receive_seqvar,
-        receive_queue  : string,
-        retran_queue   : {last_ack : int, payload : string} queue,
-        dup_count      : int,
-        service_type   : service_type
-    }
+    open Connection
 
     type tcp_states = connection list
 
     fun effect effectfun con = (effectfun; con)
-
-    fun update_state statefun (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type}) = (
-        CON {
-            id = id,
-            state = statefun state,
-            send_seqvar = send_seqvar,
-            send_queue = send_queue,
-            receive_seqvar = receive_seqvar,
-            receive_queue = receive_queue,
-            retran_queue = retran_queue,
-            dup_count = dup_count,
-            service_type = service_type
-        }
-    )
-
-    fun update_sseqvar ssvfun (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type}) = (
-        CON {
-            id = id,
-            state = state,
-            send_seqvar = ssvfun send_seqvar,
-            send_queue = send_queue,
-            receive_seqvar = receive_seqvar,
-            receive_queue = receive_queue,
-            retran_queue = retran_queue,
-            dup_count = dup_count,
-            service_type = service_type
-        }
-    )
-
-    fun update_rseqvar rsvfun (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type})  = (
-        CON {
-            id = id,
-            state = state,
-            send_seqvar = send_seqvar,
-            send_queue = send_queue,
-            receive_seqvar = rsvfun receive_seqvar,
-            receive_queue = receive_queue,
-            retran_queue = retran_queue,
-            dup_count = dup_count,
-            service_type = service_type
-        }
-    )
-
-    fun dup_inc (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type}) = (
-        CON {
-            id = id,
-            state = state,
-            send_seqvar = send_seqvar,
-            send_queue = send_queue,
-            receive_seqvar = receive_seqvar,
-            receive_queue = receive_queue,
-            retran_queue = retran_queue,
-            dup_count = dup_count + 1,
-            service_type = service_type
-        }
-    )
-
-    fun reset `r (state : tcp_states`r) = resetRegions state
-
-    fun dup_reset (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count = _, service_type}) = (
-        CON {
-            id = id,
-            state = state,
-            send_seqvar = send_seqvar,
-            send_queue = send_queue,
-            receive_seqvar = receive_seqvar,
-            receive_queue = receive_queue,
-            retran_queue = retran_queue,
-            dup_count = 0,
-            service_type = service_type
-        }
-    )
-
-    fun retran_enqueue {last_ack, payload} (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type}) =
-        let
-            val entry = {last_ack = last_ack, payload = payload}
-            val new_q = enqueue (entry, retran_queue)
-        in
-            CON {
-                id = id,
-                state = state,
-                send_seqvar = send_seqvar,
-                send_queue = send_queue,
-                receive_seqvar = receive_seqvar,
-                receive_queue = receive_queue,
-                retran_queue = new_q,
-                dup_count = dup_count,
-                service_type = service_type
-            }
-        end
-
-    fun send_enqueue_many payload (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type}) =
-        let
-            val SSV ssv = send_seqvar
-            val mss = #mss ssv
-            val ended = String.size payload
-            fun makeSegments start q =
-                if ended-start <= mss then
-                    enqueue (substring (payload, start, ended-start), q)
-                else
-                    enqueue (substring (payload, start, mss), q) |>
-                    makeSegments (start+mss)
-        in
-            CON {
-                id = id,
-                state = state,
-                send_seqvar = send_seqvar,
-                send_queue = makeSegments 0 send_queue,
-                receive_seqvar = receive_seqvar,
-                receive_queue = receive_queue,
-                retran_queue = retran_queue,
-                dup_count = dup_count,
-                service_type = service_type
-            }
-        end
-
-    fun send_dequeue (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type}) =
-        case dequeue send_queue of
-            SOME (p, q) =>
-                SOME (p,
-                    CON {
-                        id = id,
-                        state = state,
-                        send_seqvar = send_seqvar,
-                        send_queue = q,
-                        receive_seqvar = receive_seqvar,
-                        receive_queue = receive_queue,
-                        retran_queue = retran_queue,
-                        dup_count = dup_count,
-                        service_type = service_type
-                    })
-        |   NONE => NONE
-
-    fun send_is_empty (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type}) =
-        Queue.isEmpty send_queue
-
-    fun rec_enqueue payload (CON {id, state, send_seqvar, send_queue, receive_seqvar,receive_queue, retran_queue, dup_count, service_type}) =
-        let
-            val new_q = receive_queue ^ payload
-        in
-            CON {
-                id = id,
-                state = state,
-                send_seqvar = send_seqvar,
-                send_queue = send_queue,
-                receive_seqvar = receive_seqvar,
-                receive_queue = new_q,
-                retran_queue = retran_queue,
-                dup_count = dup_count,
-                service_type = service_type
-            }
-        end
-
-    fun rec_collect (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type}) =
-        (receive_queue, CON {
-            id = id,
-            state = state,
-            send_seqvar = send_seqvar,
-            send_queue = send_queue,
-            receive_seqvar = receive_seqvar,
-            receive_queue = "",
-            retran_queue = retran_queue,
-            dup_count = dup_count,
-            service_type = service_type
-        })
-
-    fun retran_dequeue (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type}) =
-        case dequeue retran_queue of
-            SOME (e, q) =>
-                SOME (e,
-                    CON {
-                        id = id,
-                        state = state,
-                        send_seqvar = send_seqvar,
-                        send_queue = send_queue,
-                        receive_seqvar = receive_seqvar,
-                        receive_queue = receive_queue,
-                        retran_queue = q,
-                        dup_count = dup_count,
-                        service_type = service_type
-                    })
-        |   NONE => NONE
-
-    fun retran_dropacked ack (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type}) =
-        let fun drop q =
-                case dequeue q of
-                    SOME ({last_ack, payload = _}, new_q) => (
-                        if last_ack <= ack then drop new_q
-                        else q
-                    )
-                |   NONE => empty ()
-        in
-            CON {
-               id = id,
-               state = state,
-               send_seqvar = send_seqvar,
-               send_queue = send_queue,
-               receive_seqvar = receive_seqvar,
-               receive_queue = receive_queue,
-               retran_queue = drop retran_queue,
-               dup_count = dup_count,
-               service_type = service_type
-            }
-        end
-
-    fun getSSV (CON {id = _, state = _, send_seqvar, send_queue = _, receive_seqvar = _, receive_queue = _, retran_queue = _, dup_count = _ , service_type = _}) =
-        let val SSV ssv = send_seqvar in ssv end
-
-    fun getRSV (CON {id = _, state = _, send_seqvar = _, send_queue = _, receive_seqvar, receive_queue = _, retran_queue = _, dup_count = _, service_type = _}) =
-        let val RSV rsv = receive_seqvar in rsv end
 
     fun empty_states `[r1 r2 r3 r4 r5] () : connection`[r2 r3 r4 r5] list`[r1] = []
 
@@ -264,38 +15,38 @@ structure TcpState : TCP_STATE = struct
         #source_port cid1 = #source_port cid2 andalso
         #dest_port cid1   = #dest_port cid2
 
-    (* fun copyConnection (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type} : connection) : connection =
-        (
+    fun initCon {
+        connection_id : connection_id,
+        receive_init : int,
+        send_mss : int
+    } = 
+        let val iss = new_iss () in
             CON {
-               id = id,
-               state = state,
-               send_seqvar = send_seqvar,
-               send_queue = Queue.copyQueue (fn s => s ^ "") send_queue,
-               receive_seqvar = receive_seqvar,
-               receive_queue = receive_queue ^ "",
-               retran_queue = Queue.copyQueue (fn {last_ack, payload} => {last_ack = last_ack, payload = payload ^ ""}) retran_queue,
-               dup_count = dup_count,
-               service_type = service_type
-            }
-        ) *)
-
-(* datatype send_seqvar = SSV of {
-        una : int,
-        nxt : int,
-        wnd : int,
-        up  : int,
-        wl1 : int,
-        wl2 : int,
-        mss : int,
-        iss : int
-    }
-
-    datatype receive_seqvar = RSV of {
-        nxt : int,
-        wnd : int,
-        up  : int,
-        irs : int
-    } *)
+                id = connection_id,
+                state = SYN_REC,
+                send_seqvar = SSV {
+                    una = iss,
+                    nxt = iss + 1,
+                    wnd = 1,
+                    up  = 0,
+                    wl1 = 0,
+                    wl2 = 0,
+                    mss = send_mss,
+                    iss = iss
+                },
+                send_queue = Queue.empty (),
+                receive_seqvar = RSV {
+                    nxt = receive_init + 1,
+                    wnd = 1,
+                    up  = 0,
+                    irs = receive_init
+                },
+                receive_queue = "",
+                retran_queue = Queue.empty (),
+                dup_count = 0,
+                service_type = FULL
+            } 
+        end
 
     fun copyConnection (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type} : connection) : connection =
         let fun copyListI [] = []

@@ -94,6 +94,9 @@ clean:
 	-rm -rf unikraft/wordir/build/*.o
 	-rm -r *.exe
 	-rm -r tests/*.exe
+	-rm *.ps
+	-rm *.out
+	-rm run
 
 realclean: clean
 	-(cd UnixRuntimeMini; make clean)

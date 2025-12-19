@@ -1,5 +1,5 @@
 (* 
-    The ETH structure provides sending of ethernet frames
+    The ETH structure provides sending of ethernet frames.
 *)
 
 signature ETH = sig
@@ -13,5 +13,5 @@ signature ETH = sig
 end
 
 (*
-[send]  This function 
+    [send] Sends the ethernet frame over the network.
 *)

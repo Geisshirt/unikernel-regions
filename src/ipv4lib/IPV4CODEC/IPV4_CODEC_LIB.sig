@@ -1,5 +1,5 @@
 (*
-    The IPv4lib structure provides useful functions for a ipv4 header.
+    The IPv4_CODEC structure provides useful functions for a ipv4 header.
 *)
 
 signature IPV4_CODEC = sig 
@@ -21,31 +21,24 @@ signature IPV4_CODEC = sig
         dest_addr : int list
     }
 
-    (* val intToProt : int -> protocol
-    val protToInt : protocol -> int
-    val protToString : protocol -> string  *)
-
     val isFragmented : header -> bool
 
     val toString : header -> string
+    
     val decode : string -> header * string
+    
     val encode : header -> string -> string
 end 
 
-(*
-[header] contains the fields in a UDP header.
+(* 
+    [header] IPv4 header representation (RFC 791).
 
-[intToProt] converts an integer to a protocol e.g. ICMP.
+    [isFragmented] Returns true if the IPv4 packet is fragmented as per the
+    header.
 
-[protToInt] converts a protocol to an integer.
+    [toString] Produces a pretty printing string of the header.
 
-[protToString] converts a protocol to a string for easy printing.
+    [decode] Decodes a string of bytes to an IPv4 header type.
 
-[isFragmented] detects if a ipv4 header is a fragmented a returns an appropiate boolean.
-
-[toString] combines all the fields of a UDP header to easy printing. 
-
-[decode] decodes a string as a UDP header.
-
-[encode] encode the fields of a UDP header to a string.
+    [encode] Encodes an IPv4 header as a string of bytes.
 *)

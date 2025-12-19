@@ -1,3 +1,7 @@
+(*
+    The IPv4_HANDLE structure provides stateful handling of IPv4 packets.
+*)
+
 signature IPV4_HANDLE = sig
     type context
 
@@ -11,3 +15,12 @@ signature IPV4_HANDLE = sig
                    ipv4Packet : string} -> context -> context
 
 end
+
+(* 
+    [initContext] Initializes and returns a fresh IPv4 handling context.
+
+    [copyContext] Creates a copy of the given context.
+
+    [handl] Handles incoming IPv4 packets by decoding and processing it 
+    according to its destination and protocol information.
+*)

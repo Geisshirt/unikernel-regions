@@ -3,5 +3,8 @@ local
     ../../../utilslib/utilslib.mlb
 in 
     TCP_STATE.sig
+    rsv.sml 
+    ssv.sml
+    con.sml 
     tcpState.sml
 end 

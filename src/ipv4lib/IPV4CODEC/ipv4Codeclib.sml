@@ -19,8 +19,6 @@ structure IPv4Codec :> IPV4_CODEC = struct
         dest_addr : int list
     }
 
-    
-
     fun ipv4Checksum l =
         let
             val sum = List.foldl (op +) 0 l
@@ -33,27 +31,6 @@ structure IPv4Codec :> IPV4_CODEC = struct
             |> (fn w => Word.andb (Word.fromInt 0xFFFF, w))
             |> Word.toInt
         end
-
-    (* fun intToProt i =
-        case i of
-          0x01 => ICMP
-        | 0x06 => TCP
-        | 0x11 => UDP
-        | _    => UNKNOWN
-
-    fun protToInt p =
-        case p of
-          ICMP => 0x01
-        | TCP  => 0x06
-        | UDP  => 0x11
-        | _      => raise Fail "Unknown protocol."
-
-    fun protToString p =
-        case p of
-          ICMP => "ICMP"
-        | TCP  => "TCP"
-        | UDP  => "UDP"
-        | _      => "Unknown protocol" *)
 
     fun isFragmented (Header r) = (#flags r) = 1
 

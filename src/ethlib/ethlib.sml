@@ -1,7 +1,7 @@
 structure Eth :> ETH = struct
   fun send {ownMac, dstMac, ethType, ethPayload} = 
     let val ethHeader = (EthCodec.Header { 
-            et = ethType,
+            ethType = ethType,
             srcMac = ownMac,
             dstMac = dstMac
         })

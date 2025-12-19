@@ -5,16 +5,12 @@
 
 signature UTILSLIB = 
     sig
-        (* val |> : 'a -> ('a -> 'b) -> 'b *)
-        (* val ** : int -> int -> int *)
         val findi  : ('a -> bool) -> 'a list -> (int * 'a) option
         val copyList : string list -> string list
     end
 
 (*
-[infix |>] is a pipe operator.
+    [findi] finds the the element that matches the predicate function.
 
-[infix **] is a power operator.
-
-[findi] finds the the element that matches the predicate function.
+    [copyList] copies a list (useful in the 'double copy' trick).
 *)

@@ -5,19 +5,13 @@
 
 signature NETWORK = sig
     type port = int
+    
     type callback = string -> string
-    (* val logOn : unit -> unit
-    val logOff : unit -> unit   *)
+    
     val listen : unit -> unit
 end
 
 (*
-[logOn] turns on logging
-
-[logOff] turns off logging.
-
-[bindUDP] binds a port number to a callback function.
-
-[listen] keeps the application listening for any and all network messages. It will only handle the 
-ones that has been bound.  
+    [listen] keeps the application listening for any and all network messages. It will only handle the 
+    ones that has been bound.  
 *)

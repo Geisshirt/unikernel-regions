@@ -13,17 +13,17 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
     fun recListen (context : IPv4.context) : IPv4.context =
          let val new_context : IPv4.context =
                 let val ethFrame = Netif.receive ()
-                    val (ethHeader, ethPayload) = ethFrame |> EthCodec.decode
-                    val EthCodec.Header {et, dstMac, srcMac} = ethHeader
+                    val (ethHeader, ethPayload) = EthCodec.decode ethFrame
+                    val EthCodec.Header {ethType, dstMac, srcMac} = ethHeader
                     fun compare [] [] = true
                       | compare [] _ = false
                       | compare _ [] = false
-                      | compare (x::xs) (y::ys) = if x <> y then false else compare xs ys
+                      | compare (x::xs) (y::ys) = x = y andalso compare xs ys
                 in
-                    if compare dstMac (ownMac ()) orelse compare dstMac [255, 255, 255, 255, 255, 255] then (
-                        (* EthCodec.toString ethHeader |> logPrint; *)
-                        case et of
-                        ARP => (
+                    if compare dstMac (ownMac ()) orelse 
+                       compare dstMac [255, 255, 255, 255, 255, 255] then (
+                        case ethType of
+                          ARP => (
                             Arp.handl {
                                 ownMac = ownMac (),
                                 ownIPaddr = ownIPaddr (),

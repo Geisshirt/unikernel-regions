@@ -1,3 +1,8 @@
+(* 
+    The TCP structure provides handling of TCP packets while maintaining 
+    TCP state across multiple connections.
+*)
+
 signature TCP = sig
     type context = TcpState.tcp_states
 
@@ -13,3 +18,10 @@ signature TCP = sig
 
     val initContext : unit -> context
 end
+
+(* 
+    [handl] Handles an incoming TCP packet which is propagated to appropiate 
+    service.
+
+    [initContext] Initializes and returns a fresh TCP context.
+ *)

@@ -1,17 +1,9 @@
 (* Generator for netif *)
 structure Netif :> NETIF = struct
-  (* Empty file *)
-
-  (* val inputFile = TextIO.openIn "eth.bin" *)
-
   val fd = Posix.FileSys.openf("eth.bin", Posix.FileSys.O_RDONLY, Posix.FileSys.O.flags nil)
 
   fun init () = ()
 
-  (* fun count 0 = ()
-    | count n = count (n-1) *)
-
-  (* Posix.IO.readVec *)
   fun receive() : string =
     let fun readChar () =
             let val v = Posix.IO.readVec(fd, 1) in
@@ -30,18 +22,10 @@ structure Netif :> NETIF = struct
             SOME (#"\n") => (readChar (); valOf (Int.fromString s))
           | SOME c => getLen (s ^ (Char.toString c))
           | NONE => (
-            (* TextIO.closeIn inputFile; *)
-            (* count 2000000000; *)
+            (* Close file? *)
             OS.Process.exit OS.Process.success
           )
     in
-      (* if TextIO.endOfStream inputFile then
-        (
-          TextIO.closeIn inputFile;
-          (* count 2000000000; *)
-          OS.Process.exit OS.Process.success
-        )
-      else *)
       let val len = getLen ""
           val input = readString len
       in
