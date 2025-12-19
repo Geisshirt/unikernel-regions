@@ -39,16 +39,16 @@ and fastFibH 0 : IntInf.int * IntInf.int = (IntInf.fromInt 0, IntInf.fromInt 1)
 
 fun myService handlerRequest =
         (case handlerRequest of
-            (8080, TCPService, SETUP) => SETUP_FULL
-        |   (8080, TCPService, REQUEST payload) => REPLY (case IntInf.fromString payload of
+            (8080, SETUP) => SETUP_FULL
+        |   (8080, REQUEST payload) => REPLY (case IntInf.fromString payload of
                                                             SOME n => fac n |> IntInf.toString
                                                          |  NONE   => "Invalid input")
-        |   (8081, TCPService, SETUP) => SETUP_FULL
-        |   (8081, TCPService, REQUEST payload) => REPLY (case IntInf.fromString payload of
+        |   (8081, SETUP) => SETUP_FULL
+        |   (8081, REQUEST payload) => REPLY (case IntInf.fromString payload of
                                                             SOME n => fib n |> IntInf.toString
                                                          |  NONE   => "Invalid input")
-        |   (8082, TCPService, SETUP) => SETUP_FULL
-        |   (8082, TCPService, REQUEST payload) => REPLY (case Int.fromString payload of
+        |   (8082, SETUP) => SETUP_FULL
+        |   (8082, REQUEST payload) => REPLY (case Int.fromString payload of
                                                             SOME n => fastFib n |> IntInf.toString
                                                          |  NONE   => "Invalid input")
         |   _ => IGNORE)

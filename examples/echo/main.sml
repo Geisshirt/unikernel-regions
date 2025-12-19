@@ -1,15 +1,22 @@
 open Service
 
 fun tcpService handlerRequest =
-        (case handlerRequest of
-            (8080, SETUP) => SETUP_STREAM
-        |   (8080, REQUEST payload) => REPLY payload
-        |   _ => IGNORE)
+    case handlerRequest of
+        (8080, SETUP) => SETUP_STREAM
+    |   (8080, REQUEST payload) => REPLY payload
+    |   (8081, SETUP) => SETUP_FULL
+    |   (8081, REQUEST payload) => REPLY payload
+    |   _ => IGNORE
+
+fun udpService handlerRequest = 
+    case handlerRequest of
+        (8082, payload) => payload 
+    |   (_, _) => ""
 
 structure TL = 
     TransportLayerComb(
         structure tl = TransportLayerSingle(TcpHandler(val service = tcpService))
-        structure tlh = UdpHandler(val service = fn (_, p) => p))
+        structure tlh = UdpHandler(val service = udpService))
 
 structure Net = Network(IPv4Handle( structure FragAssembler = FragAssemblerList;
                                     structure TransportLayer = TL))

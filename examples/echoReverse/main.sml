@@ -3,7 +3,7 @@ open Service
 fun reverseService handlerRequest =
         (case handlerRequest of
             (8080, SETUP) => SETUP_FULL
-        |   (8080, TCPService, REQUEST payload) => REPLY (String.implode (List.rev (String.explode payload)))
+        |   (8080, REQUEST payload) => REPLY (String.implode (List.rev (String.explode payload)))
         |   _ => IGNORE)
 
 structure TL = 

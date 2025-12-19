@@ -22,7 +22,7 @@ fun monteCarlo n =
 
 fun MCService handlerRequest =
         (case handlerRequest of
-            (8080, SETUP) => SETUP_STREAM
+            (8080, SETUP) => SETUP_FULL
         |   (8080, REQUEST payload) => REPLY (case Int.fromString payload of
                                                 SOME n => monteCarlo n |> Real.toString
                                               | NONE => "Invalid input")
