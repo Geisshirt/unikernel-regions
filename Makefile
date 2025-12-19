@@ -31,7 +31,7 @@ ifeq ($(t), uk)
 endif
 
 tests/%test: FORCE
-	(cd tests; SML_LIB=$(SL) PROF="" mlkit $(FLAGS) -no_gc -o $*test.exe $*test/$*test.mlb)
+	(cd tests; PROF="" mlkit $(FLAGS) -no_gc -o $*test.exe $*test/$*test.mlb)
 	./tests/$*test.exe
 
 FORCE: ;
