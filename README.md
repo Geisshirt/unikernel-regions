@@ -1,41 +1,125 @@
 # Unikernel-regions
-Project for building unikernels that uses regions as the memory management 
-method.
+Project for building unikernels that uses region based memory management.
 
 ## Simple example
-Here is a small example of a Unikernel service. The port `8080` is bound to a 
+Below is a small example of a Unikernel service. The port `8080` is bound to a 
 callback function which here is the identity function i.e. an echo service. It 
 then listens for any incomming messages and sends back the payload for that 
 message.
 ```ml
-open Network
+open Service
 
-val _ = (
-    listen [
-            (UDP, [(8080, fn data => data)])
-           ]
-)
+fun udpService handlerRequest = 
+    case handlerRequest of
+        (8080, payload) => payload 
+    |   (_, _) => ""
+
+structure TL = TransportLayerSingle(UdpHandler(val service = udpService))
+structure Net = Network(IPv4Handle( structure FragAssembler = FragAssemblerList;
+                                    structure TransportLayer = TL))
+
+local
+in
+    val _ = Net.listen ()
+end
+```
+The transport layer `UDP` can be swapped with a `TCP` implementation and here 
+one has to choice between `STREAM` and `FULL`. In `STREAM` mode the service 
+reply to each `TCP` segments as it receives them where in `FULL` mode the service
+collects all segments before processing them. Below is an example where 
+`8080` is set to `STREAM` and `8081` is set to `FULL`.
+```ml
+open Service
+
+fun tcpService handlerRequest =
+    case handlerRequest of
+        (8080, SETUP) => SETUP_STREAM
+    |   (8080, REQUEST payload) => REPLY payload
+    |   (8081, SETUP) => SETUP_FULL
+    |   (8081, REQUEST payload) => REPLY payload
+    |   _ => IGNORE
+
+structure TL = TransportLayerSingle(TcpHandler(val service = tcpService))
+
+structure Net = Network(IPv4Handle( structure FragAssembler = FragAssemblerList;
+                                    structure TransportLayer = TL))
+
+local
+in
+    val _ = Net.listen ()
+end
 ```
 
-Logging can be turned on with the `Logging.enable` function and the service will 
-print and log useful information depending on the specified protocol. For instance logging UDP will result in:
-```sh
--- UDP INFO --
-Source port: 50083
-Destination port: 8080
-UDP length: 14
-Checksum: 30513
+`UDP` and `TCP` can be combined using the `TransportLayerComb` *combinator* functor.
+An example of `UDP` and `TCP` in unison is seen below:
+```ml
+open Service
+
+fun tcpService handlerRequest =
+    case handlerRequest of
+        (8080, SETUP) => SETUP_STREAM
+    |   (8080, REQUEST payload) => REPLY payload
+    |   (8081, SETUP) => SETUP_FULL
+    |   (8081, REQUEST payload) => REPLY payload
+    |   _ => IGNORE
+
+fun udpService handlerRequest = 
+    case handlerRequest of
+        (8082, payload) => payload 
+    |   (_, _) => ""
+
+structure TL = 
+    TransportLayerComb(
+        structure tl = TransportLayerSingle(TcpHandler(val service = tcpService))
+        structure tlh = UdpHandler(val service = udpService))
+
+structure Net = Network(IPv4Handle( structure FragAssembler = FragAssemblerList;
+                                    structure TransportLayer = TL))
+
+local
+in
+    val _ = Net.listen ()
+end
 ```
 
 ### Further examples
-The project include four small examples (these run on both Unix and Xen - see below):
-* Echo: a simple echo server that mirrors exactly what it receives.
-* Facfib: serves two ports with the factorial and fibonacci functions respectively.
-* MonteCarlo: estimates pi using the [sml-sobol library](https://github.com/diku-dk/sml-sobol) (run `smlpkg sync` before use).
-* Sort: sorts its given integers using mergesort.
+The project include five small examples (these run on both Unix and [Unikraft](https://unikraft.org/)):
+* `echo`: a simple echo server that mirrors exactly what it receives.
+* `echoReverse`: reverses it's input and returns it.
+* `facfib`: serves two ports with the factorial and fibonacci functions respectively.
+* `monteCarlo`: estimates $\pi$ using the [sml-sobol library](https://github.com/diku-dk/sml-sobol) (run `smlpkg sync` before use).
+* `sort`: sorts its given integers using mergesort.
+
+## Logging
+Logging can be turned on with the `Logging.enable` function and the service will 
+print and log useful information depending on the specified protocol. For instance
+logging `TCP` will result in:
+```sh
+-- TCP INFO --
+Source port: 54346
+Destination port: 8080
+Sequence number: 3328429351
+Acknowledgement number: 1
+DOffset: 5
+Reserved: 0
+Control bits: 24
+Flags: PSH | ACK
+Window: 64240
+Checksum: 63769
+Urgent pointer: 0
+
+Payload: Hello, world
+```
+
+Furthermore one has to specify a level of logging. Level 1 prints the header of 
+the each segment and level 2 prints the header and the payload. An example of 
+`TCP` with level 2 is seen below. 
+```ml
+val _ = Logging.enable {protocols=[Protocols.TCP], level = 2};
+```
 
 ## Building and running for Unix
-First run the setup command to setup a tuntap device:
+First, run the setup command to setup a tuntap device:
 ```sh
 $ make setup
 ```
@@ -50,13 +134,18 @@ Run the application as an executable:
 $ ./<application name>.exe
 ```
 
-Once the unikernel is running one can send UDP packets to the unikernel via netcat:
+Once the unikernel is running one can send `UDP` packets to the unikernel via netcat:
 ```sh
-$ echo -n $'Hello, World!\n' | nc -u -nw1 10.0.0.2 8080
+$ echo -n $'Hello, World!\n' | nc -u -Nw1 10.0.0.2 8080
+```
+
+or `TCP` packets via netcat with:
+```sh
+$ echo -n $'Hello, World!\n' | nc -N 10.0.0.2 8080
 ```
 
 ## Building and running for Unikraft (through QEMU)
-First run the setup command to update and build external dependencies:
+First, run the setup command to update and build external dependencies:
 ```sh
 $ make t=uk setup
 ```
