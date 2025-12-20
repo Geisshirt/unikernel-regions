@@ -19,12 +19,18 @@ struct uk_netdev *dev = NULL;
 struct uk_alloc *a = NULL;
 
 void setup() {
+    printf("setup!\n");
     dev = uk_netdev_get(0);
 
     a = uk_alloc_get_default();
 
-	uk_netdev_info_get(dev, &dev_info);
-	
+    uk_netdev_mtu_set(dev, MTU);
+
+    uint16_t d = uk_netdev_mtu_get(dev);
+
+    printf("\nMTU: %u\n", d);
+
+	uk_netdev_info_get(dev, &dev_info);    
 }
 
 String REG_POLY_FUN_HDR(toMLString, Region rAddr, const char *cStr, int len) {  
@@ -41,7 +47,12 @@ String REG_POLY_FUN_HDR(toMLString, Region rAddr, const char *cStr, int len) {
 
 
 String Receive(__attribute__ ((unused)) int addr, Region str_r, __attribute__ ((unused)) Context ctx) {
+    dev = uk_netdev_get(0);
 
+    uint16_t d = uk_netdev_mtu_get(dev);
+
+    printf("\nMTU: %u\n", d);
+    
     if (dev == NULL) {
         setup();
     }
@@ -54,7 +65,6 @@ String Receive(__attribute__ ((unused)) int addr, Region str_r, __attribute__ ((
     while (1) {
 		int status = uk_netdev_rx_one(dev, 0, &pkt);
 		if (uk_netdev_status_successful(status)) {
-			
             memcpy(buf, pkt->data, pkt->len);
             bytesRead = pkt->len;
 
@@ -62,6 +72,8 @@ String Receive(__attribute__ ((unused)) int addr, Region str_r, __attribute__ ((
             break;
 		}
 	}
+
+    printf("Received %d bytesss\n", bytesRead);
 
     // Null-terminate the buffer
     buf[bytesRead] = '\0';
