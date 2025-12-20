@@ -23,7 +23,7 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
 
     val protocol_string = "TCP"
 
-    val mss = 536
+    val mss = 1460
 
     type h_context = TcpState.tcp_states
 
@@ -32,7 +32,7 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
     fun copyContext `[r1 r2] (context : h_context`r1) : h_context`r2 = TcpState.copy context
 
     fun handl ({ownMac, dstMac, ownIPaddr, dstIPaddr, ipv4Header, payload}) context =
-        let val (TcpCodec.Header tcpHeader, tcpPayload) = payload |> TcpCodec.decode
+        let val (TcpCodec.Header tcpHeader, optionList, tcpPayload) = payload |> TcpCodec.decode
 
             val IPv4Codec.Header ipv4Header = ipv4Header
             
@@ -55,7 +55,7 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
                 |   SETUP_FULL => FULL
                 |   _ => FULL
 
-            fun sendAck {sequence_number : int, ack_number : int, flags : TcpCodec.flag list} =
+            fun sendAck {sequence_number : int, ack_number : int, flags : TcpCodec.flag list} options =
                 let val tcpPayload = TcpCodec.encode {
                             source_addr = ownIPaddr,
                             dest_addr = dstIPaddr
@@ -64,10 +64,9 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
                             dest_port = #source_port tcpHeader,
                             sequence_number = sequence_number,
                             ack_number = ack_number,
-                            doffset = 20 div 4, (* 32-bit words *)
                             flags = flags,
                             window = 65535 (* mod (2 ** 32) *)
-                        } ""
+                        } options ""
                 in  IPv4Send.send {
                         ownMac = ownMac,
                         ownIPaddr = ownIPaddr,
@@ -88,10 +87,9 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
                             dest_port = #source_port tcpHeader,
                             sequence_number = sequence_number,
                             ack_number = ack_number,
-                            doffset = 20 div 4, (* 32-bit words *)
                             flags = flags,
                             window = 65535
-                        } payload
+                        } NONE payload
                 in  IPv4Send.send {
                         ownMac = ownMac,
                         ownIPaddr = ownIPaddr,
@@ -209,18 +207,22 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
                         (sendAck {
                             sequence_number = (#ack_number tcpHeader), 
                             ack_number = 0, 
-                            flags = [TcpCodec.RST]};
+                            flags = [TcpCodec.RST]} NONE;
                         context)
                     else if TcpCodec.hasFlagsSet cbits [TcpCodec.SYN] then
                         let val newCon = initCon {
                                 connection_id = connection_id,
                                 receive_init = (#sequence_number tcpHeader),
-                                send_mss = mss
+                                send_mss = (
+                                    case List.find (fn opt => case opt of TcpCodec.MSS i => true | _ => false) optionList of 
+                                        SOME (TcpCodec.MSS i) => i 
+                                    |   _ => 536  
+                                ) 
                             } 
                         in
                             sendAck {sequence_number = (#iss o getSSV) newCon, 
                                     ack_number = (#nxt o getRSV) newCon, 
-                                    flags = [TcpCodec.SYN, TcpCodec.ACK]};  
+                                    flags = [TcpCodec.SYN, TcpCodec.ACK]} (SOME [TcpCodec.MSS mss]);  
                             TcpState.add newCon context 
                         end         
                     else context)
@@ -247,7 +249,7 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
                             else 
                                 (sendAck {  sequence_number = #nxt ssv, 
                                              ack_number = #nxt rsv, 
-                                             flags = [TcpCodec.ACK]};
+                                             flags = [TcpCodec.ACK]} NONE;
                                 context)
                         )
                         else if TcpCodec.hasFlagsSet cbits [TcpCodec.RST] orelse 
@@ -261,20 +263,21 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
                                     then 
                                            CON con
                                         |> update_state (fn _ => ESTABLISHED)
-                                        |> update_sseqvar (fn ssv =>
-                                                   ssv  
-                                                |> SSV.update_wnd (fn _ => #window tcpHeader)
-                                                |> SSV.update_wl1 (fn _ => #sequence_number tcpHeader)
-                                                |> SSV.update_wl2 (fn _ => #ack_number tcpHeader)
+                                        |> update_sseqvar (
+                                                  SSV.update_wnd (fn _ => #window tcpHeader)
+                                                o SSV.update_wl1 (fn _ => #sequence_number tcpHeader)
+                                                o SSV.update_wl2 (fn _ => #ack_number tcpHeader)
                                             )
-                                        |> update_rseqvar (RSV.update_wnd (fn _ => 65535))
+                                        |> update_rseqvar (
+                                                RSV.update_wnd (fn _ => 65535)
+                                        )
                                         |> update_service_type (fn _ => serviceType ())
                                         |> (fn con => TcpState.update con context)
                                     else
                                         (sendAck {
                                             sequence_number = #ack_number tcpHeader, 
                                             ack_number = 0, 
-                                            flags = [TcpCodec.RST]};
+                                            flags = [TcpCodec.RST]} NONE;
                                         context)
                                 )
                             |   LAST_ACK =>
@@ -291,14 +294,14 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
                                                 (sendAck {
                                                     sequence_number = #nxt ssv, 
                                                     ack_number = #nxt rsv, 
-                                                    flags = [TcpCodec.ACK]};
+                                                    flags = [TcpCodec.ACK]} NONE;
                                                 CON con)
                                             else if Queue.isEmpty (#retran_queue con) andalso 
                                                     Queue.isEmpty (#send_queue con) then
                                                 (sendAck {
                                                     sequence_number = #nxt ssv, 
                                                     ack_number = #nxt rsv, 
-                                                    flags = [TcpCodec.ACK, TcpCodec.FIN]};
+                                                    flags = [TcpCodec.ACK, TcpCodec.FIN]} NONE;
                                                 update_state (fn _ => LAST_ACK) (CON con))
                                             else CON con
                                         end)
@@ -320,7 +323,7 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
                                                 (sendAck {
                                                     sequence_number = #nxt ssv, 
                                                     ack_number = #nxt rsv, 
-                                                    flags = [TcpCodec.ACK]};
+                                                    flags = [TcpCodec.ACK]} NONE;
                                                 CON newCon)
                                             else if #sequence_number tcpHeader = #nxt rsv andalso 
                                                     ((String.size tcpPayload > 0) orelse (TcpCodec.hasFlagsSet cbits [TcpCodec.FIN])) andalso
@@ -343,7 +346,7 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
                                                 (sendAck {
                                                     sequence_number = (#nxt o getSSV) (CON newCon), 
                                                     ack_number = (#nxt o getRSV) (CON newCon), 
-                                                    flags = [TcpCodec.ACK]};  
+                                                    flags = [TcpCodec.ACK]} NONE;  
                                                 rec_enqueue tcpPayload (CON newCon)) 
                                             else CON newCon)
                                     |> sendRetransmissions

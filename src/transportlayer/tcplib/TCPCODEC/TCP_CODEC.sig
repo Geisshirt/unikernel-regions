@@ -20,6 +20,8 @@ signature TCP_CODEC = sig
         (* options *)
     } 
 
+    datatype tcp_option = MSS of int | UKNOWN of int
+
     val toString : header -> string
 
     val verifyChecksum :
@@ -36,20 +38,21 @@ signature TCP_CODEC = sig
 
     val flagsToString : flag list -> string
 
-    val decode : string -> header * string
+    val optionToString : tcp_option -> string
+
+    val decode : string -> header * tcp_option list * string
     
     val encode : {
             source_addr : int list, 
-            dest_addr : int list
+            dest_addr   : int list
         } -> {
-            source_port : int,
-            dest_port : int,
+            source_port     : int,
+            dest_port       : int,
             sequence_number : int,
-            ack_number : int,
-            doffset : int,
-            flags : flag list,
-            window : int
-        } -> string -> string
+            ack_number      : int,
+            flags           : flag list,
+            window          : int
+        } -> (tcp_option list) option -> string -> string
 end
 
 (*

@@ -2,13 +2,6 @@
 structure TcpCodec : TCP_CODEC = struct
     datatype flag = FIN | SYN | RST | PSH | ACK | URG | ECE | CWR
 
-    datatype tcp_option = MSS of int | UKNOWN of int
-
-    fun optionToString opt = 
-        case opt of 
-            MSS i => "MSS " ^ (Int.toString i)
-        |   UKNOWN i => "UKNOWN of kind " ^ (Int.toString i)
-
     datatype header = Header of {
         source_port: int,
         dest_port: int,
@@ -184,26 +177,11 @@ structure TcpCodec : TCP_CODEC = struct
             dest_port,
             sequence_number,
             ack_number,
+            doffset,
             flags : flag list,
             window
-        } optionList payload = 
-
-        let fun encodeOptions optionList size =
-                case optionList of 
-                    [] => intToRawbyteString 0 (size mod 4)
-                |   (MSS i)::tl => intToRawbyteString 2 1 ^ intToRawbyteString 4 1 ^ intToRawbyteString i 2 ^ encodeOptions tl (size + 4)  
-                |   _::tl => encodeOptions tl size
-
-            val options = 
-                case optionList of 
-                    NONE => ""
-                |   SOME l => encodeOptions l 0
-            
-            val payload = options ^ payload
-        
-            val doffset = (String.size options div 4) + (20 div 4) 
-
-            val header = (Header {
+        } payload = 
+        let val header = (Header {
                 source_port = source_port,
                 dest_port = dest_port,
                 sequence_number = sequence_number,
@@ -221,7 +199,6 @@ structure TcpCodec : TCP_CODEC = struct
                     computeChecksum {
                         source_addr = source_addr, 
                         dest_addr = dest_addr} header (20 + String.size payload) payload
-
         in  encode' (Header {
                 source_port = source_port,
                 dest_port = dest_port,
@@ -253,33 +230,9 @@ structure TcpCodec : TCP_CODEC = struct
             }
             val data = String.extract (s, 20, NONE)
 
-            (* TODO: add check that it is zero padded *)
-            fun parseOptions index optionsEnd optionList = 
-                (
-                    if index = optionsEnd then SOME optionList 
-                    else 
-                        case String.sub (data, index) |> ord of 
-                            0 => parseOptions (index + 1) optionsEnd optionList
-                        |   1 => parseOptions (index + 1) optionsEnd optionList
-                        |   2 => parseOptions (index + 4) optionsEnd (MSS (String.extract (data, index+2, SOME 2) |> convertRawBytes) :: optionList)
-                        |   k => parseOptions (index + ord (String.sub (data, index+1))) optionsEnd (UKNOWN k :: optionList)
-                        
-                ) handle _ => NONE
+            fun parseOptions s = ()
         in 
-            if #DOffset header > 5 then 
-                let (*  
-                        size(Options) == (DOffset-5)*32
-                        32 bits is 4 octets
-                    *)
-                    val optionsSize = (#DOffset header - 5) * 4
-                    val optionList = parseOptions 0 optionsSize []
-                in 
-                    case optionList of 
-                        SOME optionList => (Header header, optionList, String.extract (data, optionsSize, NONE))
-                    |   NONE => raise Fail "Could not parse options"
-                end
-            else 
-                (Header header, [], data)
+            (Header header, data)
         end  
         (* (Header {
             source_port = String.substring(s, 0, 2) |> convertRawBytes,
