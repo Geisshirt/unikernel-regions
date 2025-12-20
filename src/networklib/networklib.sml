@@ -7,9 +7,11 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
 
     fun ownMac () = [0x7c, 0x75, 0xb2, 0x39, 0xd4, 0x84]
 
-    fun ownIPaddr () = [10, 0, 0, 2]
-    (* fun ownIPaddr () = [172, 44, 0, 2]  *)
-    
+    (* fun ownIPaddr () = [10, 0, 0, 2] *)
+    fun ownIPaddr () = [172, 44, 0, 2] 
+
+    fun intListToString l = String.concatWith "." (map Int.toString l)  
+
     fun recListen (context : IPv4.context) : IPv4.context =
          let val new_context : IPv4.context =
                 let val ethFrame = Netif.receive ()
@@ -59,10 +61,20 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
     in
     fun listen () =
         let val context = IPv4.initContext ()
-        in
-            print "Started listening!\n";
+        in                                                                                                                                                                
+            print "       ######                                               \n";
+            print "   .#############.     Powered by:                 **       \n";
+            print " .##   #* # ##  ##     ####  ####   ##     ##  ##  ##   ##  \n";
+            print "#####           ####   ####  ####   ##     ## ##   ## ######\n";
+            print " ###### #  #  #####    # ##.#  ##   ##     ####    ##   ##  \n";
+            print "  ###        #####     #  ###  ##   ##     ## ##   ##   ##  \n";
+            print "   #   #    #####      #   ##   #   #####  ##  ##  ##   ##  \n";
+            print "     ###    ####                                            \n";
+            print "    ###########                                             \n";                                                     
+            print ("Started listening on " ^ intListToString (ownIPaddr ()) ^ 
+                   " with MAC address " ^ intListToString (ownMac ()) ^"!\n");
             Netif.init();
-            listen' (context);
+            listen' context;
             ()
         end
     end
