@@ -7,7 +7,7 @@ make setup
 make echo-ex-app
 
 # Run echo.
-nohup ./echo.exe 2>&1 &
+nohup ./echo.exe ip=10.0.0.2 2>&1 &
 echo $! > PID.txt
 
 sleep 1

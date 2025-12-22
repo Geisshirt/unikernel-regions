@@ -5,7 +5,7 @@ make setup
 make echo-ex-app
 
 # Run echo
-nohup ./echo.exe 2>&1 &
+nohup ./echo.exe ip=10.0.0.2 2>&1 &
 echo $! > PID.txt
 
 # Send the large files.
@@ -13,7 +13,7 @@ sleep 1
 cat tests/numbers_short.txt | nc -u -nw1 10.0.0.2 8082 > tests/out_short.txt
 sleep 1
 cat tests/numbers_long.txt | nc -N 10.0.0.2 8080 > tests/out_long.txt
-sleep 2
+sleep 3
 
 # Close echo
 kill $(cat PID.txt)
