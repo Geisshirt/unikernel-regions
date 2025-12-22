@@ -10,7 +10,7 @@
 #include "List.h"
 #include "Math.h"
 
-#define MTU 1518
+#define MTU 2037
 
 struct uk_netdev_info dev_info;
 
@@ -19,7 +19,7 @@ struct uk_netdev *dev = NULL;
 struct uk_alloc *a = NULL;
 
 void setup() {
-    printf("setup!\n");
+    // printf("setup!\n");
     dev = uk_netdev_get(0);
 
     a = uk_alloc_get_default();
@@ -28,7 +28,7 @@ void setup() {
 
     uint16_t d = uk_netdev_mtu_get(dev);
 
-    printf("\nMTU: %u\n", d);
+    // printf("\nMTU: %u\n", d);
 
 	uk_netdev_info_get(dev, &dev_info);    
 }
@@ -47,36 +47,43 @@ String REG_POLY_FUN_HDR(toMLString, Region rAddr, const char *cStr, int len) {
 
 
 String Receive(__attribute__ ((unused)) int addr, Region str_r, __attribute__ ((unused)) Context ctx) {
-    dev = uk_netdev_get(0);
+    // dev = uk_netdev_get(0);
 
-    uint16_t d = uk_netdev_mtu_get(dev);
+    // uint16_t d = uk_netdev_mtu_get(dev);
 
-    printf("\nMTU: %u\n", d);
+    // printf("\nMTU: %u\n", d);
     
     if (dev == NULL) {
         setup();
     }
 
     ssize_t bytesRead = 0;
-    char buf[MTU]; // MTU + 18 (the 18 bytes are header and frame check sequence)
+    char buf[MTU+1]; // MTU + 18 (the 18 bytes are header and frame check sequence)
 
     struct uk_netbuf *pkt = NULL;
 
     while (1) {
 		int status = uk_netdev_rx_one(dev, 0, &pkt);
+        
 		if (uk_netdev_status_successful(status)) {
-            memcpy(buf, pkt->data, pkt->len);
+            
             bytesRead = pkt->len;
+
+            if (bytesRead >= MTU) {
+                printf("Read %d bytes\n", bytesRead);
+                bytesRead = MTU;
+            }
+
+            memcpy(buf, pkt->data, bytesRead);
 
             uk_netbuf_free(pkt);
             break;
 		}
 	}
 
-    printf("Received %d bytesss\n", bytesRead);
-
     // Null-terminate the buffer
     buf[bytesRead] = '\0';
+
     return toMLString(str_r, buf, bytesRead); 
 }
 
@@ -101,13 +108,9 @@ void Send(uintptr_t byte_list) {
     
     int ret;
 
-    printf("SEND ONE PACKET!\n");
-
     do {
 		ret = uk_netdev_tx_one(dev, 0, nb);
 	} while (uk_netdev_status_notready(ret));
-
-    printf("ret: %d\n", ret);
 
     if (unlikely(ret < 0)) {
 		printf("Failed to send");
