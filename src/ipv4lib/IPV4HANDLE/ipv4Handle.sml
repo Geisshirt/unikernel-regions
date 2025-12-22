@@ -11,8 +11,6 @@ functor IPv4Handle(structure FragAssembler : FRAG_ASSEMBLER
 
     type port = int
 
-    val mtu = 1500
-
     fun initContext () = Context {
         fragContainer = FragAssembler.empty(),
         tlContext = TransportLayer.initContext()

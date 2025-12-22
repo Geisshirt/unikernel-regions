@@ -296,7 +296,8 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
                                                     ack_number = #nxt rsv, 
                                                     flags = [TcpCodec.ACK]} NONE;
                                                 CON con)
-                                            else if Queue.isEmpty (#retran_queue con) andalso 
+                                            else if 
+                                                    Queue.isEmpty (#retran_queue con) andalso 
                                                     Queue.isEmpty (#send_queue con) then
                                                 (sendAck {
                                                     sequence_number = #nxt ssv, 
@@ -313,7 +314,7 @@ functor TcpHandler(val service : Service.service) :> TRANSPORT_LAYER_HANDLER = s
                                         CON con
                                     |>  update_sequence_vars
                                     |>  update_state (fn s => 
-                                            if TcpCodec.hasFlagsSet cbits [TcpCodec.FIN] 
+                                            if TcpCodec.hasFlagsSet cbits [TcpCodec.FIN] andalso #sequence_number tcpHeader = #nxt rsv
                                             then CLOSE_WAIT 
                                             else s
                                         ) 

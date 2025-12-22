@@ -4,6 +4,8 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
     type port = int
 
     type callback = string -> string
+    
+    val count = ref 0
 
     fun ownMac () = [0x7c, 0x75, 0xb2, 0x39, 0xd4, 0x84]
 
@@ -22,10 +24,13 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
             else map toInt d
         end
 
-    fun ownIPaddr () = 
+    val ipaddr = (
         case List.find (String.isPrefix "ip=") (CommandLine.arguments ()) of
             SOME s => String.extract(s, 3, NONE) |> parseIP
         |   NONE => raise Fail "Missing IP argument."
+    )
+
+    fun ownIPaddr () = copyList (fn i => i) ipaddr
         
     (* fun ownIPaddr () = [10, 0, 0, 2] *)
     (* fun ownIPaddr () = [172, 44, 0, 2]  *)
@@ -71,19 +76,23 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
     local
     fun listen' (context : IPv4.context) =
         listen' (
-            if !(ref false) then context else (
+            count := !count + 1;
+            if !(ref false) then context 
+            else if !count mod 1000 = 0 then (
                 let val temp = IPv4.copyContext (recListen context)
                     val _ = resetRegions context
                 in
+                    count := 0;
                     (IPv4.copyContext temp)
-                end))
+                end)
+            else (recListen context)) 
     in
     fun listen () =
         let val context = IPv4.initContext ()
         in                                                                                                                                                                
             print "       ######                                               \n";
             print "   .#############.     Powered by:                 **       \n";
-            print " .##   #* # ##  ##     ####  ####   ##     ##  ##  ##   ##  \n";
+            print " .##   #* # ##  ##.    ####  ####   ##     ##  ##  ##   ##  \n";
             print "#####           ####   ####  ####   ##     ## ##   ## ######\n";
             print " ###### #  #  #####    # ##.#  ##   ##     ####    ##   ##  \n";
             print "  ###        #####     #  ###  ##   ##     ## ##   ##   ##  \n";
