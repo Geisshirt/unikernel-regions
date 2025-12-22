@@ -11,6 +11,8 @@ FLAGS=--reml --maximum_inline_size 1000 --maximum_specialise_size 1000
 
 SERVICE += Network App
 
+UK_IP = 172.44.0.2
+
 ifeq ($(t), uk)
 FLAGS+=-objs -no_delete_target_files
 endif
@@ -76,7 +78,7 @@ run-uk:
     -cpu max \
     -netdev bridge,id=en0,br=virbr0 \
 	-device virtio-net-pci,netdev=en0,mac=7c:75:b2:39:d4:84 \
-    -append "unikraft netdev.ip=172.44.0.2/24:172.44.0.1::: -- " \
+    -append "unikraft netdev.ip=$(UK_IP)/24:$(UK_IP):: -- ip=$(UK_IP)" \
     -kernel $(UNI)/workdir/build/unikraft_qemu-x86_64
 
 clean:
