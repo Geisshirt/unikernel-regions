@@ -7,8 +7,28 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
 
     fun ownMac () = [0x7c, 0x75, 0xb2, 0x39, 0xd4, 0x84]
 
+    fun parseIP s =
+        let 
+            val d = String.tokens (fn d => d = #".") s
+            fun toInt i = 
+                case Int.fromString i of
+                    SOME i => 
+                        if 0 <= i andalso i <= 255 then i
+                        else raise Fail "Digit of IP not in range 0-255."
+                |   NONE => raise Fail "Non-valid digit in IP."
+        in
+            if length d <> 4 
+            then raise Fail "Given non-valid IP length."
+            else map toInt d
+        end
+
+    fun ownIPaddr () = 
+        case List.find (String.isPrefix "ip=") (CommandLine.arguments ()) of
+            SOME s => String.extract(s, 3, NONE) |> parseIP
+        |   NONE => raise Fail "Missing IP argument."
+        
     (* fun ownIPaddr () = [10, 0, 0, 2] *)
-    fun ownIPaddr () = [172, 44, 0, 2] 
+    (* fun ownIPaddr () = [172, 44, 0, 2]  *)
 
     fun intListToString l = String.concatWith "." (map Int.toString l)  
 
@@ -34,7 +54,6 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
                             };
                             context
                         )
-                        (* List.filter (fn (prot, _) => prot = TCP) bindings |> map (fn (_, l) => l) *)
                         | IPv4 =>
                             IPv4.handl {
                                 ownIPaddr = ownIPaddr (),
