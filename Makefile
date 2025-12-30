@@ -53,7 +53,7 @@ endif
 	PROF="Run" mlkit $(FLAGS) -no_gc -prof -Pcee -Ptypes --print_rho_types -o $*.exe $(shell pwd)/examples/$*/main.mlb > prof_out
 
 prof-pdf:
-	rp2ps -region -name 'Service: $(SERVICE)' -sampleMax 100000 -sortBySize
+	rp2ps -region -name 'Service: $(SERVICE)' -sampleMax 100000 -sortBySize #-fixedYRange 7000000
 	ps2pdf region.ps region.pdf
 
 .PRECIOUS: %.exe
