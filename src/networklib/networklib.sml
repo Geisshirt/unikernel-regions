@@ -85,6 +85,17 @@ functor Network(IPv4 : IPV4_HANDLE) :> NETWORK = struct
                     count := 0;
                     (IPv4.copyContext temp)
                 end)
+                
+                
+                (* No use of double copy *)
+                (* let
+                    val temp = IPv4.copyContext (recListen context)
+                    val _ = resetRegions context
+                in
+                    count := 0;
+                    temp
+                end) *)
+
             else (recListen context)) 
     in
     fun listen () =
