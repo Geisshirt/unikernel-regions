@@ -1,6 +1,6 @@
 #!/bin/bash
 
-request=15
+request=20
 
 # Make setup, echo and reverse echo.
 make setup
