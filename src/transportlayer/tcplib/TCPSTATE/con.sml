@@ -19,7 +19,7 @@ structure Connection = struct
         send_seqvar    : send_seqvar,
         send_queue     : string queue,
         receive_seqvar : receive_seqvar,
-        receive_queue  : string,
+        receive_queue  : string queue,
         retran_queue   : {last_ack : int, payload : string} queue,
         dup_count      : int,
         service_type   : service_type
@@ -174,7 +174,7 @@ structure Connection = struct
 
     fun rec_enqueue payload (CON {id, state, send_seqvar, send_queue, receive_seqvar,receive_queue, retran_queue, dup_count, service_type}) =
         let
-            val new_q = receive_queue ^ payload
+            val new_q = Queue.enqueue (payload, receive_queue)
         in
             CON {
                 id = id,
@@ -190,17 +190,20 @@ structure Connection = struct
         end
 
     fun rec_collect (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type}) =
-        (receive_queue, CON {
+        let val (front,back) = receive_queue
+        in
+        ((foldr (op ^) "" front) ^ (foldl (op ^) "" back), CON {
             id = id,
             state = state,
             send_seqvar = send_seqvar,
             send_queue = send_queue,
             receive_seqvar = receive_seqvar,
-            receive_queue = "",
+            receive_queue = Queue.empty (),
             retran_queue = retran_queue,
             dup_count = dup_count,
             service_type = service_type
         })
+        end
 
     fun retran_dequeue (CON {id, state, send_seqvar, send_queue, receive_seqvar, receive_queue, retran_queue, dup_count, service_type}) =
         case dequeue retran_queue of

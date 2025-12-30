@@ -41,7 +41,7 @@ structure TcpState : TCP_STATE = struct
                     up  = 0,
                     irs = receive_init
                 },
-                receive_queue = "",
+                receive_queue = Queue.empty (),
                 retran_queue = Queue.empty (),
                 dup_count = 0,
                 service_type = FULL
@@ -93,11 +93,11 @@ structure TcpState : TCP_STATE = struct
             fun copyListS [] = []
               | copyListS (x::xr) = x ^ "" :: copyListS xr
             fun copyQueueS ((front, back)) =
-                    (copyListS front, copyListS back)
+                    (front @ (back |> rev) |> copyListS, [])
             fun copyListR [] = []
               | copyListR ({last_ack, payload}::xr) = {last_ack = last_ack, payload = payload ^ ""} :: copyListR xr
             fun copyQueueR ((front, back)) =
-                    (copyListR front, copyListR back)
+                    (front @ (back |> rev) |> copyListR, [])
         in (
             CON {
                id = copyID id,
@@ -105,7 +105,7 @@ structure TcpState : TCP_STATE = struct
                send_seqvar = copySSV send_seqvar,
                send_queue = copyQueueS send_queue,
                receive_seqvar = copyRSV receive_seqvar,
-               receive_queue = receive_queue ^ "",
+               receive_queue = copyQueueS receive_queue,
                retran_queue = copyQueueR retran_queue,
                dup_count = dup_count,
                service_type = service_type
